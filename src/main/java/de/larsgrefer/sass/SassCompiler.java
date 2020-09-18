@@ -50,7 +50,7 @@ public class SassCompiler {
 
     public String compileString(String sass) throws IOException, InterruptedException {
 
-        ProcessBuilder processBuilder = new ProcessBuilder("sass", "--stdin");
+        ProcessBuilder processBuilder = new ProcessBuilder(sassExecutable, "--stdin");
 
         Process sassc = processBuilder.start();
 
@@ -85,7 +85,7 @@ public class SassCompiler {
 
     public void compileString(String sass, File outputFile) throws IOException, InterruptedException {
 
-        ProcessBuilder processBuilder = new ProcessBuilder("sass", "--stdin", outputFile.getPath());
+        ProcessBuilder processBuilder = new ProcessBuilder(sassExecutable, "--stdin", outputFile.getPath());
 
         Process sassc = processBuilder.start();
 
@@ -112,7 +112,7 @@ public class SassCompiler {
     }
 
     public String compileFile(File inputFile) throws IOException, InterruptedException {
-        ProcessBuilder processBuilder = new ProcessBuilder("sass", inputFile.getPath());
+        ProcessBuilder processBuilder = new ProcessBuilder(sassExecutable, inputFile.getPath());
 
         Process sassc = processBuilder.start();
 
@@ -141,7 +141,7 @@ public class SassCompiler {
     }
 
     public void compileFile(File inputFile, File outputFile) throws IOException, InterruptedException {
-        ProcessBuilder processBuilder = new ProcessBuilder("sass", inputFile.getPath(), outputFile.getPath());
+        ProcessBuilder processBuilder = new ProcessBuilder(sassExecutable, inputFile.getPath(), outputFile.getPath());
 
         Process sassc = processBuilder.start();
 

@@ -1,0 +1,82 @@
+plugins {
+    // Apply the java-library plugin to add support for Java Library
+    id 'java-library'
+    id "io.freefair.okhttp" version "5.2.1"
+}
+
+repositories {
+    // Use jcenter for resolving dependencies.
+    // You can declare any Maven/Ivy/file repository here.
+    jcenter()
+}
+
+dependencies {
+    // This dependency is exported to consumers, that is to say found on their compile classpath.
+    api 'org.apache.commons:commons-math3:3.6.1'
+
+    // This dependency is used internally, and not exposed to consumers on their own compile classpath.
+    implementation 'com.google.guava:guava:29.0-jre'
+    implementation("com.squareup.okio:okio:2.8.0")
+
+    // Use JUnit Jupiter API for testing.
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.2'
+
+    // Use JUnit Jupiter Engine for testing.
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.6.2'
+
+}
+
+def dartSassVersion = "1.26.10"
+
+task dartSassLinuxIa32(type: io.freefair.gradle.plugins.okhttp.tasks.DownloadFile) {
+    url = "https://github.com/sass/dart-sass/releases/download/$dartSassVersion/dart-sass-$dartSassVersion-linux-ia32.tar.gz"
+    outputFile = new File(temporaryDir, "dart-sass-$dartSassVersion-linux-ia32.tar.gz")
+}
+task dartSassLinux64(type: io.freefair.gradle.plugins.okhttp.tasks.DownloadFile) {
+    url = "https://github.com/sass/dart-sass/releases/download/$dartSassVersion/dart-sass-$dartSassVersion-linux-x64.tar.gz"
+    outputFile = new File(temporaryDir, "dart-sass-$dartSassVersion-linux-x64.tar.gz")
+}
+
+task dartSassMacos64(type: io.freefair.gradle.plugins.okhttp.tasks.DownloadFile) {
+    url = "https://github.com/sass/dart-sass/releases/download/$dartSassVersion/dart-sass-$dartSassVersion-macos-x64.tar.gz"
+    outputFile = new File(temporaryDir, "dart-sass-$dartSassVersion-macos-x64.tar.gz")
+}
+
+task dartSassWindowsIa32(type: io.freefair.gradle.plugins.okhttp.tasks.DownloadFile) {
+    url = "https://github.com/sass/dart-sass/releases/download/$dartSassVersion/dart-sass-$dartSassVersion-windows-ia32.zip"
+    outputFile = new File(temporaryDir, "dart-sass-$dartSassVersion-windows-ia32.zip")
+}
+task dartSassWindows64(type: io.freefair.gradle.plugins.okhttp.tasks.DownloadFile) {
+    url = "https://github.com/sass/dart-sass/releases/download/$dartSassVersion/dart-sass-$dartSassVersion-windows-x64.zip"
+    outputFile = new File(temporaryDir, "dart-sass-$dartSassVersion-windows-x64.zip")
+}
+
+processResources {
+    dependsOn dartSassLinuxIa32
+    into("linux-ia32") {
+        from(tarTree(dartSassLinuxIa32.outputFile))
+    }
+    dependsOn dartSassLinux64
+    into("linux-x64") {
+        from(tarTree(dartSassLinux64.outputFile))
+    }
+
+    dependsOn dartSassMacos64
+    into("macos-x64") {
+        from(tarTree(dartSassMacos64.outputFile))
+    }
+
+    dependsOn dartSassWindowsIa32
+    into("windows-ia32") {
+        from(zipTree(dartSassWindowsIa32.outputFile))
+    }
+    dependsOn dartSassWindows64
+    into("windows-x64") {
+        from(zipTree(dartSassWindows64.outputFile))
+    }
+}
+
+test {
+    // Use junit platform for unit tests
+    useJUnitPlatform()
+}

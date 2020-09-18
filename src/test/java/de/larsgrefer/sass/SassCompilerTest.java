@@ -2,14 +2,13 @@ package de.larsgrefer.sass;
 
 import org.junit.jupiter.api.Test;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
 class SassCompilerTest {
 
-    SassCompiler sassCompiler = new SassCompiler("/usr/local/bin/sass");
+    SassCompiler sassCompiler = SassCompilerFactory.bundled();
 
     SassCompilerTest() throws IOException {
     }

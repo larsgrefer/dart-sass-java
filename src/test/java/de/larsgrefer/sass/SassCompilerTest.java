@@ -2,6 +2,7 @@ package de.larsgrefer.sass;
 
 import org.junit.jupiter.api.Test;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -32,7 +33,7 @@ class SassCompilerTest {
         for (int i = 0; i < 100; i++) {
             Path target = Files.createTempFile("target", ".css");
             sassCompiler.compileString(sass, target.toFile());
-            s = Files.readString(target);
+            s = new String(Files.readAllBytes(target));
         }
         System.out.println(s);
     }

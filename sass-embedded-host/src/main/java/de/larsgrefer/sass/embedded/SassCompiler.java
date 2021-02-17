@@ -23,28 +23,24 @@ public class SassCompiler implements AutoCloseable {
     @Setter
     private EmbeddedSass.InboundMessage.CompileRequest.OutputStyle outputStyle = EmbeddedSass.InboundMessage.CompileRequest.OutputStyle.EXPANDED;
 
-    private final String sassExecutable;
-
     private Process process;
 
     private final Map<String, HostFunction> globalFunctions = new HashMap<>();
 
-    public SassCompiler(String sassExecutable) throws IOException {
-        this.sassExecutable = sassExecutable;
-        startProcess();
+    public SassCompiler(ProcessBuilder processBuilder) throws IOException {
+        process = processBuilder
+                .redirectInput(ProcessBuilder.Redirect.PIPE)
+                .redirectOutput(ProcessBuilder.Redirect.PIPE)
+                .redirectError(ProcessBuilder.Redirect.PIPE)
+                .start();
+    }
+
+    public SassCompiler(Process process) throws IOException {
+        this.process = process;
     }
 
     public void registerFunction(HostFunction sassFunction) {
         globalFunctions.put(sassFunction.getName(), sassFunction);
-    }
-
-    private void startProcess() throws IOException {
-        if (process != null && process.isAlive()) {
-            throw new IllegalStateException();
-        }
-        ProcessBuilder processBuilder = new ProcessBuilder(sassExecutable);
-
-        process = processBuilder.start();
     }
 
     protected EmbeddedSass.InboundMessage.CompileRequest.Builder compileRequestBuilder() {
@@ -143,6 +139,10 @@ public class SassCompiler implements AutoCloseable {
     }
 
     private void sendMessage(EmbeddedSass.InboundMessage inboundMessage) throws IOException {
+        if (!process.isAlive()) {
+            throw new IllegalStateException("Process is dead");
+        }
+
         OutputStream outputStream = process.getOutputStream();
         inboundMessage.writeDelimitedTo(outputStream);
         outputStream.flush();

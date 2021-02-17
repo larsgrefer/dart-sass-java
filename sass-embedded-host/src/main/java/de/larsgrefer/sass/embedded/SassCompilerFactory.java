@@ -1,51 +1,40 @@
 package de.larsgrefer.sass.embedded;
 
-import okio.BufferedSink;
-import okio.BufferedSource;
-import okio.Okio;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Arrays;
-import java.util.List;
 
 public class SassCompilerFactory {
 
-
-    public static SassCompiler forLocalInstallation() throws IOException {
-        return forLocalInstallation("sass");
-    }
-
-    public static SassCompiler forLocalInstallation(String path) throws IOException {
-        return new SassCompiler(path);
-    }
+    private static File bundledDartExec;
+    private static File bundledSassSnapshot;
 
     public static SassCompiler bundled() throws IOException {
+        if (bundledDartExec == null || bundledSassSnapshot == null) {
+            extractBundled();
+        }
 
-        File sassExec = getSassExecutable();
-
-        return new SassCompiler(sassExec.getAbsolutePath());
-
+        return new SassCompiler(new ProcessBuilder(bundledDartExec.getAbsolutePath(), bundledSassSnapshot.getAbsolutePath()));
     }
 
-    private static File getSassExecutable() throws IOException {
+    private synchronized static void extractBundled() throws IOException {
         Path tempDirectory = Files.createTempDirectory("dart-sass");
 
         String osName = System.getProperty("os.name").toLowerCase();
         String osArch = System.getProperty("os.arch").toLowerCase();
 
         String baseDir;
-        List<String> paths;
+
+        String dartExecName;
 
         if (osName.contains("mac")) {
             baseDir = "macos-x64";
-            paths = Arrays.asList("dart-sass-embedded", "src/dart", "src/dart-sass-embedded.snapshot");
+            dartExecName = "dart";
         }
         else if (osName.contains("win")) {
-            paths = Arrays.asList("dart-sass-embedded.bat", "src/dart.exe", "src/dart-sass-embedded.snapshot");
+            dartExecName = "dart.exe";
             if (osArch.contains("64")) {
                 baseDir = "windows-x64";
             }
@@ -54,7 +43,7 @@ public class SassCompilerFactory {
             }
         }
         else {
-            paths = Arrays.asList("dart-sass-embedded", "src/dart", "src/dart-sass-embedded.snapshot");
+            dartExecName = "dart";
             if (osArch.contains("64")) {
                 baseDir = "linux-x64";
             }
@@ -63,27 +52,24 @@ public class SassCompilerFactory {
             }
         }
 
-        File sassExec = null;
+        String dartExecPath = baseDir + "/sass_embedded/src/" + dartExecName;
+        String snapshotPath = baseDir + "/sass_embedded/src/dart-sass-embedded.snapshot";
 
-        for (String path : paths) {
-            Path targetPath = tempDirectory.resolve(path);
-            if (sassExec == null) {
-                sassExec = targetPath.toFile();
-            }
-            targetPath.toFile().getParentFile().mkdirs();
-            try (
-                    InputStream resourceAsStream = SassCompilerFactory.class.getClassLoader().getResourceAsStream(baseDir + "/sass_embedded/" + path);
-                    BufferedSource source = Okio.buffer(Okio.source(resourceAsStream));
-                    BufferedSink sink = Okio.buffer(Okio.sink(targetPath))) {
+        bundledDartExec = tempDirectory.resolve(dartExecName).toFile();
+        bundledSassSnapshot = tempDirectory.resolve("dart-sass-embedded.snapshot").toFile();
 
-                source.readAll(sink);
-            } catch (IllegalArgumentException e) {
-                throw new IOException("Failed to extract path " + path, e);
-            }
+        extracted(dartExecPath, bundledDartExec.toPath());
+        bundledDartExec.setExecutable(true, true);
+        extracted(snapshotPath, bundledSassSnapshot.toPath());
+    }
 
-            targetPath.toFile().setExecutable(true, true);
+    private static void extracted(String path, Path targetPath) throws IOException {
+        targetPath.toFile().getParentFile().mkdirs();
+        try (InputStream resourceAsStream = SassCompilerFactory.class.getClassLoader().getResourceAsStream(path);) {
+            Files.copy(resourceAsStream, targetPath);
+        } catch (IllegalArgumentException e) {
+            throw new IOException("Failed to extract path " + path, e);
         }
-        return sassExec;
     }
 
 }

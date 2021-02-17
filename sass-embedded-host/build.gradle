@@ -1,5 +1,6 @@
 plugins {
     id "java-library"
+    id "io.freefair.maven-publish-java" version "5.3.0"
 }
 
 dependencies {
@@ -40,25 +41,35 @@ task dartSassWindows64(type: io.freefair.gradle.plugins.okhttp.tasks.DownloadFil
 processResources {
     dependsOn dartSassLinuxIa32
     into("linux-ia32") {
-        from(tarTree(dartSassLinuxIa32.outputFile))
+        from(tarTree(dartSassLinuxIa32.outputFile)) {
+            include "*/src/*"
+        }
     }
     dependsOn dartSassLinux64
     into("linux-x64") {
-        from(tarTree(dartSassLinux64.outputFile))
+        from(tarTree(dartSassLinux64.outputFile)) {
+            include "*/src/*"
+        }
     }
 
     dependsOn dartSassMacos64
     into("macos-x64") {
-        from(tarTree(dartSassMacos64.outputFile))
+        from(tarTree(dartSassMacos64.outputFile)) {
+            include "*/src/*"
+        }
     }
 
     dependsOn dartSassWindowsIa32
     into("windows-ia32") {
-        from(zipTree(dartSassWindowsIa32.outputFile))
+        from(zipTree(dartSassWindowsIa32.outputFile)) {
+            include "*/src/*"
+        }
     }
     dependsOn dartSassWindows64
     into("windows-x64") {
-        from(zipTree(dartSassWindows64.outputFile))
+        from(zipTree(dartSassWindows64.outputFile)) {
+            include "*/src/*"
+        }
     }
 }
 

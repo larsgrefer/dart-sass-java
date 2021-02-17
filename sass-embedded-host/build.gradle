@@ -6,7 +6,6 @@ plugins {
 dependencies {
     api project(":sass-embedded-protocol")
     api 'org.slf4j:slf4j-api:1.7.30'
-    implementation("com.squareup.okio:okio:1.17.5")
 
     testImplementation 'org.slf4j:slf4j-simple:1.7.30'
 }

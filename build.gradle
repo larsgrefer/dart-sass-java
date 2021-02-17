@@ -8,6 +8,8 @@ allprojects {
         mavenCentral()
     }
 
+    group = "de.larsgrefer.sass"
+
     plugins.withId("java") {
 
         project.apply plugin: "io.freefair.lombok"

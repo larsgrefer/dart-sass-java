@@ -1,0 +1,34 @@
+plugins {
+    id "com.google.protobuf" version "0.8.13"
+    id "java"
+    id "idea"
+}
+
+repositories {
+    ivy {
+        artifactPattern "https://raw.githubusercontent.com/[orgPath]/[revision]/[artifact].[ext]"
+        metadataSources {
+            artifact()
+        }
+    }
+}
+
+configurations {
+    foo
+}
+
+task prepareProto(type: Sync) {
+    from configurations.foo
+    into temporaryDir
+
+    eachFile {
+        name = "embedded_sass.proto"
+    }
+}
+
+dependencies {
+    foo "sass.embedded-protocol:embedded_sass:1.0.0-beta.7@proto"
+    protobuf files(prepareProto)
+
+    compile 'com.google.protobuf:protobuf-java:3.13.0'
+}

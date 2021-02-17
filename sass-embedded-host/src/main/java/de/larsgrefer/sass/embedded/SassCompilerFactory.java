@@ -1,4 +1,4 @@
-package de.larsgrefer.sass;
+package de.larsgrefer.sass.embedded;
 
 import okio.BufferedSink;
 import okio.BufferedSource;
@@ -25,6 +25,13 @@ public class SassCompilerFactory {
 
     public static SassCompiler bundled() throws IOException {
 
+        File sassExec = getSassExecutable();
+
+        return new SassCompiler(sassExec.getAbsolutePath());
+
+    }
+
+    private static File getSassExecutable() throws IOException {
         Path tempDirectory = Files.createTempDirectory("dart-sass");
 
         String osName = System.getProperty("os.name").toLowerCase();
@@ -35,10 +42,10 @@ public class SassCompilerFactory {
 
         if (osName.contains("mac")) {
             baseDir = "macos-x64";
-            paths = Arrays.asList("sass", "src/dart", "src/sass.snapshot");
+            paths = Arrays.asList("dart-sass-embedded", "src/dart", "src/dart-sass-embedded.snapshot");
         }
         else if (osName.contains("win")) {
-            paths = Arrays.asList("sass.bat", "src/dart.exe", "src/sass.snapshot");
+            paths = Arrays.asList("dart-sass-embedded.bat", "src/dart.exe", "src/dart-sass-embedded.snapshot");
             if (osArch.contains("64")) {
                 baseDir = "windows-x64";
             }
@@ -47,7 +54,7 @@ public class SassCompilerFactory {
             }
         }
         else {
-            paths = Arrays.asList("sass", "src/dart", "src/sass.snapshot");
+            paths = Arrays.asList("dart-sass-embedded", "src/dart", "src/dart-sass-embedded.snapshot");
             if (osArch.contains("64")) {
                 baseDir = "linux-x64";
             }
@@ -65,18 +72,18 @@ public class SassCompilerFactory {
             }
             targetPath.toFile().getParentFile().mkdirs();
             try (
-                    InputStream resourceAsStream = SassCompilerFactory.class.getClassLoader().getResourceAsStream(baseDir + "/dart-sass/" + path);
+                    InputStream resourceAsStream = SassCompilerFactory.class.getClassLoader().getResourceAsStream(baseDir + "/sass_embedded/" + path);
                     BufferedSource source = Okio.buffer(Okio.source(resourceAsStream));
                     BufferedSink sink = Okio.buffer(Okio.sink(targetPath))) {
 
                 source.readAll(sink);
+            } catch (IllegalArgumentException e) {
+                throw new IOException("Failed to extract path " + path, e);
             }
 
             targetPath.toFile().setExecutable(true, true);
         }
-
-        return new SassCompiler(sassExec.getAbsolutePath());
-
+        return sassExec;
     }
 
 }

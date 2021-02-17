@@ -12,6 +12,7 @@ import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -26,6 +27,10 @@ public class SassCompiler implements AutoCloseable {
     private Process process;
 
     private final Map<String, HostFunction> globalFunctions = new HashMap<>();
+
+    @Getter
+    @Setter
+    private List<File> loadPaths = new LinkedList<>();
 
     public SassCompiler(ProcessBuilder processBuilder) throws IOException {
         process = processBuilder
@@ -47,6 +52,13 @@ public class SassCompiler implements AutoCloseable {
         EmbeddedSass.InboundMessage.CompileRequest.Builder builder = EmbeddedSass.InboundMessage.CompileRequest.newBuilder();
 
         builder.setStyle(outputStyle);
+
+        for (File loadPath : loadPaths) {
+            EmbeddedSass.InboundMessage.CompileRequest.Importer importer = EmbeddedSass.InboundMessage.CompileRequest.Importer.newBuilder()
+                    .setPath(loadPath.getAbsolutePath())
+                    .build();
+            builder.addImporters(importer);
+        }
 
         for (HostFunction sassFunction : globalFunctions.values()) {
             builder.addGlobalFunctions(sassFunction.getSignature());

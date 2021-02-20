@@ -74,7 +74,3 @@ processResources {
         }
     }
 }
-
-test {
-    useJUnitPlatform()
-}

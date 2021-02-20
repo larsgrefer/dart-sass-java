@@ -17,8 +17,12 @@ allprojects {
         sourceCompatibility = 1.8
         targetCompatibility = 1.8
 
-        dependencies {
+        java {
+            withSourcesJar()
+            withJavadocJar()
+        }
 
+        dependencies {
             testImplementation 'org.assertj:assertj-core:3.17.2'
 
             // Use JUnit Jupiter API for testing.

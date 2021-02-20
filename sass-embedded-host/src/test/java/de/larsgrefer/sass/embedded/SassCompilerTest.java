@@ -11,6 +11,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.fail;
 
 class SassCompilerTest {
@@ -85,6 +87,37 @@ class SassCompilerTest {
         String css = sassCompiler.compileString(sass);
         System.out.println(css);
 
+    }
+
+    @Test
+    void customFunction_error() throws Exception {
+        String sass = ".foo { .bar { color : foo(#ffffff);}}";
+
+        HostFunction sassFunction = new HostFunction() {
+            @Override
+            public EmbeddedSass.Value invoke(List<EmbeddedSass.Value> arguments) throws Throwable {
+                throw new RuntimeException("bazinga");
+            }
+
+            @Override
+            public String getName() {
+                return "foo";
+            }
+
+            @Override
+            public List<Argument> getParameters() {
+                List<Argument> arguments = new java.util.ArrayList<>();
+                arguments.add(new Argument("col", null));
+                return arguments;
+            }
+        };
+
+        sassCompiler.registerFunction(sassFunction);
+        SassCompilationFailedException e = assertThrows(SassCompilationFailedException.class, () -> {
+            String css = sassCompiler.compileString(sass);
+        });
+
+        assertThat(e.getMessage()).contains("bazinga");
     }
 
 }

@@ -7,6 +7,9 @@ dependencies {
     api project(":sass-embedded-protocol")
     api 'org.slf4j:slf4j-api:1.7.30'
 
+    compileOnly 'javax.servlet:javax.servlet-api:4.0.1'
+    compileOnly 'org.springframework:spring-core:5.+'
+
     testImplementation 'org.slf4j:slf4j-simple:1.7.30'
 }
 

@@ -6,13 +6,16 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+/**
+ * @author Lars Grefer
+ */
 public class SassCompilerFactory {
 
     private static File bundledDartExec;
     private static File bundledSassSnapshot;
 
     public static SassCompiler bundled() throws IOException {
-        if (bundledDartExec == null || bundledSassSnapshot == null) {
+        if (bundledDartExec == null || bundledSassSnapshot == null || !bundledDartExec.isFile() || !bundledSassSnapshot.isFile()) {
             extractBundled();
         }
 

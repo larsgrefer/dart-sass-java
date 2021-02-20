@@ -4,6 +4,8 @@ import de.larsgrefer.sass.embedded.functions.HostFunction;
 import de.larsgrefer.sass.embedded.importer.CustomImporter;
 import de.larsgrefer.sass.embedded.importer.FileImporter;
 import de.larsgrefer.sass.embedded.importer.Importer;
+import de.larsgrefer.sass.embedded.logging.LoggingHandler;
+import de.larsgrefer.sass.embedded.logging.Slf4jLoggingHandler;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -33,6 +35,10 @@ public class SassCompiler implements AutoCloseable {
     private final Map<String, HostFunction> globalFunctions = new HashMap<>();
     private final Map<Integer, FileImporter> fileImporters = new HashMap<>();
     private final Map<Integer, CustomImporter> customImporters = new HashMap<>();
+
+    @Setter
+    @Getter
+    private LoggingHandler loggingHandler = new Slf4jLoggingHandler(log);
 
     @Getter
     @Setter
@@ -178,7 +184,7 @@ public class SassCompiler implements AutoCloseable {
                 case VERSIONRESPONSE:
                     return outboundMessage;
                 case LOGEVENT:
-                    handleLogEvent(outboundMessage.getLogEvent());
+                    loggingHandler.handle(outboundMessage.getLogEvent());
                     break;
                 case CANONICALIZEREQUEST:
                     handleCanonicalizeRequest(outboundMessage.getCanonicalizeRequest());
@@ -208,24 +214,6 @@ public class SassCompiler implements AutoCloseable {
         OutputStream outputStream = process.getOutputStream();
         inboundMessage.writeDelimitedTo(outputStream);
         outputStream.flush();
-    }
-
-    private void handleLogEvent(EmbeddedSass.OutboundMessage.LogEvent logEvent) {
-        EmbeddedSass.OutboundMessage.LogEvent.Type type = logEvent.getType();
-
-        switch (type) {
-            case WARNING:
-                log.warn(logEvent.getMessage());
-                break;
-            case DEPRECATION_WARNING:
-                log.info(logEvent.getMessage());
-                break;
-            case DEBUG:
-                log.debug(logEvent.getMessage());
-                break;
-            case UNRECOGNIZED:
-                break;
-        }
     }
 
     private void handleFileImportRequest(EmbeddedSass.OutboundMessage.FileImportRequest fileImportRequest) throws IOException {

@@ -4,6 +4,11 @@ plugins {
     id "idea"
 }
 
+java {
+    withSourcesJar()
+    withJavadocJar()
+}
+
 repositories {
     ivy {
         //https://github.com/sass/embedded-protocol/archive/1.0.0-beta.7.tar.gz
@@ -14,8 +19,16 @@ repositories {
     }
 }
 
+def protobufVersion = "3.15.0"
+
 dependencies {
     protobuf "sass:embedded-protocol:1.0.0-beta.7@zip"
 
-    compile 'com.google.protobuf:protobuf-java:3.14.0'
+    compile "com.google.protobuf:protobuf-java:$protobufVersion"
+}
+
+protobuf {
+    protoc {
+        artifact = "com.google.protobuf:protoc:$protobufVersion"
+    }
 }

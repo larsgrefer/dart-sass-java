@@ -1,6 +1,6 @@
 plugins {
     id "java-library"
-    id "io.freefair.maven-publish-java" version "5.3.0"
+    id "io.freefair.maven-publish-java"
 }
 
 dependencies {
@@ -10,7 +10,6 @@ dependencies {
     compileOnly 'com.google.code.findbugs:jsr305:3.0.2'
     compileOnly 'javax.servlet:javax.servlet-api:4.0.1'
     compileOnly 'org.springframework:spring-core:5.+'
-    testImplementation 'org.springframework:spring-core:5.+'
 
     testImplementation 'org.slf4j:slf4j-simple:1.7.30'
 }

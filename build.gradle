@@ -1,6 +1,8 @@
 plugins {
-    id "io.freefair.okhttp" version "5.2.1"
-    id "io.freefair.lombok" version "5.2.1" apply false
+    id "io.freefair.git-version" version "5.3.0"
+    id "io.freefair.okhttp" version "5.3.0"
+    id "io.freefair.lombok" version "5.3.0" apply false
+    id "io.freefair.maven-publish-java" version "5.3.0" apply false
 }
 
 allprojects {
@@ -36,7 +38,51 @@ allprojects {
             testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.6.2'
         }
 
-        test.useJUnitPlatform()
+        tasks.withType(Test) {
+            useJUnitPlatform()
+        }
+
+        afterEvaluate {
+            jar.manifest {
+                attributes 'Implementation-Title': "$description",
+                        'Implementation-Version': "$version"
+            }
+        }
+    }
+
+    plugins.withId("maven-publish") {
+        publishing {
+            publications.withType(MavenPublication) {
+                pom {
+                    url = 'https://github.com/larsgrefer/dart-sass-java/'
+                    name = provider { project.description }
+                    description = provider { project.description }
+                    inceptionYear = '2021'
+                    developers {
+                        developer {
+                            id = 'larsgrefer'
+                            name = 'Lars Grefer'
+                            email = 'github@larsgrefer.de'
+                            timezone = 'Europe/Berlin'
+                        }
+                    }
+                    ciManagement {
+                        system = 'GitHub Actions'
+                        url = 'https://github.com/larsgrefer/dart-sass-java/actions'
+                    }
+                    issueManagement {
+                        system = 'GitHub'
+                        url = 'https://github.com/larsgrefer/dart-sass-java/issues'
+                    }
+                    scm {
+                        connection = 'scm:git:https://github.com/larsgrefer/dart-sass-java.git'
+                        developerConnection = 'scm:git:git@github.com:larsgrefer/dart-sass-java.git'
+                        url = 'https://github.com/larsgrefer/dart-sass-java/'
+                    }
+                }
+            }
+        }
+
     }
 }
 

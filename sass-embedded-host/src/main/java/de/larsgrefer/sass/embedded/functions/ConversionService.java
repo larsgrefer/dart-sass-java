@@ -1,6 +1,6 @@
 package de.larsgrefer.sass.embedded.functions;
 
-
+import lombok.experimental.UtilityClass;
 import sass.embedded_protocol.EmbeddedSass;
 
 import java.awt.*;
@@ -8,12 +8,14 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.Collection;
-import java.util.Collections;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
+/**
+ * @author Lars Grefer
+ */
+@UtilityClass
 class ConversionService {
 
     static EmbeddedSass.Value toSassValue(Object object) {
@@ -78,12 +80,10 @@ class ConversionService {
         if (object instanceof Map) {
             List<EmbeddedSass.Value.Map.Entry> sassEntries = ((Map<?, ?>) object).entrySet()
                     .stream()
-                    .map(entry -> {
-                        return EmbeddedSass.Value.Map.Entry.newBuilder()
-                                .setKey(toSassValue(entry.getKey()))
-                                .setValue(toSassValue(entry.getValue()))
-                                .build();
-                    })
+                    .map(entry -> EmbeddedSass.Value.Map.Entry.newBuilder()
+                            .setKey(toSassValue(entry.getKey()))
+                            .setValue(toSassValue(entry.getValue()))
+                            .build())
                     .collect(Collectors.toList());
 
             return EmbeddedSass.Value.newBuilder()
@@ -145,7 +145,7 @@ class ConversionService {
 
     static <T> T toJavaValue(EmbeddedSass.Value value, Class<T> targetType, Type parameterizedType) {
         if (value == null) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("value must not be null");
         }
 
         if (targetType.equals(EmbeddedSass.Value.class)) {
@@ -170,22 +170,22 @@ class ConversionService {
                 if (targetType.isAssignableFrom(EmbeddedSass.Value.Number.class)) {
                     return (T) sassNumber;
                 }
-                else if (targetType.isAssignableFrom(Double.class)) {
+                else if (targetType.isAssignableFrom(Double.class) || targetType.isAssignableFrom(Double.TYPE)) {
                     return (T) Double.valueOf(javaNumber);
                 }
-                else if (targetType.isAssignableFrom(Float.class)) {
+                else if (targetType.isAssignableFrom(Float.class) || targetType.isAssignableFrom(Float.TYPE)) {
                     return (T) Float.valueOf((float) javaNumber);
                 }
-                else if (targetType.isAssignableFrom(Long.class)) {
+                else if (targetType.isAssignableFrom(Long.class) || targetType.isAssignableFrom(Long.TYPE)) {
                     return (T) Long.valueOf((long) javaNumber);
                 }
-                else if (targetType.isAssignableFrom(Integer.class)) {
+                else if (targetType.isAssignableFrom(Integer.class) || targetType.isAssignableFrom(Integer.TYPE)) {
                     return (T) Integer.valueOf((int) javaNumber);
                 }
-                else if (targetType.isAssignableFrom(Short.class)) {
+                else if (targetType.isAssignableFrom(Short.class) || targetType.isAssignableFrom(Short.TYPE)) {
                     return (T) Short.valueOf((short) javaNumber);
                 }
-                else if (targetType.isAssignableFrom(Byte.class)) {
+                else if (targetType.isAssignableFrom(Byte.class) || targetType.isAssignableFrom(Byte.TYPE)) {
                     return (T) Byte.valueOf((byte) javaNumber);
                 }
                 else if (targetType.isAssignableFrom(BigInteger.class)) {
@@ -272,35 +272,36 @@ class ConversionService {
                 }
             case SINGLETON:
                 EmbeddedSass.Value.Singleton singleton = value.getSingleton();
-                if (singleton == EmbeddedSass.Value.Singleton.NULL) {
-                    return null;
+                switch (value.getSingleton()) {
+                    case TRUE:
+                    case FALSE:
+                        Boolean boolValue = singleton == EmbeddedSass.Value.Singleton.TRUE;
+
+                        if (targetType.equals(Boolean.class) || targetType.equals(boolean.class)) {
+                            return (T) boolValue;
+                        }
+                        else if (targetType.equals(String.class)) {
+                            return (T) Boolean.toString(boolValue);
+                        }
+
+                        throw new IllegalArgumentException("Cant convert sass boolean to " + targetType);
+                    case NULL:
+                        return null;
+                    case UNRECOGNIZED:
+                        throw new IllegalArgumentException("Unknown sass singleton: " + value.getSingleton());
+                    default:
+                        throw new IllegalStateException("Unknown sass singleton: " + value.getSingleton());
                 }
 
-                if (singleton == EmbeddedSass.Value.Singleton.TRUE || singleton == EmbeddedSass.Value.Singleton.FALSE) {
-                    Boolean boolValue = singleton == EmbeddedSass.Value.Singleton.TRUE;
-
-                    if (targetType.equals(Boolean.class) || targetType.equals(boolean.class)) {
-                        return (T) boolValue;
-                    }
-                    else if (targetType.equals(String.class)) {
-                        return (T) Boolean.toString(boolValue);
-                    }
-
-                    throw new IllegalArgumentException("Cant convert sass boolean to " + targetType);
-                }
-
-                throw new IllegalArgumentException("Unknown sass singleton value");
 
             case COMPILER_FUNCTION:
-                break;
+                throw new IllegalArgumentException("Cant convert sass CompilerFunction to " + targetType);
             case HOST_FUNCTION:
-                break;
+                throw new IllegalArgumentException("Cant convert sass HostFunction to " + targetType);
             case VALUE_NOT_SET:
+                return null;
             default:
-                throw new IllegalArgumentException();
+                throw new IllegalStateException("Unknown value: " + value.getValueCase());
         }
-
-        throw new IllegalArgumentException();
-
     }
 }

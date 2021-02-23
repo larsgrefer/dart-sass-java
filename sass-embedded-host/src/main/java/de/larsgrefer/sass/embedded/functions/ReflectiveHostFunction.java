@@ -1,6 +1,5 @@
 package de.larsgrefer.sass.embedded.functions;
 
-import lombok.Getter;
 import sass.embedded_protocol.EmbeddedSass;
 
 import java.lang.reflect.InvocationTargetException;
@@ -9,51 +8,48 @@ import java.lang.reflect.Modifier;
 import java.lang.reflect.Parameter;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
-public class SassFunctionAdapter<T> extends HostFunction {
+/**
+ * @author Lars Grefer
+ */
+class ReflectiveHostFunction extends HostFunction {
 
     private final Method method;
     private final Object targetObject;
 
-    @Getter
-    private final String name;
+    public ReflectiveHostFunction(Method method) {
+        this(method, null);
+    }
 
-    public SassFunctionAdapter(Method method) {
+    public ReflectiveHostFunction(Method method, Object targetObject) {
+        super(resolveName(method), resolveArguments(method));
         this.method = method;
 
         if (Modifier.isStatic(method.getModifiers())) {
             this.targetObject = null;
         }
         else {
-            throw new IllegalArgumentException();
+            if (targetObject == null) {
+                throw new IllegalArgumentException("Calling the non-static method " + method + " requries a targetObject");
+            }
+            else {
+                this.targetObject = Objects.requireNonNull(targetObject, () -> "Calling the non-static method " + method + " requires a targetObject");
+            }
         }
-
-        this.name = resolveName();
-    }
-
-    public SassFunctionAdapter(Method method, Object targetObject) {
-        this.method = method;
-        this.targetObject = targetObject;
-
-        if (targetObject == null && !Modifier.isStatic(method.getModifiers())) {
-            throw new IllegalArgumentException();
-        }
-
-        this.name = resolveName();
     }
 
     @Override
     public EmbeddedSass.Value invoke(List<EmbeddedSass.Value> arguments) throws Throwable {
         Object[] javaArgs = resolveArguments(arguments);
+        Object result;
         try {
-            Object result = method.invoke(targetObject, javaArgs);
-            return ConversionService.toSassValue(result);
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
+            result = method.invoke(targetObject, javaArgs);
         } catch (InvocationTargetException e) {
             throw e.getTargetException();
         }
+        return ConversionService.toSassValue(result);
     }
 
     private Object[] resolveArguments(List<EmbeddedSass.Value> arguments) {
@@ -74,7 +70,31 @@ public class SassFunctionAdapter<T> extends HostFunction {
 
     }
 
-    private String resolveName() {
+    public static List<Argument> resolveArguments(Method method) {
+        return Arrays.stream(method.getParameters())
+                .map(ReflectiveHostFunction::toSassParam)
+                .collect(Collectors.toList());
+    }
+
+    private static Argument toSassParam(Parameter parameter) {
+        Argument argument = new Argument(parameter.getName(), null);
+
+        SassArgument sassArgument = parameter.getAnnotation(SassArgument.class);
+
+        if (sassArgument != null) {
+            if (!sassArgument.name().isEmpty()) {
+                argument = argument.withName(sassArgument.name());
+            }
+
+            if (!sassArgument.defaultValue().isEmpty()) {
+                argument.withDefaultValue(sassArgument.defaultValue());
+            }
+        }
+
+        return argument;
+    }
+
+    private static String resolveName(Method method) {
         SassFunction sassFunction = method.getAnnotation(SassFunction.class);
 
         if (sassFunction != null) {
@@ -86,33 +106,5 @@ public class SassFunctionAdapter<T> extends HostFunction {
         }
 
         return method.getName();
-    }
-
-    @Override
-    public List<Argument> getParameters() {
-        return Arrays.stream(method.getParameters())
-                .map(this::toSassParam)
-                .collect(Collectors.toList());
-    }
-
-    private Argument toSassParam(Parameter parameter) {
-        Argument argument = new Argument();
-
-        argument.setName(parameter.getName());
-        argument.setDefaultValue(null);
-
-        SassArgument sassArgument = parameter.getAnnotation(SassArgument.class);
-
-        if (sassArgument != null) {
-            if (!sassArgument.name().isEmpty()) {
-                argument.setName(sassArgument.name());
-            }
-
-            if (!sassArgument.defaultValue().isEmpty()) {
-                argument.setDefaultValue(sassArgument.defaultValue());
-            }
-        }
-
-        return argument;
     }
 }

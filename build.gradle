@@ -22,6 +22,10 @@ allprojects {
             withJavadocJar()
         }
 
+        tasks.withType(JavaCompile) {
+            options.compilerArgs += "-parameters"
+        }
+
         dependencies {
             testImplementation 'org.assertj:assertj-core:3.17.2'
 

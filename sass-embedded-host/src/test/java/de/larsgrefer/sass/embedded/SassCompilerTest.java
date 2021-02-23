@@ -9,6 +9,7 @@ import sass.embedded_protocol.EmbeddedSass;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -57,7 +58,7 @@ class SassCompilerTest {
     void customFunction() throws Exception {
         String sass = ".foo { .bar { color : foo(#ffffff);}}";
 
-        HostFunction sassFunction = new HostFunction() {
+        HostFunction sassFunction = new HostFunction("foo", Collections.singletonList(new HostFunction.Argument("col", null))) {
             @Override
             public EmbeddedSass.Value invoke(List<EmbeddedSass.Value> arguments) throws Throwable {
                 return EmbeddedSass.Value.newBuilder()
@@ -67,18 +68,6 @@ class SassCompilerTest {
                                 .setAlpha(1d)
                                 .build())
                         .build();
-            }
-
-            @Override
-            public String getName() {
-                return "foo";
-            }
-
-            @Override
-            public List<Argument> getParameters() {
-                List<Argument> arguments = new java.util.ArrayList<>();
-                arguments.add(new Argument("col", null));
-                return arguments;
             }
         };
 
@@ -93,22 +82,10 @@ class SassCompilerTest {
     void customFunction_error() throws Exception {
         String sass = ".foo { .bar { color : foo(#ffffff);}}";
 
-        HostFunction sassFunction = new HostFunction() {
+        HostFunction sassFunction = new HostFunction("foo", Collections.singletonList(new HostFunction.Argument("col", null))) {
             @Override
             public EmbeddedSass.Value invoke(List<EmbeddedSass.Value> arguments) throws Throwable {
                 throw new RuntimeException("bazinga");
-            }
-
-            @Override
-            public String getName() {
-                return "foo";
-            }
-
-            @Override
-            public List<Argument> getParameters() {
-                List<Argument> arguments = new java.util.ArrayList<>();
-                arguments.add(new Argument("col", null));
-                return arguments;
             }
         };
 

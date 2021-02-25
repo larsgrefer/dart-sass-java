@@ -16,7 +16,7 @@ dependencies {
 
 //"https://github.com/sass/dart-sass-embedded/releases/download/1.0.0-beta.6/sass_embedded-1.0.0-beta.6-macos-x64.tar.gz
 
-def dartSassVersion = "1.0.0-beta.6"
+def dartSassVersion = "1.0.0-beta.7"
 
 task dartSassLinuxIa32(type: io.freefair.gradle.plugins.okhttp.tasks.DownloadFile) {
     url = "https://github.com/sass/dart-sass-embedded/releases/download/$dartSassVersion/sass_embedded-$dartSassVersion-linux-ia32.tar.gz"

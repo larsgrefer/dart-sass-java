@@ -56,6 +56,14 @@ public class SassCompiler implements AutoCloseable {
         this.process = process;
     }
 
+    public EmbeddedSass.OutboundMessage.VersionResponse getVersion() throws IOException {
+        EmbeddedSass.InboundMessage inboundMessage = EmbeddedSass.InboundMessage.newBuilder()
+                .setVersionRequest(EmbeddedSass.InboundMessage.VersionRequest.newBuilder().build())
+                .build();
+
+        return exec(inboundMessage).getVersionResponse();
+    }
+
     public void registerFunction(HostFunction sassFunction) {
         globalFunctions.put(sassFunction.getName(), sassFunction);
     }

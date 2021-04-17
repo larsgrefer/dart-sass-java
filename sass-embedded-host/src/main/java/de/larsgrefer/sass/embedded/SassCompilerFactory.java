@@ -69,7 +69,11 @@ public class SassCompilerFactory {
     private static void extracted(String path, Path targetPath) throws IOException {
         targetPath.toFile().getParentFile().mkdirs();
         try (InputStream resourceAsStream = SassCompilerFactory.class.getClassLoader().getResourceAsStream(path);) {
-            Files.copy(resourceAsStream, targetPath);
+            if (resourceAsStream != null) {
+                Files.copy(resourceAsStream, targetPath);
+            } else {
+                throw new IllegalArgumentException(String.format("Resource '%s' was not found", path));
+            }
         } catch (IllegalArgumentException e) {
             throw new IOException("Failed to extract path " + path, e);
         }

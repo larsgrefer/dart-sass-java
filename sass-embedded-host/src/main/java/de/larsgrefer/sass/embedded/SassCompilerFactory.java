@@ -15,11 +15,19 @@ public class SassCompilerFactory {
     private static File bundledSassSnapshot;
 
     public static SassCompiler bundled() throws IOException {
-        if (bundledDartExec == null || bundledSassSnapshot == null || !bundledDartExec.isFile() || !bundledSassSnapshot.isFile()) {
+        if (bundledDartExec == null || !bundledDartExec.isFile()) {
             extractBundled();
         }
 
-        return new SassCompiler(new ProcessBuilder(bundledDartExec.getAbsolutePath(), bundledSassSnapshot.getAbsolutePath()));
+        ProcessBuilder processBuilder;
+        if (bundledSassSnapshot == null) {
+            processBuilder = new ProcessBuilder(bundledDartExec.getAbsolutePath());
+        }
+        else {
+            processBuilder = new ProcessBuilder(bundledDartExec.getAbsolutePath(), bundledSassSnapshot.getAbsolutePath());
+        }
+
+        return new SassCompiler(processBuilder);
     }
 
     private synchronized static void extractBundled() throws IOException {
@@ -46,24 +54,33 @@ public class SassCompilerFactory {
             }
         }
         else {
-            dartExecName = "dart";
             if (osArch.contains("64")) {
+                dartExecName = "dart-sass-embedded";
                 baseDir = "linux-x64";
             }
             else {
+                dartExecName = "dart";
                 baseDir = "linux-ia32";
             }
         }
 
-        String dartExecPath = baseDir + "/sass_embedded/src/" + dartExecName;
-        String snapshotPath = baseDir + "/sass_embedded/src/dart-sass-embedded.snapshot";
-
         bundledDartExec = tempDirectory.resolve(dartExecName).toFile();
-        bundledSassSnapshot = tempDirectory.resolve("dart-sass-embedded.snapshot").toFile();
 
-        extracted(dartExecPath, bundledDartExec.toPath());
+        if ("linux-x64".equals(baseDir)) {
+            String execPath = baseDir + "/sass_embedded/dart-sass-embedded";
+
+            extracted(execPath, bundledDartExec.toPath());
+        }
+        else {
+            String dartExecPath = baseDir + "/sass_embedded/src/" + dartExecName;
+            String snapshotPath = baseDir + "/sass_embedded/src/dart-sass-embedded.snapshot";
+
+            bundledSassSnapshot = tempDirectory.resolve("dart-sass-embedded.snapshot").toFile();
+            extracted(dartExecPath, bundledDartExec.toPath());
+            extracted(snapshotPath, bundledSassSnapshot.toPath());
+        }
+
         bundledDartExec.setExecutable(true, true);
-        extracted(snapshotPath, bundledSassSnapshot.toPath());
     }
 
     private static void extracted(String path, Path targetPath) throws IOException {
@@ -71,7 +88,8 @@ public class SassCompilerFactory {
         try (InputStream resourceAsStream = SassCompilerFactory.class.getClassLoader().getResourceAsStream(path);) {
             if (resourceAsStream != null) {
                 Files.copy(resourceAsStream, targetPath);
-            } else {
+            }
+            else {
                 throw new IllegalArgumentException(String.format("Resource '%s' was not found", path));
             }
         } catch (IllegalArgumentException e) {

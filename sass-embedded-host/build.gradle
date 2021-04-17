@@ -3,6 +3,29 @@ plugins {
     id "io.freefair.maven-publish-java"
 }
 
+configurations {
+    sassEmbeddedLinux32
+    sassEmbeddedLinux64
+    sassEmbeddedMacos64
+    sassEmbeddedWindows32
+    sassEmbeddedWindows64
+}
+
+repositories {
+    //https://github.com/sass/dart-sass-embedded/releases/download/$dartSassVersion/sass_embedded-$dartSassVersion-linux-ia32.tar.gz
+    ivy {
+        url "https://github.com/sass/dart-sass-embedded/releases/download"
+        patternLayout {
+            artifact "/[revision]/[artifact]-[revision](-[classifier])(.[ext])"
+        }
+        metadataSources {
+            artifact()
+        }
+    }
+}
+
+def dartSassVersion = "1.0.0-beta.7"
+
 dependencies {
     api project(":sass-embedded-protocol")
     api 'org.slf4j:slf4j-api:1.7.30'
@@ -11,66 +34,42 @@ dependencies {
     compileOnly 'javax.servlet:javax.servlet-api:4.0.1'
     compileOnly 'org.springframework:spring-core:5.+'
 
+    sassEmbeddedLinux32 "sass:sass_embedded:$dartSassVersion:linux-ia32@tar.gz"
+    sassEmbeddedLinux64 "sass:sass_embedded:$dartSassVersion:linux-x64@tar.gz"
+    sassEmbeddedMacos64 "sass:sass_embedded:$dartSassVersion:macos-x64@tar.gz"
+    sassEmbeddedWindows32 "sass:sass_embedded:$dartSassVersion:windows-ia32@zip"
+    sassEmbeddedWindows64 "sass:sass_embedded:$dartSassVersion:windows-x64@zip"
+
     testImplementation 'org.slf4j:slf4j-simple:1.7.30'
 }
 
 //"https://github.com/sass/dart-sass-embedded/releases/download/1.0.0-beta.6/sass_embedded-1.0.0-beta.6-macos-x64.tar.gz
 
-def dartSassVersion = "1.0.0-beta.7"
-
-task dartSassLinuxIa32(type: io.freefair.gradle.plugins.okhttp.tasks.DownloadFile) {
-    url = "https://github.com/sass/dart-sass-embedded/releases/download/$dartSassVersion/sass_embedded-$dartSassVersion-linux-ia32.tar.gz"
-    outputFile = new File(temporaryDir, "dart-sass-$dartSassVersion-linux-ia32.tar.gz")
-}
-task dartSassLinux64(type: io.freefair.gradle.plugins.okhttp.tasks.DownloadFile) {
-    url = "https://github.com/sass/dart-sass-embedded/releases/download/$dartSassVersion/sass_embedded-$dartSassVersion-linux-x64.tar.gz"
-    outputFile = new File(temporaryDir, "dart-sass-$dartSassVersion-linux-x64.tar.gz")
-}
-
-task dartSassMacos64(type: io.freefair.gradle.plugins.okhttp.tasks.DownloadFile) {
-    url = "https://github.com/sass/dart-sass-embedded/releases/download/$dartSassVersion/sass_embedded-$dartSassVersion-macos-x64.tar.gz"
-    outputFile = new File(temporaryDir, "dart-sass-$dartSassVersion-macos-x64.tar.gz")
-}
-
-task dartSassWindowsIa32(type: io.freefair.gradle.plugins.okhttp.tasks.DownloadFile) {
-    url = "https://github.com/sass/dart-sass-embedded/releases/download/$dartSassVersion/sass_embedded-$dartSassVersion-windows-ia32.zip"
-    outputFile = new File(temporaryDir, "dart-sass-$dartSassVersion-windows-ia32.zip")
-}
-task dartSassWindows64(type: io.freefair.gradle.plugins.okhttp.tasks.DownloadFile) {
-    url = "https://github.com/sass/dart-sass-embedded/releases/download/$dartSassVersion/sass_embedded-$dartSassVersion-windows-x64.zip"
-    outputFile = new File(temporaryDir, "dart-sass-$dartSassVersion-windows-x64.zip")
-}
-
 processResources {
-    dependsOn dartSassLinuxIa32
     into("linux-ia32") {
-        from(tarTree(dartSassLinuxIa32.outputFile)) {
+        from(tarTree(configurations.sassEmbeddedLinux32.singleFile)) {
             include "*/src/*"
         }
     }
-    dependsOn dartSassLinux64
     into("linux-x64") {
-        from(tarTree(dartSassLinux64.outputFile)) {
-            include "*/src/*"
+        from(tarTree(configurations.sassEmbeddedLinux64.singleFile)) {
+            //include "*/src/*"
         }
     }
 
-    dependsOn dartSassMacos64
     into("macos-x64") {
-        from(tarTree(dartSassMacos64.outputFile)) {
+        from(tarTree(configurations.sassEmbeddedMacos64.singleFile)) {
             include "*/src/*"
         }
     }
 
-    dependsOn dartSassWindowsIa32
     into("windows-ia32") {
-        from(zipTree(dartSassWindowsIa32.outputFile)) {
+        from(zipTree(configurations.sassEmbeddedWindows32.singleFile)) {
             include "*/src/*"
         }
     }
-    dependsOn dartSassWindows64
     into("windows-x64") {
-        from(zipTree(dartSassWindows64.outputFile)) {
+        from(zipTree(configurations.sassEmbeddedWindows64.singleFile)) {
             include "*/src/*"
         }
     }

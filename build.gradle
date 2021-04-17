@@ -1,6 +1,5 @@
 plugins {
     id "io.freefair.git-version" version "5.3.0"
-    id "io.freefair.okhttp" version "5.3.0"
     id "io.freefair.lombok" version "5.3.0" apply false
     id "io.freefair.maven-publish-java" version "5.3.0" apply false
 }

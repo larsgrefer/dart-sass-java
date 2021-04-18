@@ -1,7 +1,7 @@
 plugins {
-    id "io.freefair.git-version" version "5.3.3.3"
-    id "io.freefair.lombok" version "5.3.3.3" apply false
-    id "io.freefair.maven-publish-java" version "5.3.3.3" apply false
+    id "io.freefair.git-version" version "6.0.0-m2"
+    id "io.freefair.lombok" version "6.0.0-m2" apply false
+    id "io.freefair.maven-publish-java" version "6.0.0-m2" apply false
 }
 
 allprojects {

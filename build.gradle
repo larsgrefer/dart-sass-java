@@ -2,6 +2,15 @@ plugins {
     id "io.freefair.git-version" version "6.0.0-m2"
     id "io.freefair.lombok" version "6.0.0-m2" apply false
     id "io.freefair.maven-publish-java" version "6.0.0-m2" apply false
+    id "io.github.gradle-nexus.publish-plugin" version "1.0.0"
+}
+
+nexusPublishing {
+    repositories {
+        sonatype {
+            stagingProfileId = '7c1c53f8a02656'
+        }
+    }
 }
 
 allprojects {
@@ -50,6 +59,14 @@ allprojects {
     }
 
     plugins.withId("maven-publish") {
+
+        project.apply plugin: "io.freefair.maven-central.validate-poms"
+        project.apply plugin: "signing"
+
+        signing {
+            required { !version.endsWith('SNAPSHOT') && gradle.taskGraph.hasTask("publish") }
+        }
+
         publishing {
             publications.withType(MavenPublication) {
                 pom {
@@ -57,6 +74,12 @@ allprojects {
                     name = provider { project.description }
                     description = provider { project.description }
                     inceptionYear = '2021'
+                    licenses {
+                        license {
+                            name = 'MIT License'
+                            url = 'https://opensource.org/licenses/MIT'
+                        }
+                    }
                     developers {
                         developer {
                             id = 'larsgrefer'

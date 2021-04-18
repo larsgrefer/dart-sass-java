@@ -3,6 +3,8 @@ plugins {
     id "io.freefair.maven-publish-java"
 }
 
+description = "SASS Embedded Host"
+
 configurations {
     sassEmbeddedLinux32
     sassEmbeddedLinux64

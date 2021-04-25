@@ -6,11 +6,7 @@ plugins {
 description = "SASS Embedded Host"
 
 configurations {
-    sassEmbeddedLinux32
-    sassEmbeddedLinux64
-    sassEmbeddedMacos64
-    sassEmbeddedWindows32
-    sassEmbeddedWindows64
+    sassEmbedded
 }
 
 repositories {
@@ -36,11 +32,11 @@ dependencies {
     compileOnly 'javax.servlet:javax.servlet-api:4.0.1'
     compileOnly 'org.springframework:spring-core:5.+'
 
-    sassEmbeddedLinux32 "sass:sass_embedded:$dartSassVersion:linux-ia32@tar.gz"
-    sassEmbeddedLinux64 "sass:sass_embedded:$dartSassVersion:linux-x64@tar.gz"
-    sassEmbeddedMacos64 "sass:sass_embedded:$dartSassVersion:macos-x64@tar.gz"
-    sassEmbeddedWindows32 "sass:sass_embedded:$dartSassVersion:windows-ia32@zip"
-    sassEmbeddedWindows64 "sass:sass_embedded:$dartSassVersion:windows-x64@zip"
+    sassEmbedded "sass:sass_embedded:$dartSassVersion:linux-ia32@tar.gz"
+    sassEmbedded "sass:sass_embedded:$dartSassVersion:linux-x64@tar.gz"
+    sassEmbedded "sass:sass_embedded:$dartSassVersion:macos-x64@tar.gz"
+    sassEmbedded "sass:sass_embedded:$dartSassVersion:windows-ia32@zip"
+    sassEmbedded "sass:sass_embedded:$dartSassVersion:windows-x64@zip"
 
     testImplementation 'org.slf4j:slf4j-simple:1.7.30'
 }
@@ -48,31 +44,10 @@ dependencies {
 //"https://github.com/sass/dart-sass-embedded/releases/download/1.0.0-beta.6/sass_embedded-1.0.0-beta.6-macos-x64.tar.gz
 
 processResources {
-    into("linux-ia32") {
-        from(tarTree(configurations.sassEmbeddedLinux32.singleFile)) {
-            include "*/src/*"
-        }
-    }
-    into("linux-x64") {
-        from(tarTree(configurations.sassEmbeddedLinux64.singleFile)) {
-            //include "*/src/*"
-        }
-    }
 
-    into("macos-x64") {
-        from(tarTree(configurations.sassEmbeddedMacos64.singleFile)) {
-            include "*/src/*"
-        }
-    }
+    into("de/larsgrefer/sass/embedded") {
+        from configurations.sassEmbedded
 
-    into("windows-ia32") {
-        from(zipTree(configurations.sassEmbeddedWindows32.singleFile)) {
-            include "*/src/*"
-        }
-    }
-    into("windows-x64") {
-        from(zipTree(configurations.sassEmbeddedWindows64.singleFile)) {
-            include "*/src/*"
-        }
+        rename "-$dartSassVersion-", "-"
     }
 }

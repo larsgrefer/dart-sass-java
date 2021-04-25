@@ -48,7 +48,7 @@ public class SassCompiler implements AutoCloseable {
         process = processBuilder
                 .redirectInput(ProcessBuilder.Redirect.PIPE)
                 .redirectOutput(ProcessBuilder.Redirect.PIPE)
-                .redirectError(ProcessBuilder.Redirect.PIPE)
+                .redirectError(ProcessBuilder.Redirect.INHERIT)
                 .start();
     }
 
@@ -127,7 +127,6 @@ public class SassCompiler implements AutoCloseable {
         String css = compileString(sass);
 
         Files.write(outputFile.toPath(), css.getBytes(StandardCharsets.UTF_8));
-
     }
 
     public String compileFile(File inputFile) throws IOException, SassCompilationFailedException {
@@ -216,7 +215,7 @@ public class SassCompiler implements AutoCloseable {
 
     private void sendMessage(EmbeddedSass.InboundMessage inboundMessage) throws IOException {
         if (!process.isAlive()) {
-            throw new IllegalStateException("Process is dead");
+            throw new IllegalStateException("Process is dead. Exit code was: " + process.exitValue());
         }
 
         OutputStream outputStream = process.getOutputStream();

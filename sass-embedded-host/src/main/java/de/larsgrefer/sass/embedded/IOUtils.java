@@ -45,21 +45,32 @@ public class IOUtils {
     }
 
     @SneakyThrows(InterruptedException.class)
-    public void untar(InputStream inputStream, Path targetDir) throws IOException {
-        ProcessBuilder tarBuilder = new ProcessBuilder("tar", "xz", "-C", targetDir.toFile().getAbsolutePath());
+    public void untar(InputStream inputStream, File targetDir) throws IOException {
+        ensureDirectory(targetDir);
 
-        tarBuilder.redirectError(ProcessBuilder.Redirect.INHERIT);
-        tarBuilder.redirectOutput(ProcessBuilder.Redirect.INHERIT);
-        tarBuilder.redirectInput(ProcessBuilder.Redirect.PIPE);
-
-        Process tar = tarBuilder.start();
+        Process tar = new ProcessBuilder("tar", "xz")
+                .directory(targetDir)
+                .redirectError(ProcessBuilder.Redirect.INHERIT)
+                .redirectOutput(ProcessBuilder.Redirect.INHERIT)
+                .redirectInput(ProcessBuilder.Redirect.PIPE)
+                .start();
 
         try (OutputStream os = tar.getOutputStream()) {
             copy(inputStream, os);
         }
 
-        tar.waitFor(5, TimeUnit.SECONDS);
+        if (!tar.waitFor(5, TimeUnit.SECONDS)) {
+            tar.destroy();
+        }
 
+        if (!tar.waitFor(5, TimeUnit.SECONDS)) {
+            tar.destroyForcibly();
+        }
+
+        int exitValue = tar.exitValue();
+        if (exitValue != 0) {
+            throw new IOException("tar process exited with " + exitValue);
+        }
     }
 
     private static final int bufferSize = 4096;
@@ -81,7 +92,7 @@ public class IOUtils {
         }
         else if (file.endsWith(".tar.gz")) {
             try (InputStream in = archiveUrl.openStream()) {
-                untar(in, destinationDir);
+                untar(in, destinationDir.toFile());
             }
         }
         else {

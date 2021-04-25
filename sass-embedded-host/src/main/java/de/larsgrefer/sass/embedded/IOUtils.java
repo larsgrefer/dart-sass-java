@@ -14,8 +14,28 @@ import java.util.concurrent.TimeUnit;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+/**
+ * @author Lars Grefer
+ */
 @UtilityClass
 public class IOUtils {
+
+    public static void extract(URL archiveUrl, Path destinationDir) throws IOException {
+        String file = archiveUrl.getFile();
+        if (file.endsWith(".zip")) {
+            try (ZipInputStream in = new ZipInputStream(archiveUrl.openStream())) {
+                unzip(in, destinationDir);
+            }
+        }
+        else if (file.endsWith(".tar.gz")) {
+            try (InputStream in = archiveUrl.openStream()) {
+                untar(in, destinationDir.toFile());
+            }
+        }
+        else {
+            throw new IllegalArgumentException("Unknown archive extension: " + archiveUrl);
+        }
+    }
 
     public void unzip(ZipInputStream zipInputStream, Path targetPath) throws IOException {
         ZipEntry entry = zipInputStream.getNextEntry();
@@ -75,28 +95,17 @@ public class IOUtils {
 
     private static final int bufferSize = 4096;
 
+    /**
+     * Backport of {@link InputStream#transferTo(OutputStream)}
+     * in order to support JDK 8
+     *
+     * @see InputStream#transferTo(OutputStream)
+     */
     public static void copy(InputStream inputStream, OutputStream os) throws IOException {
         byte[] buffer = new byte[bufferSize];
         int read;
         while ((read = inputStream.read(buffer, 0, bufferSize)) >= 0) {
             os.write(buffer, 0, read);
-        }
-    }
-
-    public static void extract(URL archiveUrl, Path destinationDir) throws IOException {
-        String file = archiveUrl.getFile();
-        if (file.endsWith(".zip")) {
-            try (ZipInputStream in = new ZipInputStream(archiveUrl.openStream())) {
-                unzip(in, destinationDir);
-            }
-        }
-        else if (file.endsWith(".tar.gz")) {
-            try (InputStream in = archiveUrl.openStream()) {
-                untar(in, destinationDir.toFile());
-            }
-        }
-        else {
-            throw new IllegalArgumentException("Unknown archive extension: " + archiveUrl);
         }
     }
 }

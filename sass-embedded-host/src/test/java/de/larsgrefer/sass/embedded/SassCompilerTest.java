@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import sass.embedded_protocol.EmbeddedSass;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -15,7 +16,6 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.fail;
 
 class SassCompilerTest {
 
@@ -61,6 +61,14 @@ class SassCompilerTest {
             s = new String(Files.readAllBytes(target));
         }
         System.out.println(s);
+    }
+
+    @Test
+    void compileFileToString() throws SassCompilationFailedException, IOException {
+        sassCompiler.setOutputStyle(EmbeddedSass.InboundMessage.CompileRequest.OutputStyle.COMPRESSED);
+        String css = sassCompiler.compileFile(new File("src/test/resources/foo/bar.scss"));
+
+        assertThat(css).contains("color:red");
     }
 
     @Test

@@ -22,6 +22,7 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * @author Lars Grefer
+ * @see SassCompilerFactory
  */
 @Slf4j
 public class SassCompiler implements AutoCloseable {
@@ -45,14 +46,14 @@ public class SassCompiler implements AutoCloseable {
     private List<File> loadPaths = new LinkedList<>();
 
     public SassCompiler(ProcessBuilder processBuilder) throws IOException {
-        process = processBuilder
+        this(processBuilder
                 .redirectInput(ProcessBuilder.Redirect.PIPE)
                 .redirectOutput(ProcessBuilder.Redirect.PIPE)
                 .redirectError(ProcessBuilder.Redirect.INHERIT)
-                .start();
+                .start());
     }
 
-    public SassCompiler(Process process) throws IOException {
+    public SassCompiler(Process process) {
         this.process = process;
     }
 

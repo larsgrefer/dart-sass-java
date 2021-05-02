@@ -26,5 +26,10 @@ jobs:
           java-version: ${{ matrix.java }}
           distribution: 'adopt'
 
+      - run: sudo apt install socat
+        if: ${{ matix.os == 'ubuntu-latest' }}
+      - run: brew install socat
+        if: ${{ matix.os == 'macos-latest' }}
+
       - name: Build with Gradle
         run: ./gradlew build

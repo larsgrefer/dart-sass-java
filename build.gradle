@@ -23,6 +23,7 @@ allprojects {
     plugins.withId("java") {
 
         project.apply plugin: "io.freefair.lombok"
+        project.apply plugin: "io.freefair.javadocs"
 
         sourceCompatibility = 1.8
         targetCompatibility = 1.8

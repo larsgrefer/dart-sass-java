@@ -30,3 +30,12 @@ protobuf {
         artifact = "com.google.protobuf:protoc:$protobufVersion"
     }
 }
+
+afterEvaluate {
+    sourcesJar.from tasks.generateProto
+
+    javadoc {
+        source tasks.generateProto
+        failOnError = false
+    }
+}

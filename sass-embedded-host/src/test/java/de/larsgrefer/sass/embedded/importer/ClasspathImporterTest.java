@@ -7,6 +7,7 @@ import sass.embedded_protocol.EmbeddedSass;
 import java.net.URL;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class ClasspathImporterTest {
 
@@ -44,5 +45,20 @@ class ClasspathImporterTest {
         assertThat(success).isNotNull();
 
         assertThat(success.getContents()).contains("CONSEQUENTIAL");
+    }
+
+    @Test
+    void canonicalizeAmbigous_dir() throws Exception {
+
+        String canonicalize = classpathImporter.canonicalize("META-INF");
+
+        assertThat(canonicalize).isNull();
+    }
+
+    @Test
+    void canonicalizeAmbigous_file() throws Exception {
+        assertThatThrownBy(() -> {
+            classpathImporter.canonicalize("META-INF/MANIFEST.MF");
+        }).isNotNull();
     }
 }

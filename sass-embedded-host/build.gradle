@@ -31,6 +31,7 @@ dependencies {
     compileOnly 'com.google.code.findbugs:jsr305:3.0.2'
     compileOnly 'javax.servlet:javax.servlet-api:4.0.1'
     compileOnly 'org.springframework:spring-core:5.+'
+    compileOnly 'org.webjars:webjars-locator:0.30'
 
     sassEmbedded "sass:sass_embedded:$dartSassVersion:linux-ia32@tar.gz"
     sassEmbedded "sass:sass_embedded:$dartSassVersion:linux-x64@tar.gz"
@@ -39,6 +40,8 @@ dependencies {
     sassEmbedded "sass:sass_embedded:$dartSassVersion:windows-x64@zip"
 
     testImplementation 'org.slf4j:slf4j-simple:1.7.30'
+    testRuntimeOnly 'org.webjars:webjars-locator:0.30'
+    testRuntimeOnly 'org.webjars:bootstrap:4.6.0'
 }
 
 //"https://github.com/sass/dart-sass-embedded/releases/download/1.0.0-beta.6/sass_embedded-1.0.0-beta.6-macos-x64.tar.gz

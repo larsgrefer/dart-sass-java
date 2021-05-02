@@ -53,4 +53,9 @@ class AutoCanonicalizingImporter extends CustomImporter {
     public EmbeddedSass.InboundMessage.ImportResponse.ImportSuccess handleImport(String url) throws Exception {
         return delegate.handleImport(url);
     }
+
+    @Override
+    public AutoCanonicalizingImporter autoCanonicalize() {
+        return this;
+    }
 }

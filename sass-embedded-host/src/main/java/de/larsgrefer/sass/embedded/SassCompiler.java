@@ -1,5 +1,6 @@
 package de.larsgrefer.sass.embedded;
 
+import de.larsgrefer.sass.embedded.connection.CompilerConnection;
 import de.larsgrefer.sass.embedded.functions.HostFunction;
 import de.larsgrefer.sass.embedded.importer.CustomImporter;
 import de.larsgrefer.sass.embedded.importer.FileImporter;
@@ -10,6 +11,17 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import sass.embedded_protocol.EmbeddedSass;
+import sass.embedded_protocol.EmbeddedSass.InboundMessage;
+import sass.embedded_protocol.EmbeddedSass.InboundMessage.CanonicalizeResponse;
+import sass.embedded_protocol.EmbeddedSass.InboundMessage.CompileRequest;
+import sass.embedded_protocol.EmbeddedSass.InboundMessage.CompileRequest.OutputStyle;
+import sass.embedded_protocol.EmbeddedSass.InboundMessage.FunctionCallResponse;
+import sass.embedded_protocol.EmbeddedSass.OutboundMessage;
+import sass.embedded_protocol.EmbeddedSass.OutboundMessage.CanonicalizeRequest;
+import sass.embedded_protocol.EmbeddedSass.OutboundMessage.CompileResponse.CompileSuccess;
+import sass.embedded_protocol.EmbeddedSass.OutboundMessage.FileImportRequest;
+import sass.embedded_protocol.EmbeddedSass.OutboundMessage.FunctionCallRequest;
+import sass.embedded_protocol.EmbeddedSass.OutboundMessage.ImportRequest;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -18,20 +30,19 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @author Lars Grefer
  * @see SassCompilerFactory
  */
 @Slf4j
-public class SassCompiler implements AutoCloseable {
+public class SassCompiler implements Closeable {
 
     @Getter
     @Setter
-    private EmbeddedSass.InboundMessage.CompileRequest.OutputStyle outputStyle = EmbeddedSass.InboundMessage.CompileRequest.OutputStyle.EXPANDED;
+    private OutputStyle outputStyle = OutputStyle.EXPANDED;
 
-    private Process process;
+    private final CompilerConnection connection;
 
     private final Map<String, HostFunction> globalFunctions = new HashMap<>();
     private final Map<Integer, FileImporter> fileImporters = new HashMap<>();
@@ -45,21 +56,13 @@ public class SassCompiler implements AutoCloseable {
     @Setter
     private List<File> loadPaths = new LinkedList<>();
 
-    public SassCompiler(ProcessBuilder processBuilder) throws IOException {
-        this(processBuilder
-                .redirectInput(ProcessBuilder.Redirect.PIPE)
-                .redirectOutput(ProcessBuilder.Redirect.PIPE)
-                .redirectError(ProcessBuilder.Redirect.INHERIT)
-                .start());
+    public SassCompiler(CompilerConnection connection) {
+        this.connection = connection;
     }
 
-    public SassCompiler(Process process) {
-        this.process = process;
-    }
-
-    public EmbeddedSass.OutboundMessage.VersionResponse getVersion() throws IOException {
-        EmbeddedSass.InboundMessage inboundMessage = EmbeddedSass.InboundMessage.newBuilder()
-                .setVersionRequest(EmbeddedSass.InboundMessage.VersionRequest.newBuilder().build())
+    public OutboundMessage.VersionResponse getVersion() throws IOException {
+        InboundMessage inboundMessage = InboundMessage.newBuilder()
+                .setVersionRequest(InboundMessage.VersionRequest.newBuilder().build())
                 .build();
 
         return exec(inboundMessage).getVersionResponse();
@@ -77,27 +80,27 @@ public class SassCompiler implements AutoCloseable {
         customImporters.put(customImporter.getId(), customImporter);
     }
 
-    protected EmbeddedSass.InboundMessage.CompileRequest.Builder compileRequestBuilder() {
-        EmbeddedSass.InboundMessage.CompileRequest.Builder builder = EmbeddedSass.InboundMessage.CompileRequest.newBuilder();
+    protected CompileRequest.Builder compileRequestBuilder() {
+        CompileRequest.Builder builder = CompileRequest.newBuilder();
 
         builder.setStyle(outputStyle);
 
         for (File loadPath : loadPaths) {
-            EmbeddedSass.InboundMessage.CompileRequest.Importer importer = EmbeddedSass.InboundMessage.CompileRequest.Importer.newBuilder()
+            CompileRequest.Importer importer = CompileRequest.Importer.newBuilder()
                     .setPath(loadPath.getAbsolutePath())
                     .build();
             builder.addImporters(importer);
         }
 
         for (Importer value : customImporters.values()) {
-            EmbeddedSass.InboundMessage.CompileRequest.Importer importer = EmbeddedSass.InboundMessage.CompileRequest.Importer.newBuilder()
+            CompileRequest.Importer importer = CompileRequest.Importer.newBuilder()
                     .setImporterId(value.getId())
                     .build();
             builder.addImporters(importer);
         }
 
         for (Importer value : fileImporters.values()) {
-            EmbeddedSass.InboundMessage.CompileRequest.Importer importer = EmbeddedSass.InboundMessage.CompileRequest.Importer.newBuilder()
+            CompileRequest.Importer importer = CompileRequest.Importer.newBuilder()
                     .setFileImporterId(value.getId())
                     .build();
             builder.addImporters(importer);
@@ -111,11 +114,11 @@ public class SassCompiler implements AutoCloseable {
     }
 
     public String compileString(String source) throws IOException, SassCompilationFailedException {
-        return compileString(source, EmbeddedSass.InboundMessage.Syntax.SCSS);
+        return compileString(source, InboundMessage.Syntax.SCSS);
     }
 
-    public String compileString(String source, EmbeddedSass.InboundMessage.Syntax syntax) throws IOException, SassCompilationFailedException {
-        EmbeddedSass.InboundMessage.CompileRequest.StringInput stringInput = EmbeddedSass.InboundMessage.CompileRequest.StringInput.newBuilder()
+    public String compileString(String source, InboundMessage.Syntax syntax) throws IOException, SassCompilationFailedException {
+        CompileRequest.StringInput stringInput = CompileRequest.StringInput.newBuilder()
                 .setSource(source)
                 .setSyntax(syntax)
                 .build();
@@ -134,8 +137,8 @@ public class SassCompiler implements AutoCloseable {
         return compileFile(inputFile, getOutputStyle(), false).getCss();
     }
 
-    public EmbeddedSass.OutboundMessage.CompileResponse.CompileSuccess compileString(EmbeddedSass.InboundMessage.CompileRequest.StringInput string, EmbeddedSass.InboundMessage.CompileRequest.OutputStyle outputStyle, boolean generateSourceMaps) throws IOException, SassCompilationFailedException {
-        EmbeddedSass.InboundMessage.CompileRequest compileRequest = compileRequestBuilder()
+    public CompileSuccess compileString(CompileRequest.StringInput string, OutputStyle outputStyle, boolean generateSourceMaps) throws IOException, SassCompilationFailedException {
+        CompileRequest compileRequest = compileRequestBuilder()
                 .setString(string)
                 .setStyle(outputStyle != null ? outputStyle : this.outputStyle)
                 .setSourceMap(generateSourceMaps)
@@ -144,9 +147,9 @@ public class SassCompiler implements AutoCloseable {
         return execCompileRequest(compileRequest);
     }
 
-    public EmbeddedSass.OutboundMessage.CompileResponse.CompileSuccess compileFile(File file, EmbeddedSass.InboundMessage.CompileRequest.OutputStyle outputStyle, boolean generateSourceMaps) throws IOException, SassCompilationFailedException {
-        EmbeddedSass.InboundMessage.CompileRequest compileRequest = compileRequestBuilder()
-                .setPath(file.getAbsolutePath())
+    public CompileSuccess compileFile(File file, OutputStyle outputStyle, boolean generateSourceMaps) throws IOException, SassCompilationFailedException {
+        CompileRequest compileRequest = compileRequestBuilder()
+                .setPath(file.getPath())
                 .setStyle(outputStyle != null ? outputStyle : this.outputStyle)
                 .setSourceMap(generateSourceMaps)
                 .build();
@@ -154,18 +157,18 @@ public class SassCompiler implements AutoCloseable {
         return execCompileRequest(compileRequest);
     }
 
-    private EmbeddedSass.OutboundMessage.CompileResponse.CompileSuccess execCompileRequest(EmbeddedSass.InboundMessage.CompileRequest compileRequest) throws IOException, SassCompilationFailedException {
-        EmbeddedSass.InboundMessage inboundMessage = EmbeddedSass.InboundMessage.newBuilder()
+    private CompileSuccess execCompileRequest(CompileRequest compileRequest) throws IOException, SassCompilationFailedException {
+        InboundMessage inboundMessage = InboundMessage.newBuilder()
                 .setCompileRequest(compileRequest)
                 .build();
 
-        EmbeddedSass.OutboundMessage outboundMessage = exec(inboundMessage);
+        OutboundMessage outboundMessage = exec(inboundMessage);
 
         if (!outboundMessage.hasCompileResponse()) {
             throw new IllegalStateException("No compile response");
         }
 
-        EmbeddedSass.OutboundMessage.CompileResponse compileResponse = outboundMessage.getCompileResponse();
+        OutboundMessage.CompileResponse compileResponse = outboundMessage.getCompileResponse();
 
         if (compileResponse.hasSuccess()) {
             return compileResponse.getSuccess();
@@ -178,11 +181,11 @@ public class SassCompiler implements AutoCloseable {
         }
     }
 
-    private synchronized EmbeddedSass.OutboundMessage exec(EmbeddedSass.InboundMessage inboundMessage) throws IOException {
-        sendMessage(inboundMessage);
+    private synchronized OutboundMessage exec(InboundMessage inboundMessage) throws IOException {
+        connection.sendMessage(inboundMessage);
 
         while (true) {
-            EmbeddedSass.OutboundMessage outboundMessage = EmbeddedSass.OutboundMessage.parseDelimitedFrom(process.getInputStream());
+            OutboundMessage outboundMessage = connection.readResponse();
 
             switch (outboundMessage.getMessageCase()) {
 
@@ -214,18 +217,8 @@ public class SassCompiler implements AutoCloseable {
         }
     }
 
-    private void sendMessage(EmbeddedSass.InboundMessage inboundMessage) throws IOException {
-        if (!process.isAlive()) {
-            throw new IllegalStateException("Process is dead. Exit code was: " + process.exitValue());
-        }
-
-        OutputStream outputStream = process.getOutputStream();
-        inboundMessage.writeDelimitedTo(outputStream);
-        outputStream.flush();
-    }
-
-    private void handleFileImportRequest(EmbeddedSass.OutboundMessage.FileImportRequest fileImportRequest) throws IOException {
-        EmbeddedSass.InboundMessage.FileImportResponse.Builder fileImportResponse = EmbeddedSass.InboundMessage.FileImportResponse.newBuilder()
+    private void handleFileImportRequest(FileImportRequest fileImportRequest) throws IOException {
+        InboundMessage.FileImportResponse.Builder fileImportResponse = InboundMessage.FileImportResponse.newBuilder()
                 .setId(fileImportRequest.getId());
 
         FileImporter fileImporter = fileImporters.get(fileImportRequest.getImporterId());
@@ -240,20 +233,20 @@ public class SassCompiler implements AutoCloseable {
             fileImportResponse.setError(getErrorMessage(t));
         }
 
-        EmbeddedSass.InboundMessage inboundMessage = EmbeddedSass.InboundMessage.newBuilder()
+        InboundMessage inboundMessage = InboundMessage.newBuilder()
                 .setFileImportResponse(fileImportResponse.build())
                 .build();
-        sendMessage(inboundMessage);
+        connection.sendMessage(inboundMessage);
     }
 
-    private void handleImportRequest(EmbeddedSass.OutboundMessage.ImportRequest importRequest) throws IOException {
-        EmbeddedSass.InboundMessage.ImportResponse.Builder importResponse = EmbeddedSass.InboundMessage.ImportResponse.newBuilder()
+    private void handleImportRequest(ImportRequest importRequest) throws IOException {
+        InboundMessage.ImportResponse.Builder importResponse = InboundMessage.ImportResponse.newBuilder()
                 .setId(importRequest.getId());
 
         CustomImporter customImporter = customImporters.get(importRequest.getImporterId());
 
         try {
-            EmbeddedSass.InboundMessage.ImportResponse.ImportSuccess success = customImporter.handleImport(importRequest.getUrl());
+            InboundMessage.ImportResponse.ImportSuccess success = customImporter.handleImport(importRequest.getUrl());
             if (success != null) {
                 importResponse.setSuccess(success);
             }
@@ -262,15 +255,15 @@ public class SassCompiler implements AutoCloseable {
             importResponse.setError(getErrorMessage(t));
         }
 
-        EmbeddedSass.InboundMessage inboundMessage = EmbeddedSass.InboundMessage.newBuilder()
+        InboundMessage inboundMessage = InboundMessage.newBuilder()
                 .setImportResponse(importResponse.build())
                 .build();
 
-        sendMessage(inboundMessage);
+        connection.sendMessage(inboundMessage);
     }
 
-    private void handleCanonicalizeRequest(EmbeddedSass.OutboundMessage.CanonicalizeRequest canonicalizeRequest) throws IOException {
-        EmbeddedSass.InboundMessage.CanonicalizeResponse.Builder canonicalizeResponse = EmbeddedSass.InboundMessage.CanonicalizeResponse.newBuilder()
+    private void handleCanonicalizeRequest(CanonicalizeRequest canonicalizeRequest) throws IOException {
+        CanonicalizeResponse.Builder canonicalizeResponse = CanonicalizeResponse.newBuilder()
                 .setId(canonicalizeRequest.getId());
 
         CustomImporter customImporter = customImporters.get(canonicalizeRequest.getImporterId());
@@ -285,14 +278,14 @@ public class SassCompiler implements AutoCloseable {
             canonicalizeResponse.setError(getErrorMessage(e));
         }
 
-        EmbeddedSass.InboundMessage inboundMessage = EmbeddedSass.InboundMessage.newBuilder()
+        InboundMessage inboundMessage = InboundMessage.newBuilder()
                 .setCanonicalizeResponse(canonicalizeResponse.build())
                 .build();
 
-        sendMessage(inboundMessage);
+        connection.sendMessage(inboundMessage);
     }
 
-    private void handleFunctionCallRequest(EmbeddedSass.OutboundMessage.FunctionCallRequest functionCallRequest) throws IOException {
+    private void handleFunctionCallRequest(FunctionCallRequest functionCallRequest) throws IOException {
 
         HostFunction sassFunction = null;
 
@@ -309,7 +302,7 @@ public class SassCompiler implements AutoCloseable {
 
         List<EmbeddedSass.Value> argumentsList = functionCallRequest.getArgumentsList();
 
-        EmbeddedSass.InboundMessage.FunctionCallResponse.Builder responseBuilder = EmbeddedSass.InboundMessage.FunctionCallResponse.newBuilder();
+        FunctionCallResponse.Builder responseBuilder = FunctionCallResponse.newBuilder();
         responseBuilder.setId(functionCallRequest.getId());
 
         try {
@@ -320,7 +313,7 @@ public class SassCompiler implements AutoCloseable {
             responseBuilder.setError(getErrorMessage(e));
         }
 
-        sendMessage(EmbeddedSass.InboundMessage.newBuilder().setFunctionCallResponse(responseBuilder.build()).build());
+        connection.sendMessage(InboundMessage.newBuilder().setFunctionCallResponse(responseBuilder.build()).build());
 
     }
 
@@ -331,10 +324,7 @@ public class SassCompiler implements AutoCloseable {
     }
 
     @Override
-    public void close() throws Exception {
-        process.destroy();
-        if (!process.waitFor(2, TimeUnit.SECONDS)) {
-            process.destroyForcibly();
-        }
+    public void close() throws IOException {
+        connection.close();
     }
 }

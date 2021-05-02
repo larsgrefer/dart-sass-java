@@ -114,4 +114,23 @@ class SassCompilerTest {
         assertThat(e.getMessage()).contains("bazinga");
     }
 
+    @Test
+    void sourceMapPaths() throws SassCompilationFailedException, IOException {
+        String sass = ".foo { .bar { color : foo(#ffffff);}}";
+
+        EmbeddedSass.InboundMessage.CompileRequest.StringInput string = EmbeddedSass.InboundMessage.CompileRequest.StringInput.newBuilder()
+                .setSource(sass)
+                .build();
+
+        EmbeddedSass.OutboundMessage.CompileResponse.CompileSuccess compileSuccess = sassCompiler.compileString(string, EmbeddedSass.InboundMessage.CompileRequest.OutputStyle.EXPANDED, true);
+
+        System.out.println(compileSuccess.getSourceMap());
+
+        File file = new File("src/test/resources/foo/bar.scss");
+
+        EmbeddedSass.OutboundMessage.CompileResponse.CompileSuccess compileSuccess1 = sassCompiler.compileFile(file, null, true);
+
+        System.out.println(compileSuccess1.getSourceMap());
+    }
+
 }

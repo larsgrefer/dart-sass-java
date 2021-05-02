@@ -7,6 +7,8 @@ plugins {
 
 description = "SASS Embedded Protocol"
 
+publishing.publications.mavenJava.pom.description = "Java DTOs for the embedded-sass-protocol"
+
 repositories {
     ivy {
         //https://github.com/sass/embedded-protocol/archive/1.0.0-beta.7.tar.gz

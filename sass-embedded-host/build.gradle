@@ -1,6 +1,7 @@
 plugins {
     id "java-library"
     id "io.freefair.maven-publish-java"
+    id "jacoco"
 }
 
 description = "SASS Embedded Host"
@@ -8,6 +9,8 @@ description = "SASS Embedded Host"
 configurations {
     sassEmbedded
 }
+
+javadoc.failOnError = false
 
 repositories {
     //https://github.com/sass/dart-sass-embedded/releases/download/$dartSassVersion/sass_embedded-$dartSassVersion-linux-ia32.tar.gz

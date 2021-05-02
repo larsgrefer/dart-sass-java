@@ -58,6 +58,12 @@ allprojects {
         }
     }
 
+    plugins.withId("jacoco") {
+        tasks.withType(JacocoReport).configureEach {
+            reports.xml.enabled true
+        }
+    }
+
     plugins.withId("maven-publish") {
 
         project.apply plugin: "io.freefair.maven-central.validate-poms"

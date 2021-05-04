@@ -3,6 +3,9 @@ package de.larsgrefer.sass.embedded.importer;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
+/**
+ * @author Lars Grefer
+ */
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public abstract class Importer {
 

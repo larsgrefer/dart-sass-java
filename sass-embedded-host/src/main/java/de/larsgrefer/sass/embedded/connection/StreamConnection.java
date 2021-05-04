@@ -8,6 +8,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 /**
+ * {@link CompilerConnection} implementation based on an {@link InputStream} {@link OutputStream} pair.
+ *
  * @author Lars Grefer
  */
 public abstract class StreamConnection implements CompilerConnection {

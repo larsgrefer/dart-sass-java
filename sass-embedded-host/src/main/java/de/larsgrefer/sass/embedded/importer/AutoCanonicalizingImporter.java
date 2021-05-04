@@ -6,6 +6,9 @@ import sass.embedded_protocol.EmbeddedSass;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author Lars Grefer
+ */
 @RequiredArgsConstructor
 class AutoCanonicalizingImporter extends CustomImporter {
 

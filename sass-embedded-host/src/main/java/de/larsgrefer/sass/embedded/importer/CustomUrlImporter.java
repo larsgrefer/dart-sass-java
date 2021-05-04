@@ -2,7 +2,8 @@ package de.larsgrefer.sass.embedded.importer;
 
 import com.google.protobuf.ByteString;
 import lombok.extern.slf4j.Slf4j;
-import sass.embedded_protocol.EmbeddedSass;
+import sass.embedded_protocol.EmbeddedSass.InboundMessage.ImportResponse.ImportSuccess;
+import sass.embedded_protocol.EmbeddedSass.InboundMessage.Syntax;
 
 import javax.annotation.Nullable;
 import java.io.File;
@@ -19,6 +20,9 @@ import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.stream.Collectors;
 
+/**
+ * @author Lars Grefer
+ */
 @Slf4j
 public abstract class CustomUrlImporter extends CustomImporter {
 
@@ -97,28 +101,27 @@ public abstract class CustomUrlImporter extends CustomImporter {
     }
 
     @Override
-    public EmbeddedSass.InboundMessage.ImportResponse.ImportSuccess handleImport(String string) throws Exception {
+    public ImportSuccess handleImport(String string) throws Exception {
         URL url = new URL(string);
         return handleImport(url);
     }
 
-    public EmbeddedSass.InboundMessage.ImportResponse.ImportSuccess handleImport(URL url) throws Exception {
-        EmbeddedSass.InboundMessage.ImportResponse.ImportSuccess.Builder result = EmbeddedSass.InboundMessage.ImportResponse.ImportSuccess.newBuilder();
+    public ImportSuccess handleImport(URL url) throws Exception {
+        ImportSuccess.Builder result = ImportSuccess.newBuilder();
+
         try (InputStream in = url.openStream()) {
-
             ByteString content = ByteString.readFrom(in);
-
             result.setContentsBytes(content);
         }
 
         if (url.getPath().endsWith(".css")) {
-            result.setSyntax(EmbeddedSass.InboundMessage.Syntax.CSS);
+            result.setSyntax(Syntax.CSS);
         }
         else if (url.getPath().endsWith(".scss")) {
-            result.setSyntax(EmbeddedSass.InboundMessage.Syntax.SCSS);
+            result.setSyntax(Syntax.SCSS);
         }
         else if (url.getPath().endsWith(".sass")) {
-            result.setSyntax(EmbeddedSass.InboundMessage.Syntax.INDENTED);
+            result.setSyntax(Syntax.INDENTED);
         }
 
         return result.build();

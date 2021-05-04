@@ -6,9 +6,7 @@ import de.larsgrefer.sass.embedded.SassCompilerFactory;
 import org.junit.jupiter.api.*;
 
 import java.io.IOException;
-import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -37,7 +35,7 @@ public class ClasspathImporterIT {
         ).map(name -> DynamicTest.dynamicTest("import " + name, () -> {
             String scss = "@import '" + name + "';";
 
-            String css = sassCompiler.compileString(scss);
+            String css = sassCompiler.compileScssString(scss).getCss();
 
             assertThat(css).contains("red");
         }));
@@ -54,7 +52,7 @@ public class ClasspathImporterIT {
         ).map(name -> DynamicTest.dynamicTest("import " + name, () -> {
             String scss = "@import '" + name + "';";
 
-            String css = sassCompiler.compileString(scss);
+            String css = sassCompiler.compileScssString(scss).getCss();
 
             assertThat(css).contains("green");
         }));
@@ -62,13 +60,13 @@ public class ClasspathImporterIT {
 
     @Test
     void interClasspathImport() throws SassCompilationFailedException, IOException, URISyntaxException {
-        String css = sassCompiler.compileString("@import 'foo/classpathImport';");
+        String css = sassCompiler.compileScssString("@import 'foo/classpathImport';").getCss();
 
         assertThat(css).contains("green");
     }
     @Test
     void interClasspathImport_fromJar() throws SassCompilationFailedException, IOException, URISyntaxException {
-        String css = sassCompiler.compileString("@import 'META-INF/resources/webjars/bootstrap/4.6.0/scss/bootstrap.scss';");
+        String css = sassCompiler.compileScssString("@import 'META-INF/resources/webjars/bootstrap/4.6.0/scss/bootstrap.scss';").getCss();
 
         assertThat(css).contains("green");
     }

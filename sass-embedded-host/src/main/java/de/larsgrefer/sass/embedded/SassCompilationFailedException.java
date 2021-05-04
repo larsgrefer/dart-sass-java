@@ -1,20 +1,19 @@
 package de.larsgrefer.sass.embedded;
 
-import sass.embedded_protocol.EmbeddedSass;
+import lombok.Getter;
+import sass.embedded_protocol.EmbeddedSass.OutboundMessage.CompileResponse.CompileFailure;
 
 /**
  * @author Lars Grefer
  */
 public class SassCompilationFailedException extends Exception {
 
-    private EmbeddedSass.OutboundMessage.CompileResponse.CompileFailure compileFailure;
+    @Getter
+    private final CompileFailure compileFailure;
 
-    public SassCompilationFailedException(EmbeddedSass.OutboundMessage.CompileResponse.CompileFailure failure) {
+    public SassCompilationFailedException(CompileFailure failure) {
         super(failure.getMessage() + "\n" + failure.getSpan().getText() + "\n" + failure.getStackTrace());
         this.compileFailure = failure;
     }
 
-    public EmbeddedSass.OutboundMessage.CompileResponse.CompileFailure getCompileFailure() {
-        return compileFailure;
-    }
 }

@@ -1,4 +1,4 @@
-package de.larsgrefer.sass.embedded;
+package de.larsgrefer.sass.embedded.util;
 
 import lombok.SneakyThrows;
 import lombok.experimental.UtilityClass;
@@ -21,7 +21,7 @@ import java.util.zip.ZipInputStream;
 public class IOUtils {
 
     public static void extract(URL archiveUrl, Path destinationDir) throws IOException {
-        String file = archiveUrl.getFile();
+        String file = archiveUrl.getPath();
         if (file.endsWith(".zip")) {
             try (ZipInputStream in = new ZipInputStream(archiveUrl.openStream())) {
                 unzip(in, destinationDir);

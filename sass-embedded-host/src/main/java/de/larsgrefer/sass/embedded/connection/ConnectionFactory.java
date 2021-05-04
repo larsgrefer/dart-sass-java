@@ -1,7 +1,7 @@
 package de.larsgrefer.sass.embedded.connection;
 
-import de.larsgrefer.sass.embedded.IOUtils;
 import de.larsgrefer.sass.embedded.SassCompilerFactory;
+import de.larsgrefer.sass.embedded.util.IOUtils;
 import lombok.experimental.UtilityClass;
 
 import java.io.File;
@@ -84,6 +84,7 @@ public class ConnectionFactory {
             throw new IllegalStateException("No executable found");
         }
 
+        bundledDartExec.setWritable(false);
         bundledDartExec.setExecutable(true, true);
     }
 }

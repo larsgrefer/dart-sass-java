@@ -2,11 +2,13 @@ package de.larsgrefer.sass.embedded.importer;
 
 import lombok.experimental.UtilityClass;
 
-import java.net.URI;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * @author Lars Grefer
+ */
 @UtilityClass
 public class CanonicalizationHelper {
 

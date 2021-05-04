@@ -10,6 +10,9 @@ import java.net.URL;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * @author Lars Grefer
+ */
 @Slf4j
 public class WebjarsImporter extends ClasspathImporter {
 

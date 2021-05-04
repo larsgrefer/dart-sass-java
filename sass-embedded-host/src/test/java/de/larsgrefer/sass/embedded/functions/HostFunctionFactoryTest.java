@@ -25,7 +25,7 @@ class HostFunctionFactoryTest {
     @Test
     void fooFunction() throws IOException, SassCompilationFailedException {
         //language=SCSS
-        String sass = ".h2 {\n" +
+        String scss = ".h2 {\n" +
                 "  color: echo('foo');\n" +
                 "  size: my-add(1, 2);\n" +
                 "}";
@@ -34,7 +34,7 @@ class HostFunctionFactoryTest {
 
         hostFunctions.forEach(sassCompiler::registerFunction);
 
-        String s = sassCompiler.compileString(sass);
+        String s = sassCompiler.compileScssString(scss).getCss();
 
         assertThat(s).contains("Hello World");
         assertThat(s).contains("3");

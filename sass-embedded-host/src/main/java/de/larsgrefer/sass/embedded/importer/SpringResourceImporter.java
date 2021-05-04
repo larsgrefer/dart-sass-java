@@ -7,6 +7,9 @@ import org.springframework.core.io.ResourceLoader;
 import java.io.File;
 import java.net.URL;
 
+/**
+ * @author Lars Grefer
+ */
 @RequiredArgsConstructor
 public class SpringResourceImporter extends CustomUrlImporter {
 

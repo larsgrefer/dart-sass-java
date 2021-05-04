@@ -1,5 +1,6 @@
 package de.larsgrefer.sass.embedded;
 
+import com.google.protobuf.ByteString;
 import de.larsgrefer.sass.embedded.connection.CompilerConnection;
 import de.larsgrefer.sass.embedded.functions.HostFunction;
 import de.larsgrefer.sass.embedded.importer.CustomImporter;
@@ -7,6 +8,7 @@ import de.larsgrefer.sass.embedded.importer.FileImporter;
 import de.larsgrefer.sass.embedded.importer.Importer;
 import de.larsgrefer.sass.embedded.logging.LoggingHandler;
 import de.larsgrefer.sass.embedded.logging.Slf4jLoggingHandler;
+import de.larsgrefer.sass.embedded.util.SyntaxUtil;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -16,6 +18,7 @@ import sass.embedded_protocol.EmbeddedSass.InboundMessage.CanonicalizeResponse;
 import sass.embedded_protocol.EmbeddedSass.InboundMessage.CompileRequest;
 import sass.embedded_protocol.EmbeddedSass.InboundMessage.CompileRequest.OutputStyle;
 import sass.embedded_protocol.EmbeddedSass.InboundMessage.FunctionCallResponse;
+import sass.embedded_protocol.EmbeddedSass.InboundMessage.Syntax;
 import sass.embedded_protocol.EmbeddedSass.OutboundMessage;
 import sass.embedded_protocol.EmbeddedSass.OutboundMessage.CanonicalizeRequest;
 import sass.embedded_protocol.EmbeddedSass.OutboundMessage.CompileResponse.CompileSuccess;
@@ -23,9 +26,9 @@ import sass.embedded_protocol.EmbeddedSass.OutboundMessage.FileImportRequest;
 import sass.embedded_protocol.EmbeddedSass.OutboundMessage.FunctionCallRequest;
 import sass.embedded_protocol.EmbeddedSass.OutboundMessage.ImportRequest;
 
+import javax.annotation.Nonnull;
 import java.io.*;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -38,9 +41,24 @@ import java.util.Map;
 @Slf4j
 public class SassCompiler implements Closeable {
 
+    /**
+     * How to format the CSS output.
+     *
+     * @see CompileRequest#getStyle()
+     */
     @Getter
     @Setter
     private OutputStyle outputStyle = OutputStyle.EXPANDED;
+
+    /**
+     * Whether to generate a source map. Note that this will *not* add a source
+     * map comment to the stylesheet; that's up to the host or its users.
+     *
+     * @see CompileRequest#getSourceMap()
+     */
+    @Getter
+    @Setter
+    private boolean generateSourceMaps = false;
 
     private final CompilerConnection connection;
 
@@ -84,6 +102,7 @@ public class SassCompiler implements Closeable {
         CompileRequest.Builder builder = CompileRequest.newBuilder();
 
         builder.setStyle(outputStyle);
+        builder.setSourceMap(generateSourceMaps);
 
         for (File loadPath : loadPaths) {
             CompileRequest.Importer importer = CompileRequest.Importer.newBuilder()
@@ -113,49 +132,79 @@ public class SassCompiler implements Closeable {
         return builder;
     }
 
-    public String compileString(String source) throws IOException, SassCompilationFailedException {
-        return compileString(source, InboundMessage.Syntax.SCSS);
+    public CompileSuccess compile(URL source) throws SassCompilationFailedException, IOException {
+        Syntax syntax = SyntaxUtil.guessSyntax(source);
+
+        if (source.getProtocol().equals("file")) {
+            File file = new File(source.getPath());
+            return compileFile(file);
+        }
+
+        ByteString content;
+        try (InputStream in = source.openStream()) {
+            content = ByteString.readFrom(in);
+        }
+        CompileRequest.StringInput build = CompileRequest.StringInput.newBuilder()
+                .setSourceBytes(content)
+                .setSyntax(syntax)
+                .build();
+
+        return compileString(build, getOutputStyle());
     }
 
-    public String compileString(String source, InboundMessage.Syntax syntax) throws IOException, SassCompilationFailedException {
+    //region compileString and overloads
+    public CompileSuccess compileScssString(String source) throws IOException, SassCompilationFailedException {
+        return compileString(source, Syntax.SCSS);
+    }
+
+    public CompileSuccess compileSassString(String source) throws IOException, SassCompilationFailedException {
+        return compileString(source, Syntax.INDENTED);
+    }
+
+    public CompileSuccess compileCssString(String source) throws IOException, SassCompilationFailedException {
+        return compileString(source, Syntax.CSS);
+    }
+
+    public CompileSuccess compileString(String source, Syntax syntax) throws IOException, SassCompilationFailedException {
         CompileRequest.StringInput stringInput = CompileRequest.StringInput.newBuilder()
                 .setSource(source)
                 .setSyntax(syntax)
                 .build();
 
-        return compileString(stringInput, null, false).getCss();
+        return compileString(stringInput, getOutputStyle());
     }
 
-    public void compileString(String sass, File outputFile) throws Exception {
+    @Nonnull
+    public CompileSuccess compileString(CompileRequest.StringInput string, OutputStyle outputStyle) throws IOException, SassCompilationFailedException {
+        if (outputStyle == null) {
+            throw new IllegalArgumentException("outputStyle must not be null");
+        }
 
-        String css = compileString(sass);
-
-        Files.write(outputFile.toPath(), css.getBytes(StandardCharsets.UTF_8));
-    }
-
-    public String compileFile(File inputFile) throws IOException, SassCompilationFailedException {
-        return compileFile(inputFile, getOutputStyle(), false).getCss();
-    }
-
-    public CompileSuccess compileString(CompileRequest.StringInput string, OutputStyle outputStyle, boolean generateSourceMaps) throws IOException, SassCompilationFailedException {
         CompileRequest compileRequest = compileRequestBuilder()
                 .setString(string)
-                .setStyle(outputStyle != null ? outputStyle : this.outputStyle)
-                .setSourceMap(generateSourceMaps)
+                .setStyle(outputStyle)
                 .build();
 
         return execCompileRequest(compileRequest);
     }
+    //endregion
 
-    public CompileSuccess compileFile(File file, OutputStyle outputStyle, boolean generateSourceMaps) throws IOException, SassCompilationFailedException {
+    //region compileFile
+
+    public CompileSuccess compileFile(File inputFile) throws IOException, SassCompilationFailedException {
+        return compileFile(inputFile, getOutputStyle());
+    }
+
+    public CompileSuccess compileFile(File file, OutputStyle outputStyle) throws IOException, SassCompilationFailedException {
         CompileRequest compileRequest = compileRequestBuilder()
                 .setPath(file.getPath())
-                .setStyle(outputStyle != null ? outputStyle : this.outputStyle)
-                .setSourceMap(generateSourceMaps)
+                .setStyle(outputStyle)
                 .build();
 
         return execCompileRequest(compileRequest);
     }
+
+    //endregion
 
     private CompileSuccess execCompileRequest(CompileRequest compileRequest) throws IOException, SassCompilationFailedException {
         InboundMessage inboundMessage = InboundMessage.newBuilder()

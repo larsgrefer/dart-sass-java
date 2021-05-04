@@ -5,6 +5,9 @@ import lombok.RequiredArgsConstructor;
 import javax.servlet.ServletContext;
 import java.net.URL;
 
+/**
+ * @author Lars Grefer
+ */
 @RequiredArgsConstructor
 public class ServletContextImporter extends CustomUrlImporter {
 

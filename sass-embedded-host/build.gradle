@@ -44,7 +44,7 @@ dependencies {
 
     testImplementation 'org.slf4j:slf4j-simple:1.7.30'
     testRuntimeOnly 'org.webjars:webjars-locator:0.30'
-    testRuntimeOnly 'org.webjars:bootstrap:4.6.0'
+    testRuntimeOnly 'org.webjars:bootstrap:5.0.0'
 }
 
 //"https://github.com/sass/dart-sass-embedded/releases/download/1.0.0-beta.6/sass_embedded-1.0.0-beta.6-macos-x64.tar.gz

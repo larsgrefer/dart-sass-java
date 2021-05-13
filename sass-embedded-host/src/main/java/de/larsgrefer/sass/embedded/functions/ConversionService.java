@@ -263,7 +263,7 @@ class ConversionService {
                     Map<?, ?> collect = sassMap.getEntriesList()
                             .stream()
                             .collect(Collectors.toMap(
-                                    sassEntry -> toJavaValue(sassEntry.getValue(), keyClass, keyType),
+                                    sassEntry -> toJavaValue(sassEntry.getKey(), keyClass, keyType),
                                     sassEntry -> toJavaValue(sassEntry.getValue(), valueClass, valueType)
                             ));
 

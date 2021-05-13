@@ -1,14 +1,20 @@
 package de.larsgrefer.sass.embedded.functions;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.core.ParameterizedTypeReference;
 import sass.embedded_protocol.EmbeddedSass;
+import sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl;
 
+import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.in;
 
 
 class ConversionServiceTest {
@@ -137,5 +143,33 @@ class ConversionServiceTest {
 
         assertThat(sassList.getContentsCount()).isEqualTo(stringList.size());
         assertThat(sassList.getContentsList()).allMatch(v -> v.getValueCase().equals(EmbeddedSass.Value.ValueCase.STRING));
+
+        Type listType = new ParameterizedTypeReference<List<String>>() {
+        }.getType();
+        List<String> list = ConversionService.toJavaValue(value, List.class, listType);
+
+        assertThat(list).containsExactly("foo", "bar");
+    }
+
+    @Test
+    void mapConverstion() {
+        Map<String, Integer> intMap = new HashMap<>();
+        intMap.put("foo", 1);
+        intMap.put("bar", 2);
+
+        EmbeddedSass.Value value = ConversionService.toSassValue(intMap);
+
+        assertThat(value.getValueCase()).isEqualTo(EmbeddedSass.Value.ValueCase.MAP);
+
+        EmbeddedSass.Value.Map sassMap = value.getMap();
+
+        assertThat(sassMap.getEntriesCount()).isEqualTo(2);
+
+        Type mapType = new ParameterizedTypeReference<Map<String, Integer>>() {
+        }.getType();
+        Map<String, Integer> map = ConversionService.toJavaValue(value, Map.class, mapType);
+
+        assertThat(map).containsEntry("foo", 1);
+        assertThat(map).containsEntry("bar", 2);
     }
 }

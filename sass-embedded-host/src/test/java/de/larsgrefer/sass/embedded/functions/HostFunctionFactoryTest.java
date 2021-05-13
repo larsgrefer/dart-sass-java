@@ -6,6 +6,7 @@ import de.larsgrefer.sass.embedded.SassCompilerFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import sass.embedded_protocol.EmbeddedSass;
+import sass.embedded_protocol.EmbeddedSass.Value;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -44,7 +45,7 @@ class HostFunctionFactoryTest {
     void ofCallable() throws Throwable {
         HostFunction hf = HostFunctionFactory.ofLambda("echo", () -> "Hello World");
 
-        EmbeddedSass.Value invoke = hf.invoke(Collections.emptyList());
+        Value invoke = hf.invoke(Collections.emptyList());
 
         assertThat(invoke.getString().getText()).isEqualTo("Hello World");
     }
@@ -53,13 +54,30 @@ class HostFunctionFactoryTest {
     void ofFunction() throws Throwable {
         HostFunction hf = HostFunctionFactory.ofLambda("foo", String.class, String::length);
 
-        EmbeddedSass.Value invoke = hf.invoke(Collections.singletonList(EmbeddedSass.Value.newBuilder()
-                .setString(EmbeddedSass.Value.String.newBuilder()
+        Value invoke = hf.invoke(Collections.singletonList(Value.newBuilder()
+                .setString(Value.String.newBuilder()
                         .setText("bar-baz")
                         .build())
                 .build()));
 
         assertThat(invoke.getNumber().getValue()).isEqualTo(7);
+    }
+
+    @Test
+    void ofLambda() throws Throwable {
+        //language=SCSS
+        String scss = ".h2 {\n" +
+                "  color: echo('foo');\n" +
+                "  size: my-add(1, 2);\n" +
+                "}";
+
+        sassCompiler.registerFunction(HostFunctionFactory.ofLambda("echo", String.class, Foo::echo));
+        sassCompiler.registerFunction(HostFunctionFactory.ofLambda("my-add", Integer.class, Integer.class, Integer::sum));
+
+        String s = sassCompiler.compileScssString(scss).getCss();
+
+        assertThat(s).contains("Hello World");
+        assertThat(s).contains("3");
     }
 
     public static class Foo {

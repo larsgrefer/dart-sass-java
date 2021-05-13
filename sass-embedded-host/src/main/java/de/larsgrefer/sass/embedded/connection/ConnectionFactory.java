@@ -68,20 +68,15 @@ public class ConnectionFactory {
 
         IOUtils.extract(dist, tempDirectory);
 
-        Path execPath = tempDirectory.resolve("sass_embedded/dart-sass-embedded");
-        Path execPathBat = tempDirectory.resolve("sass_embedded/dart-sass-embedded.bat");
-        Path execPathExe = tempDirectory.resolve("sass_embedded/dart-sass-embedded.exe");
-        if (execPath.toFile().isFile()) {
-            bundledDartExec = execPath.toFile();
-        }
-        else if (execPathBat.toFile().isFile()) {
-            bundledDartExec = execPathBat.toFile();
-        }
-        else if (execPathExe.toFile().isFile()) {
-            bundledDartExec = execPathExe.toFile();
+        File execDir = tempDirectory.resolve("sass_embedded").toFile();
+
+        File[] execFile = execDir.listFiles(pathname -> pathname.isFile() && pathname.getName().startsWith("dart-sass-embedded"));
+
+        if (execFile == null || execFile.length != 1) {
+            throw new IllegalStateException("No (unique) executable file found in " + execDir);
         }
         else {
-            throw new IllegalStateException("No executable found");
+            bundledDartExec = execFile[0];
         }
 
         bundledDartExec.setWritable(false);

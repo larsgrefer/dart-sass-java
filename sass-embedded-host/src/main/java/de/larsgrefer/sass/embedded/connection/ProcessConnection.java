@@ -1,5 +1,6 @@
 package de.larsgrefer.sass.embedded.connection;
 
+import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 
 import java.io.IOException;
@@ -10,6 +11,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * @author Lars Grefer
  */
+@RequiredArgsConstructor
 public class ProcessConnection extends StreamConnection {
 
     private final Process process;
@@ -20,10 +22,6 @@ public class ProcessConnection extends StreamConnection {
                 .redirectOutput(ProcessBuilder.Redirect.PIPE)
                 .redirectError(ProcessBuilder.Redirect.INHERIT)
                 .start());
-    }
-
-    public ProcessConnection(Process process) {
-        this.process = process;
     }
 
     @SneakyThrows
@@ -37,17 +35,19 @@ public class ProcessConnection extends StreamConnection {
 
     @Override
     protected InputStream getInputStream() throws IOException {
-        if (!process.isAlive()) {
-            throw new IOException("Process is dead. Exit code was: " + process.exitValue());
-        }
+        assertAlive();
         return process.getInputStream();
     }
 
     @Override
     protected OutputStream getOutputStream() throws IOException {
+        assertAlive();
+        return process.getOutputStream();
+    }
+
+    private void assertAlive() throws IOException {
         if (!process.isAlive()) {
             throw new IOException("Process is dead. Exit code was: " + process.exitValue());
         }
-        return process.getOutputStream();
     }
 }

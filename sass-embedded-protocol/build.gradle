@@ -19,7 +19,7 @@ repositories {
     }
 }
 
-def protobufVersion = "3.17.1"
+def protobufVersion = "3.17.2"
 
 dependencies {
     protobuf "sass:embedded-protocol:1.0.0-beta.7@zip"

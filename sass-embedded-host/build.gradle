@@ -43,7 +43,7 @@ dependencies {
     sassEmbedded "sass:sass_embedded:$dartSassVersion:windows-x64@zip"
 
     testImplementation 'org.springframework:spring-core:5.3.8'
-    testImplementation 'org.slf4j:slf4j-simple:1.7.30'
+    testImplementation 'org.slf4j:slf4j-simple:1.7.31'
     testRuntimeOnly 'org.webjars:webjars-locator:0.41'
     testRuntimeOnly 'org.webjars:bootstrap:4.6.0'
 }

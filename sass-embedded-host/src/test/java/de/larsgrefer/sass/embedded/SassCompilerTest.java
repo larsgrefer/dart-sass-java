@@ -30,7 +30,6 @@ class SassCompilerTest {
     }
 
     @Test
-    @Disabled
     void getVersion() throws IOException {
         EmbeddedSass.OutboundMessage.VersionResponse version = sassCompiler.getVersion();
 

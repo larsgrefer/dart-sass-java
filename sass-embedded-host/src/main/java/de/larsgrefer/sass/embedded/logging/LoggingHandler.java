@@ -1,6 +1,7 @@
 package de.larsgrefer.sass.embedded.logging;
 
 import sass.embedded_protocol.EmbeddedSass.OutboundMessage.LogEvent;
+import sass.embedded_protocol.EmbeddedSass.OutboundMessage.LogEventOrBuilder;
 
 /**
  * Callback interface for {@link LogEvent log events} emitted by the sass compilation.
@@ -10,5 +11,5 @@ import sass.embedded_protocol.EmbeddedSass.OutboundMessage.LogEvent;
  */
 public interface LoggingHandler {
 
-    void handle(LogEvent logEvent);
+    void handle(LogEventOrBuilder logEvent);
 }

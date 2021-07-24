@@ -1,5 +1,8 @@
 package de.larsgrefer.sass.embedded.importer;
 
+import jdk.nashorn.internal.objects.annotations.SpecializedFunction;
+import sass.embedded_protocol.EmbeddedSass.OutboundMessage.FileImportRequest;
+
 import java.io.File;
 
 /**
@@ -11,7 +14,9 @@ import java.io.File;
 public abstract class FileImporter extends Importer {
 
     /**
-     * @see sass.embedded_protocol.EmbeddedSass.OutboundMessage.FileImportRequest
+     * @param url The (non-canonicalized) URL of the import.
+     * @param fromImport Whether this request comes from an `@import` rule.
+     * @see FileImportRequest
      */
-    public abstract File handleImport(String url);
+    public abstract File handleImport(String url, boolean fromImport);
 }

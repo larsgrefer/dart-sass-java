@@ -20,7 +20,7 @@ class ClasspathImporterTest {
 
     @Test
     void canonicalizeToImport() throws Exception {
-        String canonicalize = classpathImporter.canonicalize("foo/bar.scss");
+        String canonicalize = classpathImporter.canonicalize("foo/bar.scss", false);
 
         assertThat(canonicalize).isNotNull();
 
@@ -35,7 +35,7 @@ class ClasspathImporterTest {
 
     @Test
     void canonicalizeToImport_jar() throws Exception {
-        String canonicalize = classpathImporter.canonicalize("google/protobuf/type.proto");
+        String canonicalize = classpathImporter.canonicalize("google/protobuf/type.proto", false);
 
         assertThat(canonicalize).isNotNull();
 
@@ -50,7 +50,7 @@ class ClasspathImporterTest {
     @Test
     void canonicalizeAmbigous_dir() throws Exception {
 
-        String canonicalize = classpathImporter.canonicalize("META-INF");
+        String canonicalize = classpathImporter.canonicalize("META-INF", false);
 
         assertThat(canonicalize).isNull();
     }
@@ -58,7 +58,7 @@ class ClasspathImporterTest {
     @Test
     void canonicalizeAmbigous_file() throws Exception {
         assertThatThrownBy(() -> {
-            classpathImporter.canonicalize("META-INF/MANIFEST.MF");
+            classpathImporter.canonicalize("META-INF/MANIFEST.MF", false);
         }).isNotNull();
     }
 }

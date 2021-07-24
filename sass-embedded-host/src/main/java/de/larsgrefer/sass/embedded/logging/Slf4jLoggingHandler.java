@@ -3,6 +3,7 @@ package de.larsgrefer.sass.embedded.logging;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import sass.embedded_protocol.EmbeddedSass;
+import sass.embedded_protocol.EmbeddedSass.OutboundMessage.LogEventOrBuilder;
 
 /**
  * Slf4j based {@link LoggingHandler} implementation.
@@ -15,7 +16,7 @@ public class Slf4jLoggingHandler implements LoggingHandler {
     private final Logger logger;
 
     @Override
-    public void handle(EmbeddedSass.OutboundMessage.LogEvent logEvent) {
+    public void handle(LogEventOrBuilder logEvent) {
         EmbeddedSass.OutboundMessage.LogEvent.Type type = logEvent.getType();
 
         switch (type) {

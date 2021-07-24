@@ -30,7 +30,7 @@ public abstract class CustomUrlImporter extends CustomImporter {
     private final Set<String> usedPrefixes = new HashSet<>();
 
     @Override
-    public String canonicalize(String url) throws Exception {
+    public String canonicalize(String url, boolean fromImport) throws Exception {
         URL result = canonicalizeUrl(url);
 
         if (result == null && isAbsolute(url)) {

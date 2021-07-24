@@ -15,8 +15,8 @@ class AutoCanonicalizingImporter extends CustomImporter {
     public final CustomImporter delegate;
 
     @Override
-    public String canonicalize(String url) throws Exception {
-        String canonUrl = delegate.canonicalize(url);
+    public String canonicalize(String url, boolean fromImport) throws Exception {
+        String canonUrl = delegate.canonicalize(url, fromImport);
 
         if (canonUrl != null) {
             return canonUrl;
@@ -35,7 +35,7 @@ class AutoCanonicalizingImporter extends CustomImporter {
         List<String> canonicalizedUrls = new ArrayList<>(possibleUrls.size());
 
         for (String indexPath : possibleUrls) {
-            String canonUrl = delegate.canonicalize(indexPath);
+            String canonUrl = delegate.canonicalize(indexPath, false);
             if (canonUrl != null) {
                 canonicalizedUrls.add(canonUrl);
             }

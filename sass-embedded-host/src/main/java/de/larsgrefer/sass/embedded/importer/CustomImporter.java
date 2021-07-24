@@ -12,11 +12,12 @@ import sass.embedded_protocol.EmbeddedSass.OutboundMessage.ImportRequest;
 public abstract class CustomImporter extends Importer {
 
     /**
-     * @param url The url to canonicalize
+     * @param url The URL of the import to be canonicalized. This may be either absolute or relative.
+     * @param fromImport Whether this request comes from an `@import` rule.
      * @return The canonicalized URL (including a scheme)
      * @see CanonicalizeRequest
      */
-    public abstract String canonicalize(String url) throws Exception;
+    public abstract String canonicalize(String url, boolean fromImport) throws Exception;
 
     /**
      * @param url The url to import

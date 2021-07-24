@@ -29,7 +29,7 @@ public class WebjarsImporter extends ClasspathImporter {
     }
 
     public WebjarsImporter(ClassLoader webjarsLoader) {
-        this(webjarsLoader, new WebJarAssetLocator());
+        this(webjarsLoader, new WebJarAssetLocator(webjarsLoader));
     }
 
     public WebjarsImporter(ClassLoader webjarsLoader, WebJarAssetLocator webJarAssetLocator) {

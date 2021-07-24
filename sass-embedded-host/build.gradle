@@ -44,7 +44,7 @@ dependencies {
 
     testImplementation 'org.springframework:spring-core:5.3.7'
     testImplementation 'org.slf4j:slf4j-simple:1.7.30'
-    testRuntimeOnly 'org.webjars:webjars-locator:0.30'
+    testRuntimeOnly 'org.webjars:webjars-locator:0.40'
     testRuntimeOnly 'org.webjars:bootstrap:4.6.0'
 }
 

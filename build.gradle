@@ -37,6 +37,10 @@ allprojects {
             options.compilerArgs += "-parameters"
         }
 
+        tasks.withType(Javadoc) {
+            options.addBooleanOption("Xdoclint:-missing", true)
+        }
+
         dependencies {
             testImplementation 'org.assertj:assertj-core:3.20.2'
 

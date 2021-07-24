@@ -29,12 +29,12 @@ def dartSassVersion = "1.0.0-beta.7"
 
 dependencies {
     api project(":sass-embedded-protocol")
-    api 'org.slf4j:slf4j-api:1.7.30'
+    api 'org.slf4j:slf4j-api:1.7.31'
 
     compileOnly 'com.google.code.findbugs:jsr305:3.0.2'
     compileOnly 'javax.servlet:javax.servlet-api:4.0.1'
     compileOnly 'org.springframework:spring-core:5.+'
-    compileOnly 'org.webjars:webjars-locator:0.40'
+    compileOnly 'org.webjars:webjars-locator:0.41'
 
     sassEmbedded "sass:sass_embedded:$dartSassVersion:linux-ia32@tar.gz"
     sassEmbedded "sass:sass_embedded:$dartSassVersion:linux-x64@tar.gz"
@@ -42,9 +42,9 @@ dependencies {
     sassEmbedded "sass:sass_embedded:$dartSassVersion:windows-ia32@zip"
     sassEmbedded "sass:sass_embedded:$dartSassVersion:windows-x64@zip"
 
-    testImplementation 'org.springframework:spring-core:5.3.7'
-    testImplementation 'org.slf4j:slf4j-simple:1.7.30'
-    testRuntimeOnly 'org.webjars:webjars-locator:0.40'
+    testImplementation 'org.springframework:spring-core:5.3.8'
+    testImplementation 'org.slf4j:slf4j-simple:1.7.31'
+    testRuntimeOnly 'org.webjars:webjars-locator:0.41'
     testRuntimeOnly 'org.webjars:bootstrap:4.6.0'
 }
 

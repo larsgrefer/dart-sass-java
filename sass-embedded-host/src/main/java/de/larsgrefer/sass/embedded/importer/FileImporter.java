@@ -1,6 +1,5 @@
 package de.larsgrefer.sass.embedded.importer;
 
-import jdk.nashorn.internal.objects.annotations.SpecializedFunction;
 import sass.embedded_protocol.EmbeddedSass.OutboundMessage.FileImportRequest;
 
 import java.io.File;

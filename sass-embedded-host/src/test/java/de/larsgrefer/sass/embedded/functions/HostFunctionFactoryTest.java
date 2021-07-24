@@ -5,7 +5,6 @@ import de.larsgrefer.sass.embedded.SassCompiler;
 import de.larsgrefer.sass.embedded.SassCompilerFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import sass.embedded_protocol.EmbeddedSass;
 import sass.embedded_protocol.EmbeddedSass.Value;
 
 import java.io.IOException;

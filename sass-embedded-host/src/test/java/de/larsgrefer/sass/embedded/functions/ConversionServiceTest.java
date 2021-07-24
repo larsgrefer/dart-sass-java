@@ -3,7 +3,6 @@ package de.larsgrefer.sass.embedded.functions;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.ParameterizedTypeReference;
 import sass.embedded_protocol.EmbeddedSass;
-import sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl;
 
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
@@ -14,7 +13,6 @@ import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.in;
 
 
 class ConversionServiceTest {

@@ -20,8 +20,11 @@ import sass.embedded_protocol.EmbeddedSass.InboundMessage.CompileRequest.OutputS
 import sass.embedded_protocol.EmbeddedSass.InboundMessage.FunctionCallResponse;
 import sass.embedded_protocol.EmbeddedSass.InboundMessage.Syntax;
 import sass.embedded_protocol.EmbeddedSass.OutboundMessage;
-import sass.embedded_protocol.EmbeddedSass.OutboundMessage.*;
+import sass.embedded_protocol.EmbeddedSass.OutboundMessage.CanonicalizeRequestOrBuilder;
 import sass.embedded_protocol.EmbeddedSass.OutboundMessage.CompileResponse.CompileSuccess;
+import sass.embedded_protocol.EmbeddedSass.OutboundMessage.FileImportRequestOrBuilder;
+import sass.embedded_protocol.EmbeddedSass.OutboundMessage.FunctionCallRequestOrBuilder;
+import sass.embedded_protocol.EmbeddedSass.OutboundMessage.ImportRequestOrBuilder;
 
 import javax.annotation.Nonnull;
 import java.io.*;

@@ -23,7 +23,7 @@ class ConversionServiceTest {
 
         assertThat(nullValue).isNotNull();
         assertThat(nullValue.getValueCase()).isEqualTo(EmbeddedSass.Value.ValueCase.SINGLETON);
-        assertThat(nullValue.getSingleton()).isEqualTo(EmbeddedSass.Value.Singleton.NULL);
+        assertThat(nullValue.getSingleton()).isEqualTo(EmbeddedSass.SingletonValue.NULL);
 
         assertThat(ConversionService.toJavaValue(nullValue, String.class, null)).isNull();
     }
@@ -36,8 +36,8 @@ class ConversionServiceTest {
         assertThat(trueValue.getValueCase()).isEqualTo(EmbeddedSass.Value.ValueCase.SINGLETON);
         assertThat(falseValue.getValueCase()).isEqualTo(EmbeddedSass.Value.ValueCase.SINGLETON);
 
-        assertThat(trueValue.getSingleton()).isEqualTo(EmbeddedSass.Value.Singleton.TRUE);
-        assertThat(falseValue.getSingleton()).isEqualTo(EmbeddedSass.Value.Singleton.FALSE);
+        assertThat(trueValue.getSingleton()).isEqualTo(EmbeddedSass.SingletonValue.TRUE);
+        assertThat(falseValue.getSingleton()).isEqualTo(EmbeddedSass.SingletonValue.FALSE);
 
         assertThat(ConversionService.toJavaValue(trueValue, Boolean.class, null)).isTrue();
         assertThat(ConversionService.toJavaValue(falseValue, Boolean.class, null)).isFalse();

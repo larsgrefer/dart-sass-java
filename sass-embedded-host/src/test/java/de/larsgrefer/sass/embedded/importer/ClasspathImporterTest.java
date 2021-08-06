@@ -30,7 +30,7 @@ class ClasspathImporterTest {
         assertThat(success).isNotNull();
 
         assertThat(success.getContents()).contains("red");
-        assertThat(success.getSyntax()).isEqualTo(EmbeddedSass.InboundMessage.Syntax.SCSS);
+        assertThat(success.getSyntax()).isEqualTo(EmbeddedSass.Syntax.SCSS);
     }
 
     @Test

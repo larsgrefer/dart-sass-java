@@ -23,13 +23,13 @@ class ConversionService {
     static EmbeddedSass.Value toSassValue(Object object) {
         if (object == null) {
             return EmbeddedSass.Value.newBuilder()
-                    .setSingleton(EmbeddedSass.Value.Singleton.NULL)
+                    .setSingleton(EmbeddedSass.SingletonValue.NULL)
                     .build();
         }
 
         if (object instanceof Boolean) {
             return EmbeddedSass.Value.newBuilder()
-                    .setSingleton((Boolean) object ? EmbeddedSass.Value.Singleton.TRUE : EmbeddedSass.Value.Singleton.FALSE)
+                    .setSingleton((Boolean) object ? EmbeddedSass.SingletonValue.TRUE : EmbeddedSass.SingletonValue.FALSE)
                     .build();
         }
 
@@ -136,9 +136,9 @@ class ConversionService {
                     .build();
         }
 
-        if (object instanceof EmbeddedSass.Value.Singleton) {
+        if (object instanceof EmbeddedSass.SingletonValue) {
             return EmbeddedSass.Value.newBuilder()
-                    .setSingleton((EmbeddedSass.Value.Singleton) object)
+                    .setSingleton((EmbeddedSass.SingletonValue) object)
                     .build();
         }
 
@@ -273,11 +273,11 @@ class ConversionService {
                     throw new IllegalArgumentException("Cant convert sass Map to " + targetType);
                 }
             case SINGLETON:
-                EmbeddedSass.Value.Singleton singleton = value.getSingleton();
+                EmbeddedSass.SingletonValue singleton = value.getSingleton();
                 switch (value.getSingleton()) {
                     case TRUE:
                     case FALSE:
-                        Boolean boolValue = singleton == EmbeddedSass.Value.Singleton.TRUE;
+                        Boolean boolValue = singleton == EmbeddedSass.SingletonValue.TRUE;
 
                         if (targetType.equals(Boolean.class) || targetType.equals(boolean.class)) {
                             return (T) boolValue;

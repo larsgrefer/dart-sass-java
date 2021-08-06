@@ -16,15 +16,15 @@ import sass.embedded_protocol.EmbeddedSass;
 import sass.embedded_protocol.EmbeddedSass.InboundMessage;
 import sass.embedded_protocol.EmbeddedSass.InboundMessage.CanonicalizeResponse;
 import sass.embedded_protocol.EmbeddedSass.InboundMessage.CompileRequest;
-import sass.embedded_protocol.EmbeddedSass.InboundMessage.CompileRequest.OutputStyle;
 import sass.embedded_protocol.EmbeddedSass.InboundMessage.FunctionCallResponse;
-import sass.embedded_protocol.EmbeddedSass.InboundMessage.Syntax;
 import sass.embedded_protocol.EmbeddedSass.OutboundMessage;
 import sass.embedded_protocol.EmbeddedSass.OutboundMessage.CanonicalizeRequestOrBuilder;
 import sass.embedded_protocol.EmbeddedSass.OutboundMessage.CompileResponse.CompileSuccess;
 import sass.embedded_protocol.EmbeddedSass.OutboundMessage.FileImportRequestOrBuilder;
 import sass.embedded_protocol.EmbeddedSass.OutboundMessage.FunctionCallRequestOrBuilder;
 import sass.embedded_protocol.EmbeddedSass.OutboundMessage.ImportRequestOrBuilder;
+import sass.embedded_protocol.EmbeddedSass.OutputStyle;
+import sass.embedded_protocol.EmbeddedSass.Syntax;
 
 import javax.annotation.Nonnull;
 import java.io.*;
@@ -240,22 +240,22 @@ public class SassCompiler implements Closeable {
 
                 case ERROR:
                     throw new SassProtocolErrorException(outboundMessage.getError());
-                case COMPILERESPONSE:
-                case VERSIONRESPONSE:
+                case COMPILE_RESPONSE:
+                case VERSION_RESPONSE:
                     return outboundMessage;
-                case LOGEVENT:
+                case LOG_EVENT:
                     loggingHandler.handle(outboundMessage.getLogEvent());
                     break;
-                case CANONICALIZEREQUEST:
+                case CANONICALIZE_REQUEST:
                     handleCanonicalizeRequest(outboundMessage.getCanonicalizeRequest());
                     break;
-                case IMPORTREQUEST:
+                case IMPORT_REQUEST:
                     handleImportRequest(outboundMessage.getImportRequest());
                     break;
-                case FILEIMPORTREQUEST:
+                case FILE_IMPORT_REQUEST:
                     handleFileImportRequest(outboundMessage.getFileImportRequest());
                     break;
-                case FUNCTIONCALLREQUEST:
+                case FUNCTION_CALL_REQUEST:
                     handleFunctionCallRequest(outboundMessage.getFunctionCallRequest());
                     break;
                 case MESSAGE_NOT_SET:

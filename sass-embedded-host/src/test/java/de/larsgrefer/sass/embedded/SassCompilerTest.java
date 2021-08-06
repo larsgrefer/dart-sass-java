@@ -48,7 +48,7 @@ class SassCompilerTest {
 
     @Test
     void compileFileToString() throws SassCompilationFailedException, IOException {
-        sassCompiler.setOutputStyle(EmbeddedSass.InboundMessage.CompileRequest.OutputStyle.COMPRESSED);
+        sassCompiler.setOutputStyle(EmbeddedSass.OutputStyle.COMPRESSED);
         String css = sassCompiler.compileFile(new File("src/test/resources/foo/bar.scss")).getCss();
 
         assertThat(css).contains("color:red");
@@ -105,7 +105,7 @@ class SassCompilerTest {
                 .setSource(sass)
                 .build();
 
-        EmbeddedSass.OutboundMessage.CompileResponse.CompileSuccess compileSuccess = sassCompiler.compileString(string, EmbeddedSass.InboundMessage.CompileRequest.OutputStyle.EXPANDED);
+        EmbeddedSass.OutboundMessage.CompileResponse.CompileSuccess compileSuccess = sassCompiler.compileString(string, EmbeddedSass.OutputStyle.EXPANDED);
 
         System.out.println(compileSuccess.getSourceMap());
 

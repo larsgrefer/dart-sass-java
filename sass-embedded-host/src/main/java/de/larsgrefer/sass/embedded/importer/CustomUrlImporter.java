@@ -3,7 +3,7 @@ package de.larsgrefer.sass.embedded.importer;
 import com.google.protobuf.ByteString;
 import lombok.extern.slf4j.Slf4j;
 import sass.embedded_protocol.EmbeddedSass.InboundMessage.ImportResponse.ImportSuccess;
-import sass.embedded_protocol.EmbeddedSass.InboundMessage.Syntax;
+import sass.embedded_protocol.EmbeddedSass.Syntax;
 
 import javax.annotation.Nullable;
 import java.io.File;

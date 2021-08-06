@@ -1,7 +1,7 @@
 package de.larsgrefer.sass.embedded.util;
 
 import lombok.experimental.UtilityClass;
-import sass.embedded_protocol.EmbeddedSass.InboundMessage.Syntax;
+import sass.embedded_protocol.EmbeddedSass.Syntax;
 
 import java.io.File;
 import java.net.URL;

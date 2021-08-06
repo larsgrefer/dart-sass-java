@@ -18,7 +18,7 @@ public class JulLoggingHandler implements LoggingHandler {
 
     @Override
     public void handle(LogEventOrBuilder logEvent) {
-        EmbeddedSass.OutboundMessage.LogEvent.Type type = logEvent.getType();
+        EmbeddedSass.LogEventType type = logEvent.getType();
 
         switch (type) {
             case WARNING:

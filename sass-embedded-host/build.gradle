@@ -58,3 +58,7 @@ processResources {
         rename "-$dartSassVersion-", "-"
     }
 }
+
+jar.manifest {
+    attributes 'Specification-Version': "$dartSassVersion"
+}

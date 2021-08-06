@@ -20,6 +20,7 @@ repositories {
 }
 
 def protobufVersion = "3.17.3"
+def protocolVersion = "1.0.0-beta.11"
 
 tasks.withType(com.google.protobuf.gradle.ProtobufExtract) {
     doFirst {
@@ -28,7 +29,7 @@ tasks.withType(com.google.protobuf.gradle.ProtobufExtract) {
 }
 
 dependencies {
-    protobuf "sass:embedded-protocol:1.0.0-beta.11@zip"
+    protobuf "sass:embedded-protocol:$protocolVersion@zip"
 
     api "com.google.protobuf:protobuf-java:$protobufVersion"
 }
@@ -37,6 +38,11 @@ protobuf {
     protoc {
         artifact = "com.google.protobuf:protoc:$protobufVersion"
     }
+}
+
+jar.manifest {
+    attributes 'Specification-Vendor': "Google LLC",
+            'Specification-Version': "$protocolVersion"
 }
 
 afterEvaluate {

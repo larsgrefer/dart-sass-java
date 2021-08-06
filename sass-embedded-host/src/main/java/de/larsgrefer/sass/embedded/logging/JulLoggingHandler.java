@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import sass.embedded_protocol.EmbeddedSass;
 import sass.embedded_protocol.EmbeddedSass.OutboundMessage.LogEventOrBuilder;
 
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -18,21 +19,20 @@ public class JulLoggingHandler implements LoggingHandler {
 
     @Override
     public void handle(LogEventOrBuilder logEvent) {
-        EmbeddedSass.LogEventType type = logEvent.getType();
+        Level logLevel = getLogLevel(logEvent.getType());
+        logger.log(logLevel, logEvent.getFormatted());
+    }
 
+    protected Level getLogLevel(EmbeddedSass.LogEventType type) {
         switch (type) {
             case WARNING:
-                logger.warning(logEvent.getMessage());
-                break;
             case DEPRECATION_WARNING:
-                logger.info(logEvent.getMessage());
-                break;
+                return Level.WARNING;
             case DEBUG:
-                logger.fine(logEvent.getMessage());
-                break;
+                return Level.FINE;
             case UNRECOGNIZED:
-                break;
+            default:
+                return Level.INFO;
         }
-
     }
 }

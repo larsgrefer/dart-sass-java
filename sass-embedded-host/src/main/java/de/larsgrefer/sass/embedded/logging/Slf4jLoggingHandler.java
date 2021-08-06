@@ -21,13 +21,13 @@ public class Slf4jLoggingHandler implements LoggingHandler {
 
         switch (type) {
             case WARNING:
-                logger.warn(logEvent.getMessage());
+                logger.warn(logEvent.getFormatted());
                 break;
             case DEPRECATION_WARNING:
-                logger.info(logEvent.getMessage());
+                logger.info(logEvent.getFormatted());
                 break;
             case DEBUG:
-                logger.debug(logEvent.getMessage());
+                logger.debug(logEvent.getFormatted());
                 break;
             case UNRECOGNIZED:
                 break;

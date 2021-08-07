@@ -1,5 +1,6 @@
 package de.larsgrefer.sass.embedded.util;
 
+import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 import sass.embedded_protocol.EmbeddedSass.Syntax;
 
@@ -9,15 +10,15 @@ import java.net.URL;
 @UtilityClass
 public class SyntaxUtil {
 
-    public static Syntax guessSyntax(URL url) {
+    public static Syntax guessSyntax(@NonNull URL url) {
         return guessSyntax(url.getPath());
     }
 
-    public static Syntax guessSyntax(File file) {
+    public static Syntax guessSyntax(@NonNull File file) {
         return guessSyntax(file.getName());
     }
 
-    private static Syntax guessSyntax(String path) {
+    private static Syntax guessSyntax(@NonNull String path) {
         String lowerPath = path.toLowerCase();
 
         if (lowerPath.endsWith(".css")) {

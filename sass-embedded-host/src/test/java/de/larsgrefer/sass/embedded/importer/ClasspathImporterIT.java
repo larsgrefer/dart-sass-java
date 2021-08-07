@@ -59,14 +59,14 @@ public class ClasspathImporterIT {
     }
 
     @Test
-    void interClasspathImport() throws SassCompilationFailedException, IOException, URISyntaxException {
+    void interClasspathImport() throws SassCompilationFailedException, IOException {
         String css = sassCompiler.compileScssString("@import 'foo/classpathImport';").getCss();
 
         assertThat(css).contains("green");
     }
     @Test
-    void interClasspathImport_fromJar() throws SassCompilationFailedException, IOException, URISyntaxException {
-        String css = sassCompiler.compileScssString("@import 'META-INF/resources/webjars/bootstrap/4.6.0/scss/bootstrap.scss';").getCss();
+    void interClasspathImport_fromJar() throws SassCompilationFailedException, IOException {
+        String css = sassCompiler.compileScssString("@import 'META-INF/resources/webjars/bootstrap/5.1.0/scss/bootstrap.scss';").getCss();
 
         assertThat(css).contains("green");
     }

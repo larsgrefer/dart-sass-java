@@ -11,6 +11,7 @@ import de.larsgrefer.sass.embedded.logging.LoggingHandler;
 import de.larsgrefer.sass.embedded.logging.Slf4jLoggingHandler;
 import de.larsgrefer.sass.embedded.util.SyntaxUtil;
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import sass.embedded_protocol.EmbeddedSass;
@@ -133,7 +134,7 @@ public class SassCompiler implements Closeable {
         return builder;
     }
 
-    public CompileSuccess compile(URL source) throws SassCompilationFailedException, IOException {
+    public CompileSuccess compile(@NonNull URL source) throws SassCompilationFailedException, IOException {
         Syntax syntax = SyntaxUtil.guessSyntax(source);
 
         if (source.getProtocol().equals("file")) {

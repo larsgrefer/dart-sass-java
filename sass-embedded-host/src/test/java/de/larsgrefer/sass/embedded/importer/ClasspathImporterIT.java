@@ -6,7 +6,6 @@ import de.larsgrefer.sass.embedded.SassCompilerFactory;
 import org.junit.jupiter.api.*;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -64,6 +63,7 @@ public class ClasspathImporterIT {
 
         assertThat(css).contains("green");
     }
+
     @Test
     void interClasspathImport_fromJar() throws SassCompilationFailedException, IOException {
         String css = sassCompiler.compileScssString("@import 'META-INF/resources/webjars/bootstrap/5.1.0/scss/bootstrap.scss';").getCss();

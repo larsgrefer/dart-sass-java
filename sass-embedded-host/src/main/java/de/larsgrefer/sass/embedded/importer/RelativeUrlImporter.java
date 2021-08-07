@@ -3,12 +3,7 @@ package de.larsgrefer.sass.embedded.importer;
 import lombok.RequiredArgsConstructor;
 
 import javax.annotation.Nullable;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
-import java.net.JarURLConnection;
 import java.net.URL;
-import java.net.URLConnection;
-import java.util.jar.JarEntry;
 
 @RequiredArgsConstructor
 public class RelativeUrlImporter extends CustomUrlImporter {

@@ -6,12 +6,9 @@ import de.larsgrefer.sass.embedded.SassCompilerFactory;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import sass.embedded_protocol.EmbeddedSass;
 import sass.embedded_protocol.EmbeddedSass.OutboundMessage.CompileResponse.CompileSuccess;
 
 import java.io.IOException;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 abstract class LoggingHandlerTest {
 

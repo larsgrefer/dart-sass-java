@@ -2,8 +2,6 @@ package de.larsgrefer.sass.embedded.logging;
 
 import java.util.logging.Logger;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 class JulLoggingHandlerTest extends LoggingHandlerTest {
 
     @Override

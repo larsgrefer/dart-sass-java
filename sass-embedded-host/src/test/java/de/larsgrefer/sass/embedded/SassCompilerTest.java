@@ -88,7 +88,7 @@ class SassCompilerTest {
 
         HostFunction sassFunction = new HostFunction("foo", Collections.singletonList(new HostFunction.Argument("col", null))) {
             @Override
-            public EmbeddedSass.Value invoke(List<EmbeddedSass.Value> arguments) throws Throwable {
+            public EmbeddedSass.Value invoke(List<EmbeddedSass.Value> arguments) {
                 return EmbeddedSass.Value.newBuilder()
                         .setRgbColor(EmbeddedSass.Value.RgbColor.newBuilder()
                                 .setRed(255)
@@ -107,12 +107,12 @@ class SassCompilerTest {
     }
 
     @Test
-    void customFunction_error() throws Exception {
+    void customFunction_error() {
         String scss = ".foo { .bar { color : foo(#ffffff);}}";
 
         HostFunction sassFunction = new HostFunction("foo", Collections.singletonList(new HostFunction.Argument("col", null))) {
             @Override
-            public EmbeddedSass.Value invoke(List<EmbeddedSass.Value> arguments) throws Throwable {
+            public EmbeddedSass.Value invoke(List<EmbeddedSass.Value> arguments) {
                 throw new RuntimeException("bazinga");
             }
         };

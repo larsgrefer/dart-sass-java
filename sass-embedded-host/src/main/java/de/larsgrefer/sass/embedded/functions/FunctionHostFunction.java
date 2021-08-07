@@ -26,7 +26,7 @@ class FunctionHostFunction<T> extends HostFunction {
     }
 
     @Override
-    public EmbeddedSass.Value invoke(List<EmbeddedSass.Value> arguments) throws Throwable {
+    public EmbeddedSass.Value invoke(List<EmbeddedSass.Value> arguments) {
         if (arguments.size() != 1) {
             throw new IllegalArgumentException("Invalid argument count: Expected 1 instead of " + arguments.size());
         }

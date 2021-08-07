@@ -16,7 +16,7 @@ class CustomUrlImporterTest {
     void setUp() {
         customUrlImporter = new CustomUrlImporter() {
             @Override
-            public URL canonicalizeUrl(String url) throws Exception {
+            public URL canonicalizeUrl(String url) {
                 return null;
             }
         };

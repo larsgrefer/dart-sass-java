@@ -30,7 +30,7 @@ class BiFunctionHostFunction<T, U> extends HostFunction {
     }
 
     @Override
-    public EmbeddedSass.Value invoke(List<EmbeddedSass.Value> arguments) throws Throwable {
+    public EmbeddedSass.Value invoke(List<EmbeddedSass.Value> arguments) {
         if (arguments.size() != 2) {
             throw new IllegalArgumentException("Invalid argument count: Expected 2 instead of " + arguments.size());
         }

@@ -56,7 +56,7 @@ class ClasspathImporterTest {
     }
 
     @Test
-    void canonicalizeAmbigous_file() throws Exception {
+    void canonicalizeAmbigous_file() {
         assertThatThrownBy(() -> {
             classpathImporter.canonicalize("META-INF/MANIFEST.MF", false);
         }).isNotNull();

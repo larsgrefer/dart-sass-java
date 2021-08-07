@@ -1,9 +1,12 @@
 package de.larsgrefer.sass.embedded.functions;
 
+import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestFactory;
 import org.springframework.core.ParameterizedTypeReference;
 import sass.embedded_protocol.EmbeddedSass;
 
+import java.awt.*;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -11,6 +14,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -44,6 +48,46 @@ class ConversionServiceTest {
 
         assertThat(ConversionService.toJavaValue(trueValue, String.class, null)).isEqualTo("true");
         assertThat(ConversionService.toJavaValue(falseValue, String.class, null)).isEqualTo("false");
+    }
+
+    private static final List<Color> colors = Arrays.asList(Color.RED, Color.CYAN, Color.WHITE, Color.BLACK, Color.ORANGE);
+
+    @TestFactory
+    Stream<DynamicTest> colorConversion_rgb() {
+        return colors.stream()
+                .map(color -> DynamicTest.dynamicTest(color.toString(), () -> testColor_rgb(color)));
+    }
+
+    private void testColor_rgb(Color color) {
+        EmbeddedSass.Value sassColor = ConversionService.toSassValue(color);
+        assertThat(sassColor).isNotNull();
+        assertThat(ConversionService.toJavaValue(sassColor, Color.class, null)).isEqualTo(color);
+    }
+
+    @TestFactory
+    Stream<DynamicTest> colorConversion_hsl() {
+        return colors.stream()
+                .map(col -> DynamicTest.dynamicTest(col.toString(), () -> testColor_hsl(col)));
+    }
+
+    private void testColor_hsl(Color col) {
+        float[] floats = Color.RGBtoHSB(col.getRed(), col.getGreen(), col.getBlue(), null);
+
+        EmbeddedSass.Value.HslColor hslColor = EmbeddedSass.Value.HslColor.newBuilder()
+                .setHue(floats[0])
+                .setSaturation(floats[1])
+                .setLightness(floats[2])
+                .setAlpha(1d)
+                .build();
+
+        assertThat(hslColor).isNotNull();
+
+        EmbeddedSass.Value sassValue = EmbeddedSass.Value.newBuilder()
+                .setHslColor(hslColor)
+                .build();
+        Color javaValue = ConversionService.toJavaValue(sassValue, Color.class, null);
+
+        assertThat(javaValue).isEqualTo(col);
     }
 
     @Test

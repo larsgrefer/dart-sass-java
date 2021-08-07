@@ -35,7 +35,7 @@ class ClasspathImporterTest {
 
     @Test
     void canonicalizeToImport_jar() throws Exception {
-        String canonicalize = classpathImporter.canonicalize("google/protobuf/type.proto", false);
+        String canonicalize = classpathImporter.canonicalize("META-INF/resources/webjars/bootstrap/4.6.0/scss/bootstrap.scss", false);
 
         assertThat(canonicalize).isNotNull();
 
@@ -44,7 +44,7 @@ class ClasspathImporterTest {
         EmbeddedSass.InboundMessage.ImportResponse.ImportSuccess success = classpathImporter.handleImport(newUrl);
         assertThat(success).isNotNull();
 
-        assertThat(success.getContents()).contains("CONSEQUENTIAL");
+        assertThat(success.getContents()).contains("@import");
     }
 
     @Test

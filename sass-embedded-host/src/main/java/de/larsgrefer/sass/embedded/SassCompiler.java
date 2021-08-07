@@ -6,6 +6,7 @@ import de.larsgrefer.sass.embedded.functions.HostFunction;
 import de.larsgrefer.sass.embedded.importer.CustomImporter;
 import de.larsgrefer.sass.embedded.importer.FileImporter;
 import de.larsgrefer.sass.embedded.importer.Importer;
+import de.larsgrefer.sass.embedded.importer.RelativeUrlImporter;
 import de.larsgrefer.sass.embedded.logging.LoggingHandler;
 import de.larsgrefer.sass.embedded.logging.Slf4jLoggingHandler;
 import de.larsgrefer.sass.embedded.util.SyntaxUtil;
@@ -144,12 +145,25 @@ public class SassCompiler implements Closeable {
         try (InputStream in = source.openStream()) {
             content = ByteString.readFrom(in);
         }
+
+        CustomImporter importer = new RelativeUrlImporter(source).autoCanonicalize();
+
+        customImporters.put(importer.getId(), importer);
+
         CompileRequest.StringInput build = CompileRequest.StringInput.newBuilder()
+                .setUrl(source.toString())
                 .setSourceBytes(content)
+                .setImporter(CompileRequest.Importer.newBuilder()
+                        .setImporterId(importer.getId())
+                        .build())
                 .setSyntax(syntax)
                 .build();
 
-        return compileString(build, getOutputStyle());
+        try {
+            return compileString(build, getOutputStyle());
+        } finally {
+            customImporters.remove(importer.getId());
+        }
     }
 
     //region compileString and overloads

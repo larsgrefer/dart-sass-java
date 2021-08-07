@@ -12,7 +12,7 @@ public class SassCompilationFailedException extends Exception {
     private final CompileFailure compileFailure;
 
     public SassCompilationFailedException(CompileFailure failure) {
-        super(failure.getMessage() + "\n" + failure.getSpan().getText() + "\n" + failure.getStackTrace());
+        super(failure.getFormatted());
         this.compileFailure = failure;
     }
 

@@ -45,7 +45,7 @@ public class ClasspathImporter extends CustomUrlImporter {
         List<URL> foundUrls = new ArrayList<>();
         while (foundResources.hasMoreElements()) {
             URL candidate = foundResources.nextElement();
-            if (!isDirectory(candidate))
+            if (isFile(candidate))
                 foundUrls.add(candidate);
         }
         return foundUrls;

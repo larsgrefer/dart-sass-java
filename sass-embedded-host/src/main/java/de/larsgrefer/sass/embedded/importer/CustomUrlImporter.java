@@ -1,18 +1,16 @@
 package de.larsgrefer.sass.embedded.importer;
 
 import com.google.protobuf.ByteString;
+import de.larsgrefer.sass.embedded.util.SyntaxUtil;
 import lombok.extern.slf4j.Slf4j;
 import sass.embedded_protocol.EmbeddedSass.InboundMessage.ImportResponse.ImportSuccess;
-import sass.embedded_protocol.EmbeddedSass.Syntax;
 
 import javax.annotation.Nullable;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.JarURLConnection;
-import java.net.URI;
-import java.net.URL;
-import java.net.URLConnection;
+import java.net.*;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
@@ -33,7 +31,7 @@ public abstract class CustomUrlImporter extends CustomImporter {
     public String canonicalize(String url, boolean fromImport) throws Exception {
         URL result = canonicalizeUrl(url);
 
-        if (result == null && isAbsolute(url)) {
+        if (result == null && !usedPrefixes.isEmpty() && isAbsolute(url)) {
             result = canonicalizeUrl(getRelativePart(url));
         }
 
@@ -114,46 +112,52 @@ public abstract class CustomUrlImporter extends CustomImporter {
             result.setContentsBytes(content);
         }
 
-        if (url.getPath().endsWith(".css")) {
-            result.setSyntax(Syntax.CSS);
-        }
-        else if (url.getPath().endsWith(".scss")) {
-            result.setSyntax(Syntax.SCSS);
-        }
-        else if (url.getPath().endsWith(".sass")) {
-            result.setSyntax(Syntax.INDENTED);
-        }
+        result.setSyntax(SyntaxUtil.guessSyntax(url));
 
         return result.build();
     }
 
-    protected boolean isDirectory(URL url) throws IOException {
+    protected boolean isFile(URL url) throws IOException {
 
         String urlPath = url.getPath();
         if (url.getProtocol().equals("file")) {
             File file = new File(urlPath);
-            if (file.exists()) {
-                return file.isDirectory();
-            }
-            else {
-                throw new IllegalStateException("file not found: " + file);
-            }
+            return file.exists() && file.isFile();
         }
 
         URLConnection connection = url.openConnection();
         if (connection instanceof JarURLConnection) {
-            JarEntry jarEntry = ((JarURLConnection) connection).getJarEntry();
-            if (jarEntry != null) {
-                return jarEntry.isDirectory();
+            JarURLConnection jarURLConnection = (JarURLConnection) connection;
+
+            try {
+                JarEntry jarEntry = jarURLConnection.getJarEntry();
+
+                return jarEntry != null && !jarEntry.isDirectory();
+            } catch (FileNotFoundException e) {
+                return false;
             }
-            else {
-                throw new IllegalStateException("Jar entry not found: " + url);
+        }
+        else if (connection instanceof HttpURLConnection) {
+            try (InputStream in = connection.getInputStream()) {
+                String contentType = connection.getContentType();
+
+                if (urlPath.lastIndexOf("/") > urlPath.lastIndexOf(".")) {
+                    if (!contentType.startsWith("text/")) {
+                        return false;
+                    }
+                    if (contentType.startsWith("text/html")) {
+                        return false;
+                    }
+                }
+
+            } catch (FileNotFoundException e) {
+                return false;
             }
         }
 
         if (urlPath.endsWith(".css") || urlPath.endsWith(".scss") || urlPath.endsWith(".sass")) {
             // Best guess
-            return false;
+            return true;
         }
 
         throw new IllegalArgumentException("Can't handle url: " + url);

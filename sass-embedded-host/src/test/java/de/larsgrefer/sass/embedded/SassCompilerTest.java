@@ -5,9 +5,11 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import sass.embedded_protocol.EmbeddedSass;
+import sass.embedded_protocol.EmbeddedSass.OutboundMessage.CompileResponse.CompileSuccess;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.util.Collections;
 import java.util.List;
 
@@ -52,6 +54,32 @@ class SassCompilerTest {
         String css = sassCompiler.compileFile(new File("src/test/resources/foo/bar.scss")).getCss();
 
         assertThat(css).contains("color:red");
+    }
+
+    @Test
+    void compileCssUrl() throws IOException, SassCompilationFailedException {
+        CompileSuccess compileSuccess = sassCompiler.compile(new URL("https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css"));
+
+        String css = compileSuccess.getCss();
+        assertThat(css).isNotBlank();
+    }
+
+    @Test
+    void compileScssUrl() throws IOException, SassCompilationFailedException {
+        CompileSuccess compileSuccess = sassCompiler.compile(new URL("https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/scss/bootstrap.scss"));
+
+        String css = compileSuccess.getCss();
+        assertThat(css).isNotBlank();
+    }
+
+    @Test
+    void compileClasspathUrl() throws IOException, SassCompilationFailedException {
+        URL resource = getClass().getResource("/META-INF/resources/webjars/bootstrap/4.6.0/scss/bootstrap.scss");
+
+        CompileSuccess compileSuccess = sassCompiler.compile(resource);
+
+        String css = compileSuccess.getCss();
+        assertThat(css).isNotBlank();
     }
 
     @Test
@@ -105,13 +133,13 @@ class SassCompilerTest {
                 .setSource(sass)
                 .build();
 
-        EmbeddedSass.OutboundMessage.CompileResponse.CompileSuccess compileSuccess = sassCompiler.compileString(string, EmbeddedSass.OutputStyle.EXPANDED);
+        CompileSuccess compileSuccess = sassCompiler.compileString(string, EmbeddedSass.OutputStyle.EXPANDED);
 
         System.out.println(compileSuccess.getSourceMap());
 
         File file = new File("src/test/resources/foo/bar.scss");
 
-        EmbeddedSass.OutboundMessage.CompileResponse.CompileSuccess compileSuccess1 = sassCompiler.compileFile(file);
+        CompileSuccess compileSuccess1 = sassCompiler.compileFile(file);
 
         System.out.println(compileSuccess1.getSourceMap());
     }

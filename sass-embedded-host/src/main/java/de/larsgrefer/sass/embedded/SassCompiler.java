@@ -88,15 +88,15 @@ public class SassCompiler implements Closeable {
         return exec(inboundMessage).getVersionResponse();
     }
 
-    public void registerFunction(HostFunction sassFunction) {
+    public void registerFunction(@NonNull HostFunction sassFunction) {
         globalFunctions.put(sassFunction.getName(), sassFunction);
     }
 
-    public void registerImporter(FileImporter fileImporter) {
+    public void registerImporter(@NonNull FileImporter fileImporter) {
         fileImporters.put(fileImporter.getId(), fileImporter);
     }
 
-    public void registerImporter(CustomImporter customImporter) {
+    public void registerImporter(@NonNull CustomImporter customImporter) {
         customImporters.put(customImporter.getId(), customImporter);
     }
 
@@ -168,19 +168,19 @@ public class SassCompiler implements Closeable {
     }
 
     //region compileString and overloads
-    public CompileSuccess compileScssString(String source) throws IOException, SassCompilationFailedException {
+    public CompileSuccess compileScssString(@NonNull String source) throws IOException, SassCompilationFailedException {
         return compileString(source, Syntax.SCSS);
     }
 
-    public CompileSuccess compileSassString(String source) throws IOException, SassCompilationFailedException {
+    public CompileSuccess compileSassString(@NonNull String source) throws IOException, SassCompilationFailedException {
         return compileString(source, Syntax.INDENTED);
     }
 
-    public CompileSuccess compileCssString(String source) throws IOException, SassCompilationFailedException {
+    public CompileSuccess compileCssString(@NonNull String source) throws IOException, SassCompilationFailedException {
         return compileString(source, Syntax.CSS);
     }
 
-    public CompileSuccess compileString(String source, Syntax syntax) throws IOException, SassCompilationFailedException {
+    public CompileSuccess compileString(@NonNull String source, Syntax syntax) throws IOException, SassCompilationFailedException {
         CompileRequest.StringInput stringInput = CompileRequest.StringInput.newBuilder()
                 .setSource(source)
                 .setSyntax(syntax)
@@ -190,10 +190,7 @@ public class SassCompiler implements Closeable {
     }
 
     @Nonnull
-    public CompileSuccess compileString(CompileRequest.StringInput string, OutputStyle outputStyle) throws IOException, SassCompilationFailedException {
-        if (outputStyle == null) {
-            throw new IllegalArgumentException("outputStyle must not be null");
-        }
+    public CompileSuccess compileString(CompileRequest.StringInput string, @NonNull OutputStyle outputStyle) throws IOException, SassCompilationFailedException {
 
         CompileRequest compileRequest = compileRequestBuilder()
                 .setString(string)
@@ -206,11 +203,11 @@ public class SassCompiler implements Closeable {
 
     //region compileFile
 
-    public CompileSuccess compileFile(File inputFile) throws IOException, SassCompilationFailedException {
+    public CompileSuccess compileFile(@NonNull File inputFile) throws IOException, SassCompilationFailedException {
         return compileFile(inputFile, getOutputStyle());
     }
 
-    public CompileSuccess compileFile(File file, OutputStyle outputStyle) throws IOException, SassCompilationFailedException {
+    public CompileSuccess compileFile(@NonNull File file, OutputStyle outputStyle) throws IOException, SassCompilationFailedException {
         CompileRequest compileRequest = compileRequestBuilder()
                 .setPath(file.getPath())
                 .setStyle(outputStyle)

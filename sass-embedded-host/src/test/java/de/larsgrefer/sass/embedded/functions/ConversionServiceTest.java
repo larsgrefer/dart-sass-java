@@ -18,6 +18,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
+import static de.larsgrefer.sass.embedded.functions.ConversionService.toJavaValue;
+import static de.larsgrefer.sass.embedded.functions.ConversionService.toSassValue;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
@@ -25,19 +27,19 @@ class ConversionServiceTest {
 
     @Test
     void nullConversion() {
-        Value nullValue = ConversionService.toSassValue(null);
+        Value nullValue = toSassValue(null);
 
         assertThat(nullValue).isNotNull();
         assertThat(nullValue.getValueCase()).isEqualTo(ValueCase.SINGLETON);
         assertThat(nullValue.getSingleton()).isEqualTo(EmbeddedSass.SingletonValue.NULL);
 
-        assertThat(ConversionService.toJavaValue(nullValue, String.class, null)).isNull();
+        assertThat(toJavaValue(nullValue, String.class, null)).isNull();
     }
 
     @Test
     void booleanConversion() {
-        Value trueValue = ConversionService.toSassValue(true);
-        Value falseValue = ConversionService.toSassValue(false);
+        Value trueValue = toSassValue(true);
+        Value falseValue = toSassValue(false);
 
         assertThat(trueValue.getValueCase()).isEqualTo(ValueCase.SINGLETON);
         assertThat(falseValue.getValueCase()).isEqualTo(ValueCase.SINGLETON);
@@ -45,11 +47,11 @@ class ConversionServiceTest {
         assertThat(trueValue.getSingleton()).isEqualTo(EmbeddedSass.SingletonValue.TRUE);
         assertThat(falseValue.getSingleton()).isEqualTo(EmbeddedSass.SingletonValue.FALSE);
 
-        assertThat(ConversionService.toJavaValue(trueValue, Boolean.class, null)).isTrue();
-        assertThat(ConversionService.toJavaValue(falseValue, Boolean.class, null)).isFalse();
+        assertThat(toJavaValue(trueValue, Boolean.class, null)).isTrue();
+        assertThat(toJavaValue(falseValue, Boolean.class, null)).isFalse();
 
-        assertThat(ConversionService.toJavaValue(trueValue, String.class, null)).isEqualTo("true");
-        assertThat(ConversionService.toJavaValue(falseValue, String.class, null)).isEqualTo("false");
+        assertThat(toJavaValue(trueValue, String.class, null)).isEqualTo("true");
+        assertThat(toJavaValue(falseValue, String.class, null)).isEqualTo("false");
     }
 
     private static final List<Color> colors = Arrays.asList(Color.RED, Color.CYAN, Color.WHITE, Color.BLACK, Color.ORANGE);
@@ -61,9 +63,9 @@ class ConversionServiceTest {
     }
 
     private void testColor_rgb(Color color) {
-        Value sassColor = ConversionService.toSassValue(color);
+        Value sassColor = toSassValue(color);
         assertThat(sassColor).isNotNull();
-        assertThat(ConversionService.toJavaValue(sassColor, Color.class, null)).isEqualTo(color);
+        assertThat(toJavaValue(sassColor, Color.class, null)).isEqualTo(color);
     }
 
     @TestFactory
@@ -87,15 +89,15 @@ class ConversionServiceTest {
         Value sassValue = Value.newBuilder()
                 .setHslColor(hslColor)
                 .build();
-        Color javaValue = ConversionService.toJavaValue(sassValue, Color.class, null);
+        Color javaValue = toJavaValue(sassValue, Color.class, null);
 
         assertThat(javaValue).isEqualTo(col);
     }
 
     @Test
     void stringConversion() {
-        Value foo = ConversionService.toSassValue("foo");
-        Value bar = ConversionService.toSassValue("bar");
+        Value foo = toSassValue("foo");
+        Value bar = toSassValue("bar");
 
         assertThat(foo).isNotNull();
         assertThat(bar).isNotNull();
@@ -106,7 +108,7 @@ class ConversionServiceTest {
         assertThat(foo.getString().getText()).isEqualTo("foo");
         assertThat(bar.getString().getText()).isEqualTo("bar");
 
-        String javaValue = ConversionService.toJavaValue(foo, String.class, null);
+        String javaValue = toJavaValue(foo, String.class, null);
 
         assertThat(javaValue).isEqualTo("foo");
     }
@@ -120,40 +122,40 @@ class ConversionServiceTest {
         float f = 5.1f;
         double d = 6.2;
 
-        Value sassByte = ConversionService.toSassValue(b);
+        Value sassByte = toSassValue(b);
         assertThat(sassByte.getValueCase()).isEqualTo(ValueCase.NUMBER);
 
-        Value sassShort = ConversionService.toSassValue(s);
+        Value sassShort = toSassValue(s);
         assertThat(sassShort.getValueCase()).isEqualTo(ValueCase.NUMBER);
 
-        Value sassInt = ConversionService.toSassValue(i);
+        Value sassInt = toSassValue(i);
         assertThat(sassInt.getValueCase()).isEqualTo(ValueCase.NUMBER);
 
-        Value sassLong = ConversionService.toSassValue(l);
+        Value sassLong = toSassValue(l);
         assertThat(sassLong.getValueCase()).isEqualTo(ValueCase.NUMBER);
 
-        Value sassFloat = ConversionService.toSassValue(f);
+        Value sassFloat = toSassValue(f);
         assertThat(sassFloat.getValueCase()).isEqualTo(ValueCase.NUMBER);
 
-        Value sassDouble = ConversionService.toSassValue(d);
+        Value sassDouble = toSassValue(d);
         assertThat(sassDouble.getValueCase()).isEqualTo(ValueCase.NUMBER);
 
-        Byte javaByte = ConversionService.toJavaValue(sassByte, Byte.class, null);
+        Byte javaByte = toJavaValue(sassByte, Byte.class, null);
         assertThat(javaByte).isEqualTo(b);
 
-        Short javaShort = ConversionService.toJavaValue(sassShort, Short.class, null);
+        Short javaShort = toJavaValue(sassShort, Short.class, null);
         assertThat(javaShort).isEqualTo(s);
 
-        Integer javaInt = ConversionService.toJavaValue(sassInt, Integer.class, null);
+        Integer javaInt = toJavaValue(sassInt, Integer.class, null);
         assertThat(javaInt).isEqualTo(i);
 
-        Long javaLong = ConversionService.toJavaValue(sassLong, Long.class, null);
+        Long javaLong = toJavaValue(sassLong, Long.class, null);
         assertThat(javaLong).isEqualTo(l);
 
-        Float javaFloat = ConversionService.toJavaValue(sassFloat, Float.class, null);
+        Float javaFloat = toJavaValue(sassFloat, Float.class, null);
         assertThat(javaFloat).isEqualTo(f);
 
-        Double javaDouble = ConversionService.toJavaValue(sassDouble, Double.class, null);
+        Double javaDouble = toJavaValue(sassDouble, Double.class, null);
         assertThat(javaDouble).isEqualTo(d);
     }
 
@@ -162,14 +164,14 @@ class ConversionServiceTest {
         BigInteger i = BigInteger.valueOf(42);
         BigDecimal d = BigDecimal.valueOf(47.11);
 
-        Value sassBigInt = ConversionService.toSassValue(i);
-        Value sassBigDec = ConversionService.toSassValue(d);
+        Value sassBigInt = toSassValue(i);
+        Value sassBigDec = toSassValue(d);
 
         assertThat(sassBigInt.getValueCase()).isEqualTo(ValueCase.NUMBER);
         assertThat(sassBigDec.getValueCase()).isEqualTo(ValueCase.NUMBER);
 
-        BigInteger bigInteger = ConversionService.toJavaValue(sassBigInt, BigInteger.class, null);
-        BigDecimal bigDecimal = ConversionService.toJavaValue(sassBigDec, BigDecimal.class, null);
+        BigInteger bigInteger = toJavaValue(sassBigInt, BigInteger.class, null);
+        BigDecimal bigDecimal = toJavaValue(sassBigDec, BigDecimal.class, null);
 
         assertThat(bigInteger).isEqualTo(i);
         assertThat(bigDecimal).isEqualTo(d);
@@ -179,7 +181,7 @@ class ConversionServiceTest {
     void listConversion() {
         List<String> stringList = Arrays.asList("foo", "bar");
 
-        Value value = ConversionService.toSassValue(stringList);
+        Value value = toSassValue(stringList);
 
         assertThat(value.getValueCase()).isEqualTo(ValueCase.LIST);
 
@@ -190,7 +192,7 @@ class ConversionServiceTest {
 
         Type listType = new ParameterizedTypeReference<List<String>>() {
         }.getType();
-        List<String> list = ConversionService.toJavaValue(value, List.class, listType);
+        List<String> list = toJavaValue(value, List.class, listType);
 
         assertThat(list).containsExactly("foo", "bar");
     }
@@ -201,7 +203,7 @@ class ConversionServiceTest {
         intMap.put("foo", 1);
         intMap.put("bar", 2);
 
-        Value value = ConversionService.toSassValue(intMap);
+        Value value = toSassValue(intMap);
 
         assertThat(value.getValueCase()).isEqualTo(ValueCase.MAP);
 
@@ -211,7 +213,7 @@ class ConversionServiceTest {
 
         Type mapType = new ParameterizedTypeReference<Map<String, Integer>>() {
         }.getType();
-        Map<String, Integer> map = ConversionService.toJavaValue(value, Map.class, mapType);
+        Map<String, Integer> map = toJavaValue(value, Map.class, mapType);
 
         assertThat(map).containsEntry("foo", 1);
         assertThat(map).containsEntry("bar", 2);
@@ -219,12 +221,31 @@ class ConversionServiceTest {
 
     @Test
     void sassValueConversion() {
-        assertThat(ConversionService.toSassValue(Value.String.getDefaultInstance()).getValueCase()).isEqualTo(ValueCase.STRING);
-        assertThat(ConversionService.toSassValue(Value.Number.getDefaultInstance()).getValueCase()).isEqualTo(ValueCase.NUMBER);
-        assertThat(ConversionService.toSassValue(Value.RgbColor.getDefaultInstance()).getValueCase()).isEqualTo(ValueCase.RGB_COLOR);
-        assertThat(ConversionService.toSassValue(Value.HslColor.getDefaultInstance()).getValueCase()).isEqualTo(ValueCase.HSL_COLOR);
-        assertThat(ConversionService.toSassValue(Value.List.getDefaultInstance()).getValueCase()).isEqualTo(ValueCase.LIST);
-        assertThat(ConversionService.toSassValue(Value.Map.getDefaultInstance()).getValueCase()).isEqualTo(ValueCase.MAP);
-        assertThat(ConversionService.toSassValue(EmbeddedSass.SingletonValue.NULL).getValueCase()).isEqualTo(ValueCase.SINGLETON);
+        assertThat(toSassValue(Value.String.getDefaultInstance()).getValueCase()).isEqualTo(ValueCase.STRING);
+        assertThat(toSassValue(Value.Number.getDefaultInstance()).getValueCase()).isEqualTo(ValueCase.NUMBER);
+        assertThat(toSassValue(Value.RgbColor.getDefaultInstance()).getValueCase()).isEqualTo(ValueCase.RGB_COLOR);
+        assertThat(toSassValue(Value.HslColor.getDefaultInstance()).getValueCase()).isEqualTo(ValueCase.HSL_COLOR);
+        assertThat(toSassValue(Value.List.getDefaultInstance()).getValueCase()).isEqualTo(ValueCase.LIST);
+        assertThat(toSassValue(Value.Map.getDefaultInstance()).getValueCase()).isEqualTo(ValueCase.MAP);
+        assertThat(toSassValue(EmbeddedSass.SingletonValue.NULL).getValueCase()).isEqualTo(ValueCase.SINGLETON);
+    }
+
+    @TestFactory
+    Stream<DynamicTest> sassValueConversion2() {
+        return Stream.of(
+                        Value.String.getDefaultInstance(),
+                        Value.Number.getDefaultInstance(),
+                        Value.RgbColor.getDefaultInstance(),
+                        Value.HslColor.getDefaultInstance(),
+                        Value.List.getDefaultInstance(),
+                        Value.Map.getDefaultInstance(),
+                        EmbeddedSass.SingletonValue.NULL
+                )
+                .map(val -> DynamicTest.dynamicTest("foo-" + val.toString(), () -> {
+                    Value value = toSassValue(val);
+                    Object javaValue = toJavaValue(value, val.getClass(), null);
+
+                    assertThat(javaValue).isEqualTo(val);
+                }));
     }
 }

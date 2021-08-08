@@ -285,6 +285,9 @@ class ConversionService {
 
                         throw new IllegalArgumentException("Cant convert sass boolean to " + targetType);
                     case NULL:
+                        if (targetType.equals(EmbeddedSass.SingletonValue.class)) {
+                            return (T) EmbeddedSass.SingletonValue.NULL;
+                        }
                         return null;
                     case UNRECOGNIZED:
                         throw new IllegalArgumentException("Unknown sass singleton: " + value.getSingleton());

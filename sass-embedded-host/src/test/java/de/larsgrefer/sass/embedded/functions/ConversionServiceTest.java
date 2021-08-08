@@ -1,6 +1,5 @@
 package de.larsgrefer.sass.embedded.functions;
 
-import com.google.protobuf.StringValue;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestFactory;

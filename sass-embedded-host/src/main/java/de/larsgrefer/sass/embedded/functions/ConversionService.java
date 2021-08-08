@@ -1,5 +1,6 @@
 package de.larsgrefer.sass.embedded.functions;
 
+import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 import sass.embedded_protocol.EmbeddedSass;
 
@@ -145,11 +146,7 @@ class ConversionService {
         throw new RuntimeException("Cant convert to Sass value");
     }
 
-    static <T> T toJavaValue(EmbeddedSass.Value value, Class<T> targetType, Type parameterizedType) {
-        if (value == null) {
-            throw new IllegalArgumentException("value must not be null");
-        }
-
+    static <T> T toJavaValue(@NonNull EmbeddedSass.Value value, Class<T> targetType, Type parameterizedType) {
         if (targetType.equals(EmbeddedSass.Value.class)) {
             return (T) value;
         }

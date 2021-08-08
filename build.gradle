@@ -66,7 +66,7 @@ allprojects {
 
     plugins.withId("jacoco") {
         tasks.withType(JacocoReport).configureEach {
-            reports.xml.enabled true
+            reports.xml.required = true
         }
     }
 

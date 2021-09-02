@@ -56,12 +56,7 @@ class ConversionService {
         if (object instanceof Color) {
             Color color = (Color) object;
 
-            EmbeddedSass.Value.RgbColor sassColor = EmbeddedSass.Value.RgbColor.newBuilder()
-                    .setRed(color.getRed())
-                    .setGreen(color.getGreen())
-                    .setBlue(color.getBlue())
-                    .setAlpha(color.getAlpha() / 255d)
-                    .build();
+            EmbeddedSass.Value.RgbColor sassColor = ColorConverter.toRgbColor(color);
             return EmbeddedSass.Value.newBuilder()
                     .setRgbColor(sassColor)
                     .build();
@@ -122,6 +117,12 @@ class ConversionService {
         if (object instanceof EmbeddedSass.Value.HslColor) {
             return EmbeddedSass.Value.newBuilder()
                     .setHslColor((EmbeddedSass.Value.HslColor) object)
+                    .build();
+        }
+
+        if (object instanceof EmbeddedSass.Value.HwbColor) {
+            return EmbeddedSass.Value.newBuilder()
+                    .setHwbColor((EmbeddedSass.Value.HwbColor) object)
                     .build();
         }
 
@@ -205,7 +206,7 @@ class ConversionService {
                     return (T) rgbColor;
                 }
                 else if (targetType.isAssignableFrom(Color.class)) {
-                    return (T) new Color(rgbColor.getRed(), rgbColor.getGreen(), rgbColor.getBlue(), (int) (rgbColor.getAlpha() * 255));
+                    return (T) ColorConverter.toJavaColor(rgbColor);
                 }
                 else {
                     throw new IllegalArgumentException("Cant convert sass RgbColor to " + targetType);
@@ -216,12 +217,18 @@ class ConversionService {
                     return (T) hslColor;
                 }
                 else if (targetType.isAssignableFrom(Color.class)) {
-                    Color color = Color.getHSBColor(
-                            (float) hslColor.getHue(),
-                            (float) hslColor.getSaturation(),
-                            (float) hslColor.getLightness()
-                    );
-                    return (T) new Color(color.getRed(), color.getGreen(), color.getBlue(), (int) (hslColor.getAlpha() * 255));
+                    return (T) ColorConverter.toJavaColor(hslColor);
+                }
+                else {
+                    throw new IllegalArgumentException("Cant convert sass RgbColor to " + targetType);
+                }
+            case HWB_COLOR:
+                EmbeddedSass.Value.HwbColor hwbColor = value.getHwbColor();
+                if (targetType.isAssignableFrom(EmbeddedSass.Value.HwbColor.class)) {
+                    return (T) hwbColor;
+                }
+                else if (targetType.isAssignableFrom(Color.class)) {
+                    return (T) ColorConverter.toJavaColor(hwbColor);
                 }
                 else {
                     throw new IllegalArgumentException("Cant convert sass RgbColor to " + targetType);
@@ -306,4 +313,5 @@ class ConversionService {
                 throw new IllegalStateException("Unknown value: " + value.getValueCase());
         }
     }
+
 }

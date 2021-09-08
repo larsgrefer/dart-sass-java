@@ -34,7 +34,7 @@ dependencies {
     compileOnly 'com.google.code.findbugs:jsr305:3.0.2'
     compileOnly 'javax.servlet:javax.servlet-api:4.0.1'
     compileOnly 'org.springframework:spring-core:5.+'
-    compileOnly 'org.webjars:webjars-locator:0.41'
+    compileOnly 'org.webjars:webjars-locator:0.42'
 
     sassEmbedded "sass:sass_embedded:$dartSassVersion:linux-ia32@tar.gz"
     sassEmbedded "sass:sass_embedded:$dartSassVersion:linux-x64@tar.gz"

@@ -1,5 +1,6 @@
 package de.larsgrefer.sass.embedded.functions;
 
+import de.larsgrefer.sass.embedded.util.ColorUtil;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestFactory;
@@ -66,32 +67,6 @@ class ConversionServiceTest {
         Value sassColor = toSassValue(color);
         assertThat(sassColor).isNotNull();
         assertThat(toJavaValue(sassColor, Color.class, null)).isEqualTo(color);
-    }
-
-    @TestFactory
-    Stream<DynamicTest> colorConversion_hsl() {
-        return colors.stream()
-                .map(col -> DynamicTest.dynamicTest(col.toString(), () -> testColor_hsl(col)));
-    }
-
-    private void testColor_hsl(Color col) {
-        float[] floats = Color.RGBtoHSB(col.getRed(), col.getGreen(), col.getBlue(), null);
-
-        Value.HslColor hslColor = Value.HslColor.newBuilder()
-                .setHue(floats[0])
-                .setSaturation(floats[1])
-                .setLightness(floats[2])
-                .setAlpha(1d)
-                .build();
-
-        assertThat(hslColor).isNotNull();
-
-        Value sassValue = Value.newBuilder()
-                .setHslColor(hslColor)
-                .build();
-        Color javaValue = toJavaValue(sassValue, Color.class, null);
-
-        assertThat(javaValue).isEqualTo(col);
     }
 
     @Test

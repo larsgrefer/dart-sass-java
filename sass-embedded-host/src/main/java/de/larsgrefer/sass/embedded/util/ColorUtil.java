@@ -1,25 +1,26 @@
-package de.larsgrefer.sass.embedded.functions;
+package de.larsgrefer.sass.embedded.util;
 
 import lombok.experimental.UtilityClass;
-import lombok.var;
 import sass.embedded_protocol.EmbeddedSass;
 import sass.embedded_protocol.EmbeddedSass.Value.*;
 
 import javax.annotation.Nonnull;
 import java.awt.*;
 
+import static de.larsgrefer.sass.embedded.util.ColorValidator.assertValid;
+
 /**
  * @author Lars Grefer
  */
 @UtilityClass
 @Nonnull
-public class ColorConverter {
+public class ColorUtil {
 
     /**
      * @see <a href="https://www.w3.org/TR/css-color-4/#hwb-to-rgb">https://www.w3.org/TR/css-color-4/#hwb-to-rgb</a>
      */
     public static Color toJavaColor(HwbColorOrBuilder hwbColor) {
-        validate(hwbColor);
+        assertValid(hwbColor);
 
         float white = (float) (hwbColor.getWhiteness() / 100f);
         float black = (float) (hwbColor.getBlackness() / 100f);
@@ -35,20 +36,23 @@ public class ColorConverter {
     }
 
     public static Color toJavaColor(HslColorOrBuilder hslColor) {
+        assertValid(hslColor);
         double[] rgb = hslToRgb(hslColor.getHue(), hslColor.getSaturation(), hslColor.getLightness());
-        return new Color((float) rgb[0], (float) rgb[1], (float) rgb[2], (int) (hslColor.getAlpha() * 255));
+        return new Color((float) rgb[0], (float) rgb[1], (float) rgb[2], (float) hslColor.getAlpha());
     }
 
     public static Color toJavaColor(RgbColorOrBuilder rgbColor) {
+        assertValid(rgbColor);
         return new Color(rgbColor.getRed(), rgbColor.getGreen(), rgbColor.getBlue(), (int) (rgbColor.getAlpha() * 255));
     }
 
     public static RgbColor toRgbColor(HwbColorOrBuilder hwbColor) {
-        validate(hwbColor);
+        assertValid(hwbColor);
         return toRgbColor(toJavaColor(hwbColor));
     }
 
     public static RgbColor toRgbColor(HslColorOrBuilder hslColor) {
+        assertValid(hslColor);
         return toRgbColor(toJavaColor(hslColor));
     }
 
@@ -62,10 +66,12 @@ public class ColorConverter {
     }
 
     public static HwbColor toHwbColor(HslColorOrBuilder hslColor) {
+        assertValid(hslColor);
         return toHwbColor(toRgbColor(hslColor));
     }
 
     public static HwbColor toHwbColor(RgbColorOrBuilder rgbColor) {
+        assertValid(rgbColor);
         double[] hwb = rgbToHwb(rgbColor.getRed(), rgbColor.getGreen(), rgbColor.getBlue());
 
         return HwbColor.newBuilder()
@@ -74,27 +80,6 @@ public class ColorConverter {
                 .setBlackness(hwb[2])
                 .setAlpha(rgbColor.getAlpha())
                 .build();
-    }
-
-    private void validate(HwbColorOrBuilder hwbColor) {
-        double whiteness = hwbColor.getWhiteness();
-        if (whiteness < 0 || whiteness > 100) {
-            throw new IllegalArgumentException("Whiteness must be between 0 and 100.");
-        }
-
-        double blackness = hwbColor.getBlackness();
-        if (blackness < 0 || blackness > 100) {
-            throw new IllegalArgumentException("Whiteness must be between 0 and 100.");
-        }
-
-        if (whiteness + blackness > 100) {
-            throw new IllegalArgumentException("The sum of `whiteness` and `blackness` must not exceed 100.");
-        }
-
-        double alpha = hwbColor.getAlpha();
-        if (alpha < 0 || alpha > 1) {
-            throw new IllegalArgumentException("Alpha must be between 0 and 1.");
-        }
     }
 
     /**

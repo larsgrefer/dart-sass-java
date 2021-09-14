@@ -1,4 +1,4 @@
-package de.larsgrefer.sass.embedded.functions;
+package de.larsgrefer.sass.embedded.util;
 
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Test;
@@ -13,7 +13,7 @@ import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class ColorConverterTest {
+class ColorUtilTest {
 
     @Test
     void toJavaColor_hwb_red() {
@@ -24,7 +24,7 @@ class ColorConverterTest {
                 .setAlpha(1d)
                 .build();
 
-        Color javaRed = ColorConverter.toJavaColor(red);
+        Color javaRed = ColorUtil.toJavaColor(red);
         assertThat(javaRed).isEqualTo(Color.RED);
     }
 
@@ -37,7 +37,7 @@ class ColorConverterTest {
                 .setAlpha(1d)
                 .build();
 
-        Color javaRed = ColorConverter.toJavaColor(black);
+        Color javaRed = ColorUtil.toJavaColor(black);
         assertThat(javaRed).isEqualTo(Color.BLACK);
     }
 
@@ -50,7 +50,7 @@ class ColorConverterTest {
                 .setAlpha(1d)
                 .build();
 
-        Color javaRed = ColorConverter.toJavaColor(grey);
+        Color javaRed = ColorUtil.toJavaColor(grey);
         assertThat(javaRed).isEqualTo(Color.GRAY);
     }
 
@@ -64,11 +64,11 @@ class ColorConverterTest {
                 .filter(field -> field.getType().equals(Color.class))
                 .map(colField -> DynamicTest.dynamicTest(colField.getName(), () -> {
                     Color col = (Color) colField.get(null);
-                    RgbColor rgbColor = ColorConverter.toRgbColor(col);
-                    HwbColor hwbColor = ColorConverter.toHwbColor(rgbColor);
+                    RgbColor rgbColor = ColorUtil.toRgbColor(col);
+                    HwbColor hwbColor = ColorUtil.toHwbColor(rgbColor);
 
-                    assertThat(ColorConverter.toJavaColor(rgbColor)).isEqualTo(col);
-                    assertThat(ColorConverter.toJavaColor(hwbColor)).isEqualTo(col);
+                    assertThat(ColorUtil.toJavaColor(rgbColor)).isEqualTo(col);
+                    assertThat(ColorUtil.toJavaColor(hwbColor)).isEqualTo(col);
                 }));
     }
 }

@@ -1,5 +1,6 @@
 package de.larsgrefer.sass.embedded.functions;
 
+import de.larsgrefer.sass.embedded.util.ColorUtil;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 import sass.embedded_protocol.EmbeddedSass;
@@ -56,7 +57,7 @@ class ConversionService {
         if (object instanceof Color) {
             Color color = (Color) object;
 
-            EmbeddedSass.Value.RgbColor sassColor = ColorConverter.toRgbColor(color);
+            EmbeddedSass.Value.RgbColor sassColor = ColorUtil.toRgbColor(color);
             return EmbeddedSass.Value.newBuilder()
                     .setRgbColor(sassColor)
                     .build();
@@ -206,7 +207,7 @@ class ConversionService {
                     return (T) rgbColor;
                 }
                 else if (targetType.isAssignableFrom(Color.class)) {
-                    return (T) ColorConverter.toJavaColor(rgbColor);
+                    return (T) ColorUtil.toJavaColor(rgbColor);
                 }
                 else {
                     throw new IllegalArgumentException("Cant convert sass RgbColor to " + targetType);
@@ -217,10 +218,10 @@ class ConversionService {
                     return (T) hslColor;
                 }
                 else if (targetType.isAssignableFrom(Color.class)) {
-                    return (T) ColorConverter.toJavaColor(hslColor);
+                    return (T) ColorUtil.toJavaColor(hslColor);
                 }
                 else {
-                    throw new IllegalArgumentException("Cant convert sass RgbColor to " + targetType);
+                    throw new IllegalArgumentException("Cant convert sass HslColor to " + targetType);
                 }
             case HWB_COLOR:
                 EmbeddedSass.Value.HwbColor hwbColor = value.getHwbColor();
@@ -228,10 +229,10 @@ class ConversionService {
                     return (T) hwbColor;
                 }
                 else if (targetType.isAssignableFrom(Color.class)) {
-                    return (T) ColorConverter.toJavaColor(hwbColor);
+                    return (T) ColorUtil.toJavaColor(hwbColor);
                 }
                 else {
-                    throw new IllegalArgumentException("Cant convert sass RgbColor to " + targetType);
+                    throw new IllegalArgumentException("Cant convert sass HwbColor to " + targetType);
                 }
             case LIST:
                 EmbeddedSass.Value.List sassList = value.getList();

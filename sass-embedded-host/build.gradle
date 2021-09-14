@@ -13,8 +13,8 @@ configurations {
 javadoc.failOnError = false
 
 repositories {
-    //https://github.com/sass/dart-sass-embedded/releases/download/$dartSassVersion/sass_embedded-$dartSassVersion-linux-ia32.tar.gz
     ivy {
+        //https://github.com/sass/dart-sass-embedded/releases/download/$dartSassVersion/sass_embedded-$dartSassVersion-linux-ia32.tar.gz
         url "https://github.com/sass/dart-sass-embedded/releases/download"
         patternLayout {
             artifact "/[revision]/[artifact]-[revision](-[classifier])(.[ext])"
@@ -48,13 +48,9 @@ dependencies {
     testRuntimeOnly 'org.webjars:bootstrap:5.1.0'
 }
 
-//"https://github.com/sass/dart-sass-embedded/releases/download/1.0.0-beta.6/sass_embedded-1.0.0-beta.6-macos-x64.tar.gz
-
 processResources {
-
     into("de/larsgrefer/sass/embedded") {
         from configurations.sassEmbedded
-
         rename "-$dartSassVersion-", "-"
     }
 }

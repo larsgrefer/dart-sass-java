@@ -69,6 +69,8 @@ class ColorUtilTest {
 
                     assertThat(ColorUtil.toJavaColor(rgbColor)).isEqualTo(col);
                     assertThat(ColorUtil.toJavaColor(hwbColor)).isEqualTo(col);
+
+                    assertThat(ColorUtil.toRgbColor(hwbColor)).isEqualTo(rgbColor);
                 }));
     }
 }

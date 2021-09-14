@@ -2,6 +2,7 @@ package de.larsgrefer.sass.embedded.util;
 
 
 import lombok.NonNull;
+import lombok.experimental.UtilityClass;
 import sass.embedded_protocol.EmbeddedSass.Value.HslColorOrBuilder;
 import sass.embedded_protocol.EmbeddedSass.Value.HwbColorOrBuilder;
 import sass.embedded_protocol.EmbeddedSass.Value.RgbColorOrBuilder;
@@ -10,6 +11,7 @@ import sass.embedded_protocol.EmbeddedSass.Value.RgbColorOrBuilder;
  * @author Lars Grefer
  */
 
+@UtilityClass
 class ColorValidator {
 
     static void assertValid(@NonNull RgbColorOrBuilder rgbColor) {

@@ -29,42 +29,15 @@ public class ConnectionFactory {
     }
 
     synchronized static void extractBundled() throws IOException {
-        Path tempDirectory = Files.createTempDirectory("dart-sass");
-
-        String osName = System.getProperty("os.name").toLowerCase();
-        String osArch = System.getProperty("os.arch").toLowerCase();
-
-        String classifier;
-        String archiveExtension = "tar.gz";
-
-        if (osName.contains("mac")) {
-            classifier = "macos-x64";
-        }
-        else if (osName.contains("win")) {
-            archiveExtension = "zip";
-            if (osArch.contains("64")) {
-                classifier = "windows-x64";
-            }
-            else {
-                classifier = "windows-ia32";
-            }
-        }
-        else {
-            if (osArch.contains("64")) {
-                classifier = "linux-x64";
-            }
-            else {
-                classifier = "linux-ia32";
-            }
-        }
-
-        String resourcePath = String.format("/de/larsgrefer/sass/embedded/sass_embedded-%s.%s", classifier, archiveExtension);
+        String resourcePath = getBundledCompilerDistPath();
 
         URL dist = SassCompilerFactory.class.getResource(resourcePath);
 
         if (dist == null) {
             throw new IllegalStateException("Resource not found: " + resourcePath);
         }
+
+        Path tempDirectory = Files.createTempDirectory("dart-sass");
 
         IOUtils.extract(dist, tempDirectory);
 
@@ -81,5 +54,26 @@ public class ConnectionFactory {
 
         bundledDartExec.setWritable(false);
         bundledDartExec.setExecutable(true, true);
+    }
+
+    private static String getBundledCompilerDistPath() {
+        String osName = System.getProperty("os.name").toLowerCase();
+        String osArch = System.getProperty("os.arch").toLowerCase();
+
+        String classifier;
+        String archiveExtension = "tar.gz";
+
+        if (osName.contains("mac")) {
+            classifier = "macos-x64";
+        }
+        else if (osName.contains("win")) {
+            archiveExtension = "zip";
+            classifier = osArch.contains("64") ? "windows-x64" : "windows-ia32";
+        }
+        else {
+            classifier = osArch.contains("64") ? "linux-x64" : "linux-ia32";
+        }
+
+        return String.format("/de/larsgrefer/sass/embedded/sass_embedded-%s.%s", classifier, archiveExtension);
     }
 }

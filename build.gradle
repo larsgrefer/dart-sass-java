@@ -48,7 +48,7 @@ allprojects {
             testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
 
             // Use JUnit Jupiter Engine for testing.
-            testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.0'
+            testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
         }
 
         tasks.withType(Test) {

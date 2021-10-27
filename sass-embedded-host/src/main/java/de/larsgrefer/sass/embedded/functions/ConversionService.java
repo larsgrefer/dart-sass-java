@@ -127,6 +127,12 @@ class ConversionService {
                     .build();
         }
 
+        if (object instanceof EmbeddedSass.Value.Calculation) {
+            return EmbeddedSass.Value.newBuilder()
+                    .setCalculation((EmbeddedSass.Value.Calculation) object)
+                    .build();
+        }
+
         if (object instanceof EmbeddedSass.Value.List) {
             return EmbeddedSass.Value.newBuilder()
                     .setList((EmbeddedSass.Value.List) object)
@@ -148,6 +154,7 @@ class ConversionService {
         throw new RuntimeException("Cant convert to Sass value");
     }
 
+    @SuppressWarnings("unchecked")
     static <T> T toJavaValue(@NonNull EmbeddedSass.Value value, Class<T> targetType, Type parameterizedType) {
         if (targetType.equals(EmbeddedSass.Value.class)) {
             return (T) value;
@@ -303,6 +310,14 @@ class ConversionService {
                         throw new IllegalStateException("Unknown sass singleton: " + value.getSingleton());
                 }
 
+            case CALCULATION:
+                EmbeddedSass.Value.Calculation calculation = value.getCalculation();
+                if (targetType.isAssignableFrom(EmbeddedSass.Value.Calculation.class)) {
+                    return (T) calculation;
+                }
+                else {
+                    throw new IllegalArgumentException("Cant convert sass Calculation to " + targetType);
+                }
 
             case COMPILER_FUNCTION:
                 throw new IllegalArgumentException("Cant convert sass CompilerFunction to " + targetType);

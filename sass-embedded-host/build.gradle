@@ -45,7 +45,7 @@ dependencies {
     testImplementation 'org.springframework:spring-core:5.3.14'
     testImplementation 'org.slf4j:slf4j-simple:1.7.33'
     testRuntimeOnly 'org.webjars:webjars-locator:0.42'
-    testRuntimeOnly 'org.webjars:bootstrap:5.1.0'
+    testRuntimeOnly 'org.webjars:bootstrap:5.1.1'
 }
 
 processResources {

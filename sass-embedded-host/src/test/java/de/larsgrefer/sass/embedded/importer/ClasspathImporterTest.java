@@ -35,7 +35,7 @@ class ClasspathImporterTest {
 
     @Test
     void canonicalizeToImport_jar() throws Exception {
-        String canonicalize = classpathImporter.canonicalize("META-INF/resources/webjars/bootstrap/5.1.0/scss/bootstrap.scss", false);
+        String canonicalize = classpathImporter.canonicalize("META-INF/resources/webjars/bootstrap/5.1.1/scss/bootstrap.scss", false);
 
         assertThat(canonicalize).isNotNull();
 

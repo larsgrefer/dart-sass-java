@@ -29,7 +29,7 @@ def dartSassVersion = "1.0.0-beta.15"
 
 dependencies {
     api project(":sass-embedded-protocol")
-    api 'org.slf4j:slf4j-api:1.7.32'
+    api 'org.slf4j:slf4j-api:1.7.33'
 
     compileOnly 'com.google.code.findbugs:jsr305:3.0.2'
     compileOnly 'javax.servlet:javax.servlet-api:4.0.1'

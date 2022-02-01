@@ -36,6 +36,7 @@ dependencies {
 
     compileOnly 'com.google.code.findbugs:jsr305:3.0.2'
     compileOnly 'javax.servlet:javax.servlet-api:4.0.1'
+    compileOnly 'jakarta.servlet:jakarta.servlet-api:5.0.0'
     compileOnly "org.springframework:spring-core:$springVersion"
     compileOnly "org.webjars:webjars-locator:$webjarsVersion"
 

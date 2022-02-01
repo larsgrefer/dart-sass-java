@@ -2,14 +2,14 @@ package de.larsgrefer.sass.embedded.importer;
 
 import lombok.RequiredArgsConstructor;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 import java.net.URL;
 
 /**
  * @author Lars Grefer
  */
 @RequiredArgsConstructor
-public class ServletContextImporter extends CustomUrlImporter {
+public class Servlet5ContextImporter extends CustomUrlImporter {
 
     private final ServletContext servletContext;
 

@@ -19,14 +19,14 @@ public abstract class StreamConnection implements CompilerConnection {
     protected abstract OutputStream getOutputStream() throws IOException;
 
     @Override
-    public void sendMessage(InboundMessage inboundMessage) throws IOException {
+    public synchronized void sendMessage(InboundMessage inboundMessage) throws IOException {
         OutputStream outputStream = getOutputStream();
         inboundMessage.writeDelimitedTo(outputStream);
         outputStream.flush();
     }
 
     @Override
-    public OutboundMessage readResponse() throws IOException {
+    public synchronized OutboundMessage readResponse() throws IOException {
         return OutboundMessage.parseDelimitedFrom(getInputStream());
     }
 }

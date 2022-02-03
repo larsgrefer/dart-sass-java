@@ -28,7 +28,7 @@ repositories {
 def dartSassVersion = "1.49.7"
 def slf4jVersion = '1.7.35'
 def springVersion = '5.3.15'
-def webjarsVersion = '0.42'
+def webjarsVersion = '0.48'
 
 dependencies {
     api project(":sass-embedded-protocol")
@@ -38,7 +38,7 @@ dependencies {
     compileOnly 'javax.servlet:javax.servlet-api:4.0.1'
     compileOnly 'jakarta.servlet:jakarta.servlet-api:5.0.0'
     compileOnly "org.springframework:spring-core:$springVersion"
-    compileOnly "org.webjars:webjars-locator:$webjarsVersion"
+    compileOnly "org.webjars:webjars-locator-core:$webjarsVersion"
 
     sassEmbedded "sass:sass_embedded:$dartSassVersion:linux-ia32@tar.gz"
     sassEmbedded "sass:sass_embedded:$dartSassVersion:linux-x64@tar.gz"

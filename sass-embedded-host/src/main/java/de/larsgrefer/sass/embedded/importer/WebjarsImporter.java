@@ -1,7 +1,7 @@
 package de.larsgrefer.sass.embedded.importer;
 
 import lombok.extern.slf4j.Slf4j;
-import org.webjars.MultipleMatchesException;
+import org.webjars.NotFoundException;
 import org.webjars.WebJarAssetLocator;
 
 import javax.annotation.Nullable;
@@ -51,19 +51,17 @@ public class WebjarsImporter extends ClasspathImporter {
 
             try {
                 fullPath = webJarAssetLocator.getFullPath(webjar, subPath);
-            } catch (MultipleMatchesException e) {
-                throw e;
-            } catch (IllegalArgumentException e) {
-                log.info(e.getMessage());
+            } catch (NotFoundException e) {
+                log.debug("Path {} not found in webjar {}", subPath, webjar);
+                log.trace(e.getLocalizedMessage(), e);
             }
         }
         else {
             try {
                 fullPath = webJarAssetLocator.getFullPath(url);
-            } catch (MultipleMatchesException e) {
-                throw e;
-            } catch (IllegalArgumentException e) {
-                log.info(e.getMessage());
+            } catch (NotFoundException e) {
+                log.debug("Path {} not found in webjars", url);
+                log.trace(e.getLocalizedMessage(), e);
             }
         }
 

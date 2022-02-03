@@ -25,12 +25,12 @@ allprojects {
         project.apply plugin: "io.freefair.lombok"
         project.apply plugin: "io.freefair.javadocs"
 
-        sourceCompatibility = 1.8
-        targetCompatibility = 1.8
-
         java {
             withSourcesJar()
             withJavadocJar()
+            toolchain {
+                languageVersion = JavaLanguageVersion.of(8)
+            }
         }
 
         tasks.withType(JavaCompile) {

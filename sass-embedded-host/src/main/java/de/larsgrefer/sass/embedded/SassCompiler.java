@@ -135,13 +135,12 @@ public class SassCompiler implements Closeable {
     }
 
     public CompileSuccess compile(@NonNull URL source) throws SassCompilationFailedException, IOException {
-        Syntax syntax = SyntaxUtil.guessSyntax(source);
-
         if (source.getProtocol().equals("file")) {
             File file = new File(source.getPath());
             return compileFile(file);
         }
 
+        Syntax syntax = SyntaxUtil.guessSyntax(source);
         ByteString content;
         try (InputStream in = source.openStream()) {
             content = ByteString.readFrom(in);

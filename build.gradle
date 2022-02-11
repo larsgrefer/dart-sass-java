@@ -1,7 +1,7 @@
 plugins {
-    id "io.freefair.git-version" version "6.3.0"
-    id "io.freefair.lombok" version "6.3.0" apply false
-    id "io.freefair.maven-publish-java" version "6.3.0" apply false
+    id "io.freefair.git-version" version "6.4.0"
+    id "io.freefair.lombok" version "6.4.0" apply false
+    id "io.freefair.maven-publish-java" version "6.4.0" apply false
     id "io.github.gradle-nexus.publish-plugin" version "1.1.0"
 }
 
@@ -33,12 +33,13 @@ allprojects {
             }
         }
 
-        tasks.withType(JavaCompile) {
+        tasks.withType(JavaCompile).configureEach {
             options.compilerArgs += "-parameters"
         }
 
-        tasks.withType(Javadoc) {
+        tasks.withType(Javadoc).configureEach {
             options.addBooleanOption("Xdoclint:-missing", true)
+            failOnError = false
         }
 
         dependencies {
@@ -51,7 +52,7 @@ allprojects {
             testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
         }
 
-        tasks.withType(Test) {
+        tasks.withType(Test).configureEach {
             useJUnitPlatform()
         }
 

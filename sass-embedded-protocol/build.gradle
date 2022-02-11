@@ -50,6 +50,5 @@ afterEvaluate {
 
     javadoc {
         source tasks.generateProto
-        failOnError = false
     }
 }

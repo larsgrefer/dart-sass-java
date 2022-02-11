@@ -10,8 +10,6 @@ configurations {
     sassEmbedded
 }
 
-javadoc.failOnError = false
-
 repositories {
     ivy {
         //https://github.com/sass/dart-sass-embedded/releases/download/$dartSassVersion/sass_embedded-$dartSassVersion-linux-ia32.tar.gz

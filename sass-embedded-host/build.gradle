@@ -25,7 +25,7 @@ repositories {
 
 def dartSassVersion = "1.49.7"
 def slf4jVersion = '1.7.36'
-def springVersion = '5.3.15'
+def springVersion = '5.3.16'
 def webjarsVersion = '0.48'
 
 dependencies {

@@ -64,14 +64,27 @@ public class ConnectionFactory {
         String archiveExtension = "tar.gz";
 
         if (osName.contains("mac")) {
-            classifier = "macos-x64";
+            if (osArch.equals("aarch64")) {
+                classifier = "macos-arm64";
+            }
+            else {
+                classifier = "macos-x64";
+            }
         }
         else if (osName.contains("win")) {
             archiveExtension = "zip";
             classifier = osArch.contains("64") ? "windows-x64" : "windows-ia32";
         }
         else {
-            classifier = osArch.contains("64") ? "linux-x64" : "linux-ia32";
+            if (osArch.equals("aarch64")) {
+                classifier = "linux-arm64";
+            }
+            else if (osArch.contains("64")) {
+                classifier = "linux-x64";
+            }
+            else {
+                classifier = "linux-ia32";
+            }
         }
 
         return String.format("/de/larsgrefer/sass/embedded/sass_embedded-%s.%s", classifier, archiveExtension);

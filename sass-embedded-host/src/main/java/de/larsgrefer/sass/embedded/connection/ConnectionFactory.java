@@ -64,7 +64,7 @@ public class ConnectionFactory {
         String archiveExtension = "tar.gz";
 
         if (osName.contains("mac")) {
-            if (osArch.equals("aarch64")) {
+            if (osArch.equals("aarch64") || osArch.contains("arm")) {
                 classifier = "macos-arm64";
             }
             else {
@@ -76,7 +76,7 @@ public class ConnectionFactory {
             classifier = osArch.contains("64") ? "windows-x64" : "windows-ia32";
         }
         else {
-            if (osArch.equals("aarch64")) {
+            if (osArch.equals("aarch64") || osArch.contains("arm")) {
                 classifier = "linux-arm64";
             }
             else if (osArch.contains("64")) {

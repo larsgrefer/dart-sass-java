@@ -3,7 +3,8 @@ package de.larsgrefer.sass.embedded.importer;
 import lombok.RequiredArgsConstructor;
 import sass.embedded_protocol.EmbeddedSass;
 
-import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedHashSet;
 import java.util.List;
 
 /**
@@ -32,7 +33,7 @@ class AutoCanonicalizingImporter extends CustomImporter {
     }
 
     private String canonicalize(String baseUrl, List<String> possibleUrls) throws Exception {
-        List<String> canonicalizedUrls = new ArrayList<>(possibleUrls.size());
+        Collection<String> canonicalizedUrls = new LinkedHashSet<>(possibleUrls.size() * 2);
 
         for (String indexPath : possibleUrls) {
             String canonUrl = delegate.canonicalize(indexPath, false);
@@ -45,7 +46,7 @@ class AutoCanonicalizingImporter extends CustomImporter {
             return null;
         }
         else if (canonicalizedUrls.size() == 1) {
-            return canonicalizedUrls.get(0);
+            return canonicalizedUrls.iterator().next();
         }
         else {
             throw new IllegalStateException("Import '" + baseUrl + "' is ambiguous: " + canonicalizedUrls);

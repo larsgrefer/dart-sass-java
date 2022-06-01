@@ -43,7 +43,7 @@ allprojects {
         }
 
         dependencies {
-            testImplementation 'org.assertj:assertj-core:3.23.0'
+            testImplementation 'org.assertj:assertj-core:3.23.1'
 
             // Use JUnit Jupiter API for testing.
             testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'

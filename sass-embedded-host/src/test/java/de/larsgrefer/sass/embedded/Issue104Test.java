@@ -2,13 +2,15 @@ package de.larsgrefer.sass.embedded;
 
 import de.larsgrefer.sass.embedded.importer.ClasspathImporter;
 import de.larsgrefer.sass.embedded.importer.WebjarsImporter;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledOnOs;
+import org.junit.jupiter.api.condition.OS;
 import org.junit.jupiter.api.io.TempDir;
 import sass.embedded_protocol.EmbeddedSass;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URL;
@@ -19,6 +21,7 @@ import java.util.zip.ZipOutputStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@DisabledOnOs(value = OS.WINDOWS, disabledReason = "https://github.com/junit-team/junit5/issues/2811")
 public class Issue104Test {
 
     private SassCompiler sassCompiler;
@@ -45,6 +48,12 @@ public class Issue104Test {
         classLoader = new URLClassLoader(new URL[]{dummyJar.toURI().toURL()});
         sassCompiler.registerImporter(new ClasspathImporter(classLoader).autoCanonicalize());
         sassCompiler.registerImporter(new WebjarsImporter().autoCanonicalize());
+    }
+
+    @AfterEach
+    void tearDown() throws IOException {
+        classLoader.close();
+        sassCompiler.close();
     }
 
     @Test

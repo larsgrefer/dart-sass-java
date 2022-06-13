@@ -14,6 +14,7 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.intellij.lang.annotations.Language;
 import sass.embedded_protocol.EmbeddedSass;
 import sass.embedded_protocol.EmbeddedSass.InboundMessage;
 import sass.embedded_protocol.EmbeddedSass.InboundMessage.CanonicalizeResponse;
@@ -167,15 +168,15 @@ public class SassCompiler implements Closeable {
     }
 
     //region compileString and overloads
-    public CompileSuccess compileScssString(@NonNull String source) throws IOException, SassCompilationFailedException {
+    public CompileSuccess compileScssString(@NonNull @Language("SCSS") String source) throws IOException, SassCompilationFailedException {
         return compileString(source, Syntax.SCSS);
     }
 
-    public CompileSuccess compileSassString(@NonNull String source) throws IOException, SassCompilationFailedException {
+    public CompileSuccess compileSassString(@NonNull @Language("SASS") String source) throws IOException, SassCompilationFailedException {
         return compileString(source, Syntax.INDENTED);
     }
 
-    public CompileSuccess compileCssString(@NonNull String source) throws IOException, SassCompilationFailedException {
+    public CompileSuccess compileCssString(@NonNull @Language("CSS") String source) throws IOException, SassCompilationFailedException {
         return compileString(source, Syntax.CSS);
     }
 
@@ -232,11 +233,9 @@ public class SassCompiler implements Closeable {
 
         if (compileResponse.hasSuccess()) {
             return compileResponse.getSuccess();
-        }
-        else if (compileResponse.hasFailure()) {
+        } else if (compileResponse.hasFailure()) {
             throw new SassCompilationFailedException(compileResponse.getFailure());
-        }
-        else {
+        } else {
             throw new IllegalStateException("Neither success nor failure");
         }
     }

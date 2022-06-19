@@ -353,35 +353,30 @@ public class SassCompiler implements Closeable {
     }
 
     private void handleFunctionCallRequest(FunctionCallRequestOrBuilder functionCallRequest) throws IOException {
+        FunctionCallResponse.Builder response = FunctionCallResponse.newBuilder();
+        response.setId(functionCallRequest.getId());
 
         HostFunction sassFunction = null;
-
-        switch (functionCallRequest.getIdentifierCase()) {
-
-            case NAME:
-                sassFunction = globalFunctions.get(functionCallRequest.getName());
-                break;
-            case FUNCTION_ID:
-                throw new UnsupportedOperationException();
-            case IDENTIFIER_NOT_SET:
-                throw new IllegalArgumentException("FunctionCallRequest has no identifier");
-        }
-
-        List<EmbeddedSass.Value> argumentsList = functionCallRequest.getArgumentsList();
-
-        FunctionCallResponse.Builder responseBuilder = FunctionCallResponse.newBuilder();
-        responseBuilder.setId(functionCallRequest.getId());
-
         try {
+            switch (functionCallRequest.getIdentifierCase()) {
+                case NAME:
+                    sassFunction = globalFunctions.get(functionCallRequest.getName());
+                    break;
+                case FUNCTION_ID:
+                    throw new UnsupportedOperationException("Calling functions by ID is not supported");
+                case IDENTIFIER_NOT_SET:
+                    throw new IllegalArgumentException("FunctionCallRequest has no identifier");
+            }
+
+            List<EmbeddedSass.Value> argumentsList = functionCallRequest.getArgumentsList();
             EmbeddedSass.Value result = sassFunction.invoke(argumentsList);
-            responseBuilder.setSuccess(result);
+            response.setSuccess(result);
         } catch (Throwable e) {
             log.debug("Failed to handle FunctionCallRequest for function {}", sassFunction, e);
-            responseBuilder.setError(getErrorMessage(e));
+            response.setError(getErrorMessage(e));
         }
 
-        connection.sendMessage(InboundMessage.newBuilder().setFunctionCallResponse(responseBuilder.build()).build());
-
+        connection.sendMessage(InboundMessage.newBuilder().setFunctionCallResponse(response.build()).build());
     }
 
     private String getErrorMessage(Throwable t) {

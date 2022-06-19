@@ -165,11 +165,9 @@ class ConversionService {
                 EmbeddedSass.Value.String sassString = value.getString();
                 if (targetType.isAssignableFrom(EmbeddedSass.Value.String.class)) {
                     return (T) sassString;
-                }
-                else if (targetType.isAssignableFrom(String.class)) {
+                } else if (targetType.isAssignableFrom(String.class)) {
                     return (T) sassString.getText();
-                }
-                else {
+                } else {
                     throw new IllegalArgumentException("Cant convert sass String to " + targetType);
                 }
             case NUMBER:
@@ -177,76 +175,59 @@ class ConversionService {
                 double javaNumber = sassNumber.getValue();
                 if (targetType.isAssignableFrom(EmbeddedSass.Value.Number.class)) {
                     return (T) sassNumber;
-                }
-                else if (targetType.isAssignableFrom(Double.class) || targetType.isAssignableFrom(Double.TYPE)) {
+                } else if (targetType.isAssignableFrom(Double.class) || targetType.isAssignableFrom(Double.TYPE)) {
                     return (T) Double.valueOf(javaNumber);
-                }
-                else if (targetType.isAssignableFrom(Float.class) || targetType.isAssignableFrom(Float.TYPE)) {
+                } else if (targetType.isAssignableFrom(Float.class) || targetType.isAssignableFrom(Float.TYPE)) {
                     return (T) Float.valueOf((float) javaNumber);
-                }
-                else if (targetType.isAssignableFrom(Long.class) || targetType.isAssignableFrom(Long.TYPE)) {
+                } else if (targetType.isAssignableFrom(Long.class) || targetType.isAssignableFrom(Long.TYPE)) {
                     return (T) Long.valueOf((long) javaNumber);
-                }
-                else if (targetType.isAssignableFrom(Integer.class) || targetType.isAssignableFrom(Integer.TYPE)) {
+                } else if (targetType.isAssignableFrom(Integer.class) || targetType.isAssignableFrom(Integer.TYPE)) {
                     return (T) Integer.valueOf((int) javaNumber);
-                }
-                else if (targetType.isAssignableFrom(Short.class) || targetType.isAssignableFrom(Short.TYPE)) {
+                } else if (targetType.isAssignableFrom(Short.class) || targetType.isAssignableFrom(Short.TYPE)) {
                     return (T) Short.valueOf((short) javaNumber);
-                }
-                else if (targetType.isAssignableFrom(Byte.class) || targetType.isAssignableFrom(Byte.TYPE)) {
+                } else if (targetType.isAssignableFrom(Byte.class) || targetType.isAssignableFrom(Byte.TYPE)) {
                     return (T) Byte.valueOf((byte) javaNumber);
-                }
-                else if (targetType.isAssignableFrom(BigInteger.class)) {
+                } else if (targetType.isAssignableFrom(BigInteger.class)) {
                     return (T) BigInteger.valueOf((long) javaNumber);
-                }
-                else if (targetType.isAssignableFrom(BigDecimal.class)) {
+                } else if (targetType.isAssignableFrom(BigDecimal.class)) {
                     return (T) BigDecimal.valueOf(javaNumber);
-                }
-                else if (targetType.isAssignableFrom(String.class)) {
+                } else if (targetType.isAssignableFrom(String.class)) {
                     return (T) Double.toString(javaNumber);
-                }
-                else {
+                } else {
                     throw new IllegalArgumentException("Cant convert sass Number to " + targetType);
                 }
             case RGB_COLOR:
                 EmbeddedSass.Value.RgbColor rgbColor = value.getRgbColor();
                 if (targetType.isAssignableFrom(EmbeddedSass.Value.RgbColor.class)) {
                     return (T) rgbColor;
-                }
-                else if (targetType.isAssignableFrom(Color.class)) {
+                } else if (targetType.isAssignableFrom(Color.class)) {
                     return (T) ColorUtil.toJavaColor(rgbColor);
-                }
-                else {
+                } else {
                     throw new IllegalArgumentException("Cant convert sass RgbColor to " + targetType);
                 }
             case HSL_COLOR:
                 EmbeddedSass.Value.HslColor hslColor = value.getHslColor();
                 if (targetType.isAssignableFrom(EmbeddedSass.Value.HslColor.class)) {
                     return (T) hslColor;
-                }
-                else if (targetType.isAssignableFrom(Color.class)) {
+                } else if (targetType.isAssignableFrom(Color.class)) {
                     return (T) ColorUtil.toJavaColor(hslColor);
-                }
-                else {
+                } else {
                     throw new IllegalArgumentException("Cant convert sass HslColor to " + targetType);
                 }
             case HWB_COLOR:
                 EmbeddedSass.Value.HwbColor hwbColor = value.getHwbColor();
                 if (targetType.isAssignableFrom(EmbeddedSass.Value.HwbColor.class)) {
                     return (T) hwbColor;
-                }
-                else if (targetType.isAssignableFrom(Color.class)) {
+                } else if (targetType.isAssignableFrom(Color.class)) {
                     return (T) ColorUtil.toJavaColor(hwbColor);
-                }
-                else {
+                } else {
                     throw new IllegalArgumentException("Cant convert sass HwbColor to " + targetType);
                 }
             case LIST:
                 EmbeddedSass.Value.List sassList = value.getList();
                 if (targetType.isAssignableFrom(EmbeddedSass.Value.List.class)) {
                     return (T) sassList;
-                }
-                else if (targetType.isAssignableFrom(List.class)) {
+                } else if (targetType.isAssignableFrom(List.class)) {
                     Type elementType = ((ParameterizedType) parameterizedType).getActualTypeArguments()[0];
 
                     Class<?> elementClass = elementType instanceof Class<?> ? (Class<?>) elementType : (Class<?>) ((ParameterizedType) elementType).getRawType();
@@ -256,16 +237,14 @@ class ConversionService {
                             .collect(Collectors.toList());
 
                     return (T) Collections.unmodifiableList(collect);
-                }
-                else {
+                } else {
                     throw new IllegalArgumentException("Cant convert sass List to " + targetType);
                 }
             case MAP:
                 EmbeddedSass.Value.Map sassMap = value.getMap();
                 if (targetType.isAssignableFrom(EmbeddedSass.Value.Map.class)) {
                     return (T) sassMap;
-                }
-                else if (targetType.isAssignableFrom(Map.class)) {
+                } else if (targetType.isAssignableFrom(Map.class)) {
                     Type keyType = ((ParameterizedType) parameterizedType).getActualTypeArguments()[0];
                     Type valueType = ((ParameterizedType) parameterizedType).getActualTypeArguments()[1];
 
@@ -280,8 +259,7 @@ class ConversionService {
                             ));
 
                     return (T) Collections.unmodifiableMap(collect);
-                }
-                else {
+                } else {
                     throw new IllegalArgumentException("Cant convert sass Map to " + targetType);
                 }
             case SINGLETON:
@@ -293,8 +271,7 @@ class ConversionService {
 
                         if (targetType.equals(Boolean.class) || targetType.equals(boolean.class)) {
                             return (T) boolValue;
-                        }
-                        else if (targetType.equals(String.class)) {
+                        } else if (targetType.equals(String.class)) {
                             return (T) Boolean.toString(boolValue);
                         }
 
@@ -314,15 +291,24 @@ class ConversionService {
                 EmbeddedSass.Value.Calculation calculation = value.getCalculation();
                 if (targetType.isAssignableFrom(EmbeddedSass.Value.Calculation.class)) {
                     return (T) calculation;
-                }
-                else {
+                } else {
                     throw new IllegalArgumentException("Cant convert sass Calculation to " + targetType);
                 }
 
             case COMPILER_FUNCTION:
-                throw new IllegalArgumentException("Cant convert sass CompilerFunction to " + targetType);
+                EmbeddedSass.Value.CompilerFunction compilerFunction = value.getCompilerFunction();
+                if (targetType.isAssignableFrom(EmbeddedSass.Value.CompilerFunction.class)) {
+                    return (T) compilerFunction;
+                } else {
+                    throw new IllegalArgumentException("Cant convert sass CompilerFunction to " + targetType);
+                }
             case HOST_FUNCTION:
-                throw new IllegalArgumentException("Cant convert sass HostFunction to " + targetType);
+                EmbeddedSass.Value.HostFunction hostFunction = value.getHostFunction();
+                if (targetType.isAssignableFrom(EmbeddedSass.Value.HostFunction.class)) {
+                    return (T) hostFunction;
+                } else {
+                    throw new IllegalArgumentException("Cant convert sass HostFunction to " + targetType);
+                }
             case VALUE_NOT_SET:
                 return null;
             default:

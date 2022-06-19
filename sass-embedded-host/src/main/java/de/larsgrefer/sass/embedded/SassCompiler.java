@@ -32,10 +32,7 @@ import sass.embedded_protocol.EmbeddedSass.Syntax;
 import javax.annotation.Nonnull;
 import java.io.*;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author Lars Grefer
@@ -64,6 +61,8 @@ public class SassCompiler implements Closeable {
     private boolean generateSourceMaps = false;
 
     private final CompilerConnection connection;
+
+    private final Random compilationIds = new Random();
 
     private final Map<String, HostFunction> globalFunctions = new HashMap<>();
     private final Map<Integer, FileImporter> fileImporters = new HashMap<>();
@@ -104,6 +103,7 @@ public class SassCompiler implements Closeable {
     protected CompileRequest.Builder compileRequestBuilder() {
         CompileRequest.Builder builder = CompileRequest.newBuilder();
 
+        builder.setId(Math.abs(compilationIds.nextInt()));
         builder.setStyle(outputStyle);
         builder.setSourceMap(generateSourceMaps);
 
@@ -195,6 +195,7 @@ public class SassCompiler implements Closeable {
         CompileRequest compileRequest = compileRequestBuilder()
                 .setString(string)
                 .setStyle(outputStyle)
+                .setId(new Random().nextInt())
                 .build();
 
         return execCompileRequest(compileRequest);

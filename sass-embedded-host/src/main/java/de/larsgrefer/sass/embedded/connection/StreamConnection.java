@@ -1,5 +1,7 @@
 package de.larsgrefer.sass.embedded.connection;
 
+import com.google.protobuf.TextFormat;
+import lombok.extern.slf4j.Slf4j;
 import sass.embedded_protocol.EmbeddedSass.InboundMessage;
 import sass.embedded_protocol.EmbeddedSass.OutboundMessage;
 
@@ -12,6 +14,7 @@ import java.io.OutputStream;
  *
  * @author Lars Grefer
  */
+@Slf4j
 public abstract class StreamConnection implements CompilerConnection {
 
     protected abstract InputStream getInputStream() throws IOException;
@@ -20,6 +23,9 @@ public abstract class StreamConnection implements CompilerConnection {
 
     @Override
     public synchronized void sendMessage(InboundMessage inboundMessage) throws IOException {
+        if (log.isTraceEnabled()) {
+            log.trace("--> {}", TextFormat.printer().shortDebugString(inboundMessage));
+        }
         OutputStream outputStream = getOutputStream();
         inboundMessage.writeDelimitedTo(outputStream);
         outputStream.flush();
@@ -27,6 +33,10 @@ public abstract class StreamConnection implements CompilerConnection {
 
     @Override
     public synchronized OutboundMessage readResponse() throws IOException {
-        return OutboundMessage.parseDelimitedFrom(getInputStream());
+        OutboundMessage outboundMessage = OutboundMessage.parseDelimitedFrom(getInputStream());
+        if (log.isTraceEnabled()) {
+            log.trace("<-- {}", TextFormat.printer().shortDebugString(outboundMessage));
+        }
+        return outboundMessage;
     }
 }

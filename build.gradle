@@ -57,10 +57,12 @@ allprojects {
         }
 
         afterEvaluate {
-            jar.manifest {
-                attributes 'Implementation-Title': "$description",
-                        'Implementation-Version': "$version",
-                        'Implementation-URL': "https://github.com/larsgrefer/dart-sass-java"
+            tasks.named("jar", Jar) {
+                manifest {
+                    attributes 'Implementation-Title': "$description",
+                            'Implementation-Version': "$version",
+                            'Implementation-URL': "https://github.com/larsgrefer/dart-sass-java"
+                }
             }
         }
     }

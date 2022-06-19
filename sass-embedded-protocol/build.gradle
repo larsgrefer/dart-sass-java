@@ -22,7 +22,7 @@ repositories {
 def protobufVersion = "3.21.1"
 def protocolVersion = "1.0.0"
 
-tasks.withType(com.google.protobuf.gradle.ProtobufExtract) {
+tasks.withType(com.google.protobuf.gradle.ProtobufExtract).configureEach {
     doFirst {
         project.delete destDir
     }
@@ -40,15 +40,19 @@ protobuf {
     }
 }
 
-jar.manifest {
-    attributes 'Specification-Vendor': "Google LLC",
-            'Specification-Version': "$protocolVersion"
+tasks.named("jar", Jar) {
+    manifest {
+        attributes 'Specification-Vendor': "Google LLC",
+                'Specification-Version': "$protocolVersion"
+    }
 }
 
 afterEvaluate {
-    sourcesJar.from tasks.generateProto
+    tasks.named("sourcesJar") {
+        from tasks.generateProto
+    }
 
-    javadoc {
+    tasks.named("javadoc") {
         source tasks.generateProto
     }
 }

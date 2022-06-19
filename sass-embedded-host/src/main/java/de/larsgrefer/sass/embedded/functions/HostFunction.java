@@ -8,6 +8,7 @@ import sass.embedded_protocol.EmbeddedSass;
 import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 /**
@@ -17,6 +18,10 @@ import java.util.stream.Collectors;
  */
 @Getter
 public abstract class HostFunction {
+
+    private static final Random hostFunctionIds = new Random();
+
+    private final int id = Math.abs(hostFunctionIds.nextInt());
 
     private final String name;
 

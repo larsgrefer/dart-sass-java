@@ -240,38 +240,40 @@ public class SassCompiler implements Closeable {
         }
     }
 
-    private synchronized OutboundMessage exec(InboundMessage inboundMessage) throws IOException {
-        connection.sendMessage(inboundMessage);
+    private OutboundMessage exec(InboundMessage inboundMessage) throws IOException {
+        synchronized (connection) {
+            connection.sendMessage(inboundMessage);
 
-        while (true) {
-            OutboundMessage outboundMessage = connection.readResponse();
+            while (true) {
+                OutboundMessage outboundMessage = connection.readResponse();
 
-            switch (outboundMessage.getMessageCase()) {
+                switch (outboundMessage.getMessageCase()) {
 
-                case ERROR:
-                    throw new SassProtocolErrorException(outboundMessage.getError());
-                case COMPILE_RESPONSE:
-                case VERSION_RESPONSE:
-                    return outboundMessage;
-                case LOG_EVENT:
-                    loggingHandler.handle(outboundMessage.getLogEvent());
-                    break;
-                case CANONICALIZE_REQUEST:
-                    handleCanonicalizeRequest(outboundMessage.getCanonicalizeRequest());
-                    break;
-                case IMPORT_REQUEST:
-                    handleImportRequest(outboundMessage.getImportRequest());
-                    break;
-                case FILE_IMPORT_REQUEST:
-                    handleFileImportRequest(outboundMessage.getFileImportRequest());
-                    break;
-                case FUNCTION_CALL_REQUEST:
-                    handleFunctionCallRequest(outboundMessage.getFunctionCallRequest());
-                    break;
-                case MESSAGE_NOT_SET:
-                    throw new IllegalStateException("No message set");
-                default:
-                    throw new IllegalStateException("Unknown OutboundMessage: " + outboundMessage.getMessageCase());
+                    case ERROR:
+                        throw new SassProtocolErrorException(outboundMessage.getError());
+                    case COMPILE_RESPONSE:
+                    case VERSION_RESPONSE:
+                        return outboundMessage;
+                    case LOG_EVENT:
+                        loggingHandler.handle(outboundMessage.getLogEvent());
+                        break;
+                    case CANONICALIZE_REQUEST:
+                        handleCanonicalizeRequest(outboundMessage.getCanonicalizeRequest());
+                        break;
+                    case IMPORT_REQUEST:
+                        handleImportRequest(outboundMessage.getImportRequest());
+                        break;
+                    case FILE_IMPORT_REQUEST:
+                        handleFileImportRequest(outboundMessage.getFileImportRequest());
+                        break;
+                    case FUNCTION_CALL_REQUEST:
+                        handleFunctionCallRequest(outboundMessage.getFunctionCallRequest());
+                        break;
+                    case MESSAGE_NOT_SET:
+                        throw new IllegalStateException("No message set");
+                    default:
+                        throw new IllegalStateException("Unknown OutboundMessage: " + outboundMessage.getMessageCase());
+                }
             }
         }
     }

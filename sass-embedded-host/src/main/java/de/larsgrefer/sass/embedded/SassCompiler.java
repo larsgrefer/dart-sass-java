@@ -234,7 +234,7 @@ public class SassCompiler implements Closeable {
 
         if (compileResponse.getId() != compileRequest.getId()) {
             //Should never happen
-            throw new IllegalStateException(String.format("Compilation ID missmatch: expected %d, but got %d", compileRequest.getId(), compileResponse.getId()));
+            throw new IllegalStateException(String.format("Compilation ID mismatch: expected %d, but got %d", compileRequest.getId(), compileResponse.getId()));
         }
 
         if (compileResponse.hasSuccess()) {

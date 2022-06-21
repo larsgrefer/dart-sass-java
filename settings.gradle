@@ -1,3 +1,12 @@
+pluginManagement {
+    def freefairGradleVersion= "6.4.3.1"
+    plugins {
+        id "io.freefair.git-version" version "$freefairGradleVersion"
+        id "io.freefair.lombok" version "$freefairGradleVersion"
+        id "io.freefair.maven-publish-java" version "$freefairGradleVersion"
+    }
+}
+
 rootProject.name = 'dart-sass-java'
 
 include "sass-embedded-protocol"

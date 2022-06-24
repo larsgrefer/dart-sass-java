@@ -21,7 +21,6 @@ allprojects {
 
     plugins.withId("java") {
 
-        project.apply plugin: "io.freefair.lombok"
         project.apply plugin: "io.freefair.javadocs"
 
         java {

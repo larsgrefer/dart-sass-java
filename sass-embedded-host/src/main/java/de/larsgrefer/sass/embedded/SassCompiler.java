@@ -17,16 +17,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.intellij.lang.annotations.Language;
 import sass.embedded_protocol.EmbeddedSass;
 import sass.embedded_protocol.EmbeddedSass.InboundMessage;
-import sass.embedded_protocol.EmbeddedSass.InboundMessage.CanonicalizeResponse;
-import sass.embedded_protocol.EmbeddedSass.InboundMessage.CompileRequest;
-import sass.embedded_protocol.EmbeddedSass.InboundMessage.FunctionCallResponse;
-import sass.embedded_protocol.EmbeddedSass.InboundMessage.VersionRequest;
+import sass.embedded_protocol.EmbeddedSass.InboundMessage.*;
 import sass.embedded_protocol.EmbeddedSass.OutboundMessage;
-import sass.embedded_protocol.EmbeddedSass.OutboundMessage.CanonicalizeRequestOrBuilder;
+import sass.embedded_protocol.EmbeddedSass.OutboundMessage.CanonicalizeRequest;
 import sass.embedded_protocol.EmbeddedSass.OutboundMessage.CompileResponse.CompileSuccess;
-import sass.embedded_protocol.EmbeddedSass.OutboundMessage.FileImportRequestOrBuilder;
-import sass.embedded_protocol.EmbeddedSass.OutboundMessage.FunctionCallRequestOrBuilder;
-import sass.embedded_protocol.EmbeddedSass.OutboundMessage.ImportRequestOrBuilder;
+import sass.embedded_protocol.EmbeddedSass.OutboundMessage.FileImportRequest;
+import sass.embedded_protocol.EmbeddedSass.OutboundMessage.FunctionCallRequest;
+import sass.embedded_protocol.EmbeddedSass.OutboundMessage.ImportRequest;
 import sass.embedded_protocol.EmbeddedSass.OutputStyle;
 import sass.embedded_protocol.EmbeddedSass.Syntax;
 
@@ -65,7 +62,7 @@ public class SassCompiler implements Closeable {
 
     private final CompilerConnection connection;
 
-    private final Random compilationIds = new Random();
+    private final Random compileRequestIds = new Random();
 
     private final Map<String, HostFunction> globalFunctions = new HashMap<>();
     private final Map<Integer, FileImporter> fileImporters = new HashMap<>();
@@ -102,7 +99,7 @@ public class SassCompiler implements Closeable {
     protected CompileRequest.Builder compileRequestBuilder() {
         CompileRequest.Builder builder = CompileRequest.newBuilder();
 
-        builder.setId(Math.abs(compilationIds.nextInt()));
+        builder.setId(Math.abs(compileRequestIds.nextInt()));
         builder.setStyle(outputStyle);
         builder.setSourceMap(generateSourceMaps);
 
@@ -207,7 +204,7 @@ public class SassCompiler implements Closeable {
         return compileFile(inputFile, getOutputStyle());
     }
 
-    public CompileSuccess compileFile(@NonNull File file, OutputStyle outputStyle) throws IOException, SassCompilationFailedException {
+    public CompileSuccess compileFile(@NonNull File file, @NonNull OutputStyle outputStyle) throws IOException, SassCompilationFailedException {
         CompileRequest compileRequest = compileRequestBuilder()
                 .setPath(file.getPath())
                 .setStyle(outputStyle)
@@ -280,8 +277,8 @@ public class SassCompiler implements Closeable {
         }
     }
 
-    private void handleFileImportRequest(FileImportRequestOrBuilder fileImportRequest) throws IOException {
-        InboundMessage.FileImportResponse.Builder fileImportResponse = InboundMessage.FileImportResponse.newBuilder()
+    private void handleFileImportRequest(FileImportRequest fileImportRequest) throws IOException {
+        FileImportResponse.Builder fileImportResponse = FileImportResponse.newBuilder()
                 .setId(fileImportRequest.getId());
 
         FileImporter fileImporter = fileImporters.get(fileImportRequest.getImporterId());
@@ -299,14 +296,14 @@ public class SassCompiler implements Closeable {
         connection.sendMessage(inboundMessage(fileImportResponse.build()));
     }
 
-    private void handleImportRequest(ImportRequestOrBuilder importRequest) throws IOException {
-        InboundMessage.ImportResponse.Builder importResponse = InboundMessage.ImportResponse.newBuilder()
+    private void handleImportRequest(ImportRequest importRequest) throws IOException {
+        ImportResponse.Builder importResponse = ImportResponse.newBuilder()
                 .setId(importRequest.getId());
 
         CustomImporter customImporter = customImporters.get(importRequest.getImporterId());
 
         try {
-            InboundMessage.ImportResponse.ImportSuccess success = customImporter.handleImport(importRequest.getUrl());
+            ImportResponse.ImportSuccess success = customImporter.handleImport(importRequest.getUrl());
             if (success != null) {
                 importResponse.setSuccess(success);
             }
@@ -318,7 +315,7 @@ public class SassCompiler implements Closeable {
         connection.sendMessage(inboundMessage(importResponse.build()));
     }
 
-    private void handleCanonicalizeRequest(CanonicalizeRequestOrBuilder canonicalizeRequest) throws IOException {
+    private void handleCanonicalizeRequest(CanonicalizeRequest canonicalizeRequest) throws IOException {
         CanonicalizeResponse.Builder canonicalizeResponse = CanonicalizeResponse.newBuilder()
                 .setId(canonicalizeRequest.getId());
 
@@ -337,9 +334,9 @@ public class SassCompiler implements Closeable {
         connection.sendMessage(inboundMessage(canonicalizeResponse.build()));
     }
 
-    private void handleFunctionCallRequest(FunctionCallRequestOrBuilder functionCallRequest) throws IOException {
-        FunctionCallResponse.Builder response = FunctionCallResponse.newBuilder();
-        response.setId(functionCallRequest.getId());
+    private void handleFunctionCallRequest(FunctionCallRequest functionCallRequest) throws IOException {
+        FunctionCallResponse.Builder response = FunctionCallResponse.newBuilder()
+                .setId(functionCallRequest.getId());
 
         HostFunction sassFunction = null;
         try {

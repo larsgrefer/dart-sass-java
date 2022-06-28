@@ -9,11 +9,5 @@ pluginManagement {
 
 rootProject.name = 'dart-sass-java'
 
-dependencyResolutionManagement {
-    repositories {
-        mavenCentral()
-    }
-}
-
 include "sass-embedded-protocol"
 include "sass-embedded-host"

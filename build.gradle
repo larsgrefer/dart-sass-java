@@ -13,10 +13,6 @@ nexusPublishing {
 }
 
 allprojects {
-    repositories {
-        mavenCentral()
-    }
-
     group = "de.larsgrefer.sass"
 
     plugins.withId("java") {

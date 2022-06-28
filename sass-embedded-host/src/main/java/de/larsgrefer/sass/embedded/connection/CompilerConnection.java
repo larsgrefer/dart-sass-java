@@ -1,6 +1,7 @@
 package de.larsgrefer.sass.embedded.connection;
 
-import sass.embedded_protocol.EmbeddedSass;
+import sass.embedded_protocol.EmbeddedSass.InboundMessage;
+import sass.embedded_protocol.EmbeddedSass.OutboundMessage;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -10,8 +11,8 @@ import java.io.IOException;
  */
 public interface CompilerConnection extends Closeable {
 
-    void sendMessage(EmbeddedSass.InboundMessage inboundMessage) throws IOException;
+    void sendMessage(InboundMessage inboundMessage) throws IOException;
 
-    EmbeddedSass.OutboundMessage readResponse() throws IOException;
+    OutboundMessage readResponse() throws IOException;
 
 }

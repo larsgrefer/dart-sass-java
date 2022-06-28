@@ -20,6 +20,7 @@ import sass.embedded_protocol.EmbeddedSass.InboundMessage;
 import sass.embedded_protocol.EmbeddedSass.InboundMessage.CanonicalizeResponse;
 import sass.embedded_protocol.EmbeddedSass.InboundMessage.CompileRequest;
 import sass.embedded_protocol.EmbeddedSass.InboundMessage.FunctionCallResponse;
+import sass.embedded_protocol.EmbeddedSass.InboundMessage.VersionRequest;
 import sass.embedded_protocol.EmbeddedSass.OutboundMessage;
 import sass.embedded_protocol.EmbeddedSass.OutboundMessage.CanonicalizeRequestOrBuilder;
 import sass.embedded_protocol.EmbeddedSass.OutboundMessage.CompileResponse.CompileSuccess;
@@ -33,6 +34,8 @@ import javax.annotation.Nonnull;
 import java.io.*;
 import java.net.URL;
 import java.util.*;
+
+import static de.larsgrefer.sass.embedded.util.ProtocolUtil.inboundMessage;
 
 /**
  * @author Lars Grefer
@@ -81,11 +84,7 @@ public class SassCompiler implements Closeable {
     }
 
     public OutboundMessage.VersionResponse getVersion() throws IOException {
-        InboundMessage inboundMessage = InboundMessage.newBuilder()
-                .setVersionRequest(InboundMessage.VersionRequest.newBuilder().build())
-                .build();
-
-        return exec(inboundMessage).getVersionResponse();
+        return exec(inboundMessage(VersionRequest.getDefaultInstance())).getVersionResponse();
     }
 
     public void registerFunction(@NonNull HostFunction sassFunction) {
@@ -220,11 +219,8 @@ public class SassCompiler implements Closeable {
     //endregion
 
     private CompileSuccess execCompileRequest(CompileRequest compileRequest) throws IOException, SassCompilationFailedException {
-        InboundMessage inboundMessage = InboundMessage.newBuilder()
-                .setCompileRequest(compileRequest)
-                .build();
 
-        OutboundMessage outboundMessage = exec(inboundMessage);
+        OutboundMessage outboundMessage = exec(inboundMessage(compileRequest));
 
         if (!outboundMessage.hasCompileResponse()) {
             throw new IllegalStateException("No compile response");
@@ -300,10 +296,7 @@ public class SassCompiler implements Closeable {
             fileImportResponse.setError(getErrorMessage(t));
         }
 
-        InboundMessage inboundMessage = InboundMessage.newBuilder()
-                .setFileImportResponse(fileImportResponse.build())
-                .build();
-        connection.sendMessage(inboundMessage);
+        connection.sendMessage(inboundMessage(fileImportResponse.build()));
     }
 
     private void handleImportRequest(ImportRequestOrBuilder importRequest) throws IOException {
@@ -322,11 +315,7 @@ public class SassCompiler implements Closeable {
             importResponse.setError(getErrorMessage(t));
         }
 
-        InboundMessage inboundMessage = InboundMessage.newBuilder()
-                .setImportResponse(importResponse.build())
-                .build();
-
-        connection.sendMessage(inboundMessage);
+        connection.sendMessage(inboundMessage(importResponse.build()));
     }
 
     private void handleCanonicalizeRequest(CanonicalizeRequestOrBuilder canonicalizeRequest) throws IOException {
@@ -345,11 +334,7 @@ public class SassCompiler implements Closeable {
             canonicalizeResponse.setError(getErrorMessage(e));
         }
 
-        InboundMessage inboundMessage = InboundMessage.newBuilder()
-                .setCanonicalizeResponse(canonicalizeResponse.build())
-                .build();
-
-        connection.sendMessage(inboundMessage);
+        connection.sendMessage(inboundMessage(canonicalizeResponse.build()));
     }
 
     private void handleFunctionCallRequest(FunctionCallRequestOrBuilder functionCallRequest) throws IOException {
@@ -376,7 +361,7 @@ public class SassCompiler implements Closeable {
             response.setError(getErrorMessage(e));
         }
 
-        connection.sendMessage(InboundMessage.newBuilder().setFunctionCallResponse(response.build()).build());
+        connection.sendMessage(inboundMessage(response.build()));
     }
 
     private String getErrorMessage(Throwable t) {

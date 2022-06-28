@@ -3,9 +3,10 @@ package de.larsgrefer.sass.embedded.functions;
 import de.larsgrefer.sass.embedded.util.ColorUtil;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
-import sass.embedded_protocol.EmbeddedSass;
+import sass.embedded_protocol.EmbeddedSass.SingletonValue;
+import sass.embedded_protocol.EmbeddedSass.Value;
 
-import java.awt.*;
+import java.awt.Color;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
@@ -16,154 +17,139 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static de.larsgrefer.sass.embedded.util.ProtocolUtil.value;
+
 /**
  * @author Lars Grefer
  */
 @UtilityClass
 class ConversionService {
 
-    static EmbeddedSass.Value toSassValue(Object object) {
+    static Value toSassValue(Object object) {
         if (object == null) {
-            return EmbeddedSass.Value.newBuilder()
-                    .setSingleton(EmbeddedSass.SingletonValue.NULL)
-                    .build();
+            return value(SingletonValue.NULL);
         }
 
         if (object instanceof Boolean) {
-            return EmbeddedSass.Value.newBuilder()
-                    .setSingleton((Boolean) object ? EmbeddedSass.SingletonValue.TRUE : EmbeddedSass.SingletonValue.FALSE)
-                    .build();
+            return value((Boolean) object ? SingletonValue.TRUE : SingletonValue.FALSE);
         }
 
         if (object instanceof CharSequence) {
-            EmbeddedSass.Value.String sassString = EmbeddedSass.Value.String.newBuilder()
+            Value.String sassString = Value.String.newBuilder()
                     .setQuoted(true)
                     .setText(object.toString())
                     .build();
-            return EmbeddedSass.Value.newBuilder()
-                    .setString(sassString)
-                    .build();
+            return value(sassString);
         }
 
         if (object instanceof Number) {
-            EmbeddedSass.Value.Number sassNumber = EmbeddedSass.Value.Number.newBuilder()
+            Value.Number sassNumber = Value.Number.newBuilder()
                     .setValue(((Number) object).doubleValue())
                     .build();
-            return EmbeddedSass.Value.newBuilder()
-                    .setNumber(sassNumber)
-                    .build();
+            return value(sassNumber);
         }
 
         if (object instanceof Color) {
             Color color = (Color) object;
 
-            EmbeddedSass.Value.RgbColor sassColor = ColorUtil.toRgbColor(color);
-            return EmbeddedSass.Value.newBuilder()
-                    .setRgbColor(sassColor)
-                    .build();
+            Value.RgbColor sassColor = ColorUtil.toRgbColor(color);
+            return value(sassColor);
         }
 
         if (object instanceof Collection) {
-            java.util.List<EmbeddedSass.Value> sassValues = ((Collection<?>) object)
+            java.util.List<Value> sassValues = ((Collection<?>) object)
                     .stream()
                     .map(ConversionService::toSassValue)
                     .collect(Collectors.toList());
 
-            return EmbeddedSass.Value.newBuilder()
-                    .setList(EmbeddedSass.Value.List.newBuilder()
+            return value(
+                    Value.List.newBuilder()
                             .addAllContents(sassValues)
-                            .build())
-                    .build();
+                            .build()
+            );
         }
 
         if (object instanceof Map) {
-            List<EmbeddedSass.Value.Map.Entry> sassEntries = ((Map<?, ?>) object).entrySet()
+            List<Value.Map.Entry> sassEntries = ((Map<?, ?>) object).entrySet()
                     .stream()
-                    .map(entry -> EmbeddedSass.Value.Map.Entry.newBuilder()
+                    .map(entry -> Value.Map.Entry.newBuilder()
                             .setKey(toSassValue(entry.getKey()))
                             .setValue(toSassValue(entry.getValue()))
                             .build())
                     .collect(Collectors.toList());
 
-            return EmbeddedSass.Value.newBuilder()
-                    .setMap(EmbeddedSass.Value.Map.newBuilder()
+            return value(
+                    Value.Map.newBuilder()
                             .addAllEntries(sassEntries)
-                            .build())
-                    .build();
+                            .build()
+            );
         }
 
-
-        if (object instanceof EmbeddedSass.Value) {
-            return (EmbeddedSass.Value) object;
+        if (object instanceof Value) {
+            return (Value) object;
         }
 
-        if (object instanceof EmbeddedSass.Value.String) {
-            return EmbeddedSass.Value.newBuilder()
-                    .setString((EmbeddedSass.Value.String) object)
-                    .build();
+        if (object instanceof Value.String) {
+            return value((Value.String) object);
         }
 
-        if (object instanceof EmbeddedSass.Value.Number) {
-            return EmbeddedSass.Value.newBuilder()
-                    .setNumber((EmbeddedSass.Value.Number) object)
-                    .build();
+        if (object instanceof Value.Number) {
+            return value((Value.Number) object);
         }
 
-        if (object instanceof EmbeddedSass.Value.RgbColor) {
-            return EmbeddedSass.Value.newBuilder()
-                    .setRgbColor((EmbeddedSass.Value.RgbColor) object)
-                    .build();
+        if (object instanceof Value.RgbColor) {
+            return value((Value.RgbColor) object);
         }
 
-        if (object instanceof EmbeddedSass.Value.HslColor) {
-            return EmbeddedSass.Value.newBuilder()
-                    .setHslColor((EmbeddedSass.Value.HslColor) object)
-                    .build();
+        if (object instanceof Value.HslColor) {
+            return value((Value.HslColor) object);
         }
 
-        if (object instanceof EmbeddedSass.Value.HwbColor) {
-            return EmbeddedSass.Value.newBuilder()
-                    .setHwbColor((EmbeddedSass.Value.HwbColor) object)
-                    .build();
+        if (object instanceof Value.List) {
+            return value((Value.List) object);
         }
 
-        if (object instanceof EmbeddedSass.Value.Calculation) {
-            return EmbeddedSass.Value.newBuilder()
-                    .setCalculation((EmbeddedSass.Value.Calculation) object)
-                    .build();
+        if (object instanceof Value.Map) {
+            return value((Value.Map) object);
         }
 
-        if (object instanceof EmbeddedSass.Value.List) {
-            return EmbeddedSass.Value.newBuilder()
-                    .setList((EmbeddedSass.Value.List) object)
-                    .build();
+        if (object instanceof SingletonValue) {
+            return value((SingletonValue) object);
         }
 
-        if (object instanceof EmbeddedSass.Value.Map) {
-            return EmbeddedSass.Value.newBuilder()
-                    .setMap((EmbeddedSass.Value.Map) object)
-                    .build();
+        if (object instanceof Value.CompilerFunction) {
+            return value((Value.CompilerFunction) object);
         }
 
-        if (object instanceof EmbeddedSass.SingletonValue) {
-            return EmbeddedSass.Value.newBuilder()
-                    .setSingleton((EmbeddedSass.SingletonValue) object)
-                    .build();
+        if (object instanceof Value.HostFunction) {
+            return value((Value.HostFunction) object);
+        }
+
+        if (object instanceof Value.ArgumentList) {
+            return value((Value.ArgumentList) object);
+        }
+
+        if (object instanceof Value.HwbColor) {
+            return value((Value.HwbColor) object);
+        }
+
+        if (object instanceof Value.Calculation) {
+            return value((Value.Calculation) object);
         }
 
         throw new RuntimeException("Cant convert to Sass value");
     }
 
     @SuppressWarnings("unchecked")
-    static <T> T toJavaValue(@NonNull EmbeddedSass.Value value, Class<T> targetType, Type parameterizedType) {
-        if (targetType.equals(EmbeddedSass.Value.class)) {
+    static <T> T toJavaValue(@NonNull Value value, Class<T> targetType, Type parameterizedType) {
+        if (targetType.equals(Value.class)) {
             return (T) value;
         }
 
         switch (value.getValueCase()) {
             case STRING:
-                EmbeddedSass.Value.String sassString = value.getString();
-                if (targetType.isAssignableFrom(EmbeddedSass.Value.String.class)) {
+                Value.String sassString = value.getString();
+                if (targetType.isAssignableFrom(Value.String.class)) {
                     return (T) sassString;
                 } else if (targetType.isAssignableFrom(String.class)) {
                     return (T) sassString.getText();
@@ -171,9 +157,9 @@ class ConversionService {
                     throw new IllegalArgumentException("Cant convert sass String to " + targetType);
                 }
             case NUMBER:
-                EmbeddedSass.Value.Number sassNumber = value.getNumber();
+                Value.Number sassNumber = value.getNumber();
                 double javaNumber = sassNumber.getValue();
-                if (targetType.isAssignableFrom(EmbeddedSass.Value.Number.class)) {
+                if (targetType.isAssignableFrom(Value.Number.class)) {
                     return (T) sassNumber;
                 } else if (targetType.isAssignableFrom(Double.class) || targetType.isAssignableFrom(Double.TYPE)) {
                     return (T) Double.valueOf(javaNumber);
@@ -197,8 +183,8 @@ class ConversionService {
                     throw new IllegalArgumentException("Cant convert sass Number to " + targetType);
                 }
             case RGB_COLOR:
-                EmbeddedSass.Value.RgbColor rgbColor = value.getRgbColor();
-                if (targetType.isAssignableFrom(EmbeddedSass.Value.RgbColor.class)) {
+                Value.RgbColor rgbColor = value.getRgbColor();
+                if (targetType.isAssignableFrom(Value.RgbColor.class)) {
                     return (T) rgbColor;
                 } else if (targetType.isAssignableFrom(Color.class)) {
                     return (T) ColorUtil.toJavaColor(rgbColor);
@@ -206,8 +192,8 @@ class ConversionService {
                     throw new IllegalArgumentException("Cant convert sass RgbColor to " + targetType);
                 }
             case HSL_COLOR:
-                EmbeddedSass.Value.HslColor hslColor = value.getHslColor();
-                if (targetType.isAssignableFrom(EmbeddedSass.Value.HslColor.class)) {
+                Value.HslColor hslColor = value.getHslColor();
+                if (targetType.isAssignableFrom(Value.HslColor.class)) {
                     return (T) hslColor;
                 } else if (targetType.isAssignableFrom(Color.class)) {
                     return (T) ColorUtil.toJavaColor(hslColor);
@@ -215,8 +201,8 @@ class ConversionService {
                     throw new IllegalArgumentException("Cant convert sass HslColor to " + targetType);
                 }
             case HWB_COLOR:
-                EmbeddedSass.Value.HwbColor hwbColor = value.getHwbColor();
-                if (targetType.isAssignableFrom(EmbeddedSass.Value.HwbColor.class)) {
+                Value.HwbColor hwbColor = value.getHwbColor();
+                if (targetType.isAssignableFrom(Value.HwbColor.class)) {
                     return (T) hwbColor;
                 } else if (targetType.isAssignableFrom(Color.class)) {
                     return (T) ColorUtil.toJavaColor(hwbColor);
@@ -224,8 +210,8 @@ class ConversionService {
                     throw new IllegalArgumentException("Cant convert sass HwbColor to " + targetType);
                 }
             case LIST:
-                EmbeddedSass.Value.List sassList = value.getList();
-                if (targetType.isAssignableFrom(EmbeddedSass.Value.List.class)) {
+                Value.List sassList = value.getList();
+                if (targetType.isAssignableFrom(Value.List.class)) {
                     return (T) sassList;
                 } else if (targetType.isAssignableFrom(List.class)) {
                     Type elementType = ((ParameterizedType) parameterizedType).getActualTypeArguments()[0];
@@ -241,8 +227,8 @@ class ConversionService {
                     throw new IllegalArgumentException("Cant convert sass List to " + targetType);
                 }
             case MAP:
-                EmbeddedSass.Value.Map sassMap = value.getMap();
-                if (targetType.isAssignableFrom(EmbeddedSass.Value.Map.class)) {
+                Value.Map sassMap = value.getMap();
+                if (targetType.isAssignableFrom(Value.Map.class)) {
                     return (T) sassMap;
                 } else if (targetType.isAssignableFrom(Map.class)) {
                     Type keyType = ((ParameterizedType) parameterizedType).getActualTypeArguments()[0];
@@ -263,11 +249,11 @@ class ConversionService {
                     throw new IllegalArgumentException("Cant convert sass Map to " + targetType);
                 }
             case SINGLETON:
-                EmbeddedSass.SingletonValue singleton = value.getSingleton();
+                SingletonValue singleton = value.getSingleton();
                 switch (value.getSingleton()) {
                     case TRUE:
                     case FALSE:
-                        Boolean boolValue = singleton == EmbeddedSass.SingletonValue.TRUE;
+                        Boolean boolValue = singleton == SingletonValue.TRUE;
 
                         if (targetType.equals(Boolean.class) || targetType.equals(boolean.class)) {
                             return (T) boolValue;
@@ -277,8 +263,8 @@ class ConversionService {
 
                         throw new IllegalArgumentException("Cant convert sass boolean to " + targetType);
                     case NULL:
-                        if (targetType.equals(EmbeddedSass.SingletonValue.class)) {
-                            return (T) EmbeddedSass.SingletonValue.NULL;
+                        if (targetType.equals(SingletonValue.class)) {
+                            return (T) SingletonValue.NULL;
                         }
                         return null;
                     case UNRECOGNIZED:
@@ -288,23 +274,23 @@ class ConversionService {
                 }
 
             case CALCULATION:
-                EmbeddedSass.Value.Calculation calculation = value.getCalculation();
-                if (targetType.isAssignableFrom(EmbeddedSass.Value.Calculation.class)) {
+                Value.Calculation calculation = value.getCalculation();
+                if (targetType.isAssignableFrom(Value.Calculation.class)) {
                     return (T) calculation;
                 } else {
                     throw new IllegalArgumentException("Cant convert sass Calculation to " + targetType);
                 }
 
             case COMPILER_FUNCTION:
-                EmbeddedSass.Value.CompilerFunction compilerFunction = value.getCompilerFunction();
-                if (targetType.isAssignableFrom(EmbeddedSass.Value.CompilerFunction.class)) {
+                Value.CompilerFunction compilerFunction = value.getCompilerFunction();
+                if (targetType.isAssignableFrom(Value.CompilerFunction.class)) {
                     return (T) compilerFunction;
                 } else {
                     throw new IllegalArgumentException("Cant convert sass CompilerFunction to " + targetType);
                 }
             case HOST_FUNCTION:
-                EmbeddedSass.Value.HostFunction hostFunction = value.getHostFunction();
-                if (targetType.isAssignableFrom(EmbeddedSass.Value.HostFunction.class)) {
+                Value.HostFunction hostFunction = value.getHostFunction();
+                if (targetType.isAssignableFrom(Value.HostFunction.class)) {
                     return (T) hostFunction;
                 } else {
                     throw new IllegalArgumentException("Cant convert sass HostFunction to " + targetType);

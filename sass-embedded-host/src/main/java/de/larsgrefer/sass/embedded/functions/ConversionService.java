@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static de.larsgrefer.sass.embedded.util.ProtocolUtil.value;
+import static de.larsgrefer.sass.embedded.util.ProtocolUtil.*;
 
 /**
  * @author Lars Grefer
@@ -62,11 +62,7 @@ class ConversionService {
                     .map(ConversionService::toSassValue)
                     .collect(Collectors.toList());
 
-            return value(
-                    Value.List.newBuilder()
-                            .addAllContents(sassValues)
-                            .build()
-            );
+            return value(list(sassValues));
         }
 
         if (object instanceof Map) {
@@ -78,11 +74,7 @@ class ConversionService {
                             .build())
                     .collect(Collectors.toList());
 
-            return value(
-                    Value.Map.newBuilder()
-                            .addAllEntries(sassEntries)
-                            .build()
-            );
+            return value(map(sassEntries));
         }
 
         if (object instanceof Value) {

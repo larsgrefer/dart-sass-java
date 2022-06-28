@@ -6,6 +6,8 @@ import sass.embedded_protocol.EmbeddedSass.InboundMessage;
 import sass.embedded_protocol.EmbeddedSass.InboundMessage.*;
 import sass.embedded_protocol.EmbeddedSass.Value;
 
+import java.util.Arrays;
+
 /**
  * @author Lars Grefer
  */
@@ -117,6 +119,26 @@ public class ProtocolUtil {
     public static Value value(Value.Calculation calculation) {
         return Value.newBuilder()
                 .setCalculation(calculation)
+                .build();
+    }
+
+    public static Value.List list(Value... values) {
+        return list(Arrays.asList(values));
+    }
+
+    public static Value.List list(Iterable<Value> values) {
+        return Value.List.newBuilder()
+                .addAllContents(values)
+                .build();
+    }
+
+    public static Value.Map map(Value.Map.Entry... entries) {
+        return map(Arrays.asList(entries));
+    }
+
+    public static Value.Map map(Iterable<Value.Map.Entry> entries) {
+        return Value.Map.newBuilder()
+                .addAllEntries(entries)
                 .build();
     }
 }

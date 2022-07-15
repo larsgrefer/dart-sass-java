@@ -1,8 +1,9 @@
 pluginManagement {
-    def freefairGradleVersion= "6.5.0.2"
+    def freefairGradleVersion= "6.5.0.3"
     plugins {
         id "io.freefair.git-version" version "$freefairGradleVersion"
         id "io.freefair.lombok" version "$freefairGradleVersion"
+        id "io.freefair.javadocs" version "$freefairGradleVersion"
         id "io.freefair.maven-publish-java" version "$freefairGradleVersion"
     }
 }

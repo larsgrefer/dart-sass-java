@@ -18,7 +18,7 @@ public class SyntaxUtil {
         return guessSyntax(file.getName());
     }
 
-    private static Syntax guessSyntax(@NonNull String path) {
+    public static Syntax guessSyntax(@NonNull String path) {
         String lowerPath = path.toLowerCase();
 
         if (lowerPath.endsWith(".css")) {

@@ -132,6 +132,10 @@ public class SassCompiler implements Closeable {
     }
 
     public CompileSuccess compile(@NonNull URL source) throws SassCompilationFailedException, IOException {
+        return compile(source, getOutputStyle());
+    }
+
+    public CompileSuccess compile(@NonNull URL source, OutputStyle outputStyle) throws SassCompilationFailedException, IOException {
         if (source.getProtocol().equals("file")) {
             File file = new File(source.getPath());
             return compileFile(file);
@@ -157,7 +161,7 @@ public class SassCompiler implements Closeable {
                 .build();
 
         try {
-            return compileString(build, getOutputStyle());
+            return compileString(build, outputStyle);
         } finally {
             customImporters.remove(importer.getId());
         }
@@ -176,13 +180,17 @@ public class SassCompiler implements Closeable {
         return compileString(source, Syntax.CSS);
     }
 
-    public CompileSuccess compileString(@NonNull String source, Syntax syntax) throws IOException, SassCompilationFailedException {
+    public CompileSuccess compileString(String source, Syntax syntax) throws SassCompilationFailedException, IOException {
+        return compileString(source, syntax, getOutputStyle());
+    }
+
+    public CompileSuccess compileString(@NonNull String source, Syntax syntax, OutputStyle outputStyle) throws IOException, SassCompilationFailedException {
         CompileRequest.StringInput stringInput = CompileRequest.StringInput.newBuilder()
                 .setSource(source)
                 .setSyntax(syntax)
                 .build();
 
-        return compileString(stringInput, getOutputStyle());
+        return compileString(stringInput, outputStyle);
     }
 
     @Nonnull

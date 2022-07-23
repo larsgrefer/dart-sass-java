@@ -30,6 +30,10 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew build
 
+      - run: ./gradlew -V uploadGithubDependenciesSnapshot -s
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - run: ./gradlew jacocoTestReport
       - name: Upload coverage report
         uses: codecov/codecov-action@v3.1.0

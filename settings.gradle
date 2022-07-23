@@ -5,6 +5,7 @@ pluginManagement {
         id "io.freefair.lombok" version "$freefairGradleVersion"
         id "io.freefair.javadocs" version "$freefairGradleVersion"
         id "io.freefair.maven-publish-java" version "$freefairGradleVersion"
+        id "io.freefair.github.dependency-submission" version "$freefairGradleVersion"
     }
 }
 

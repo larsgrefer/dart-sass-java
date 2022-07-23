@@ -2,6 +2,7 @@ plugins {
     id "io.freefair.git-version"
     id "io.freefair.lombok" apply false
     id "io.freefair.javadocs" apply false
+    id "io.freefair.github.dependency-submission"
     id "io.github.gradle-nexus.publish-plugin" version "1.1.0"
 }
 

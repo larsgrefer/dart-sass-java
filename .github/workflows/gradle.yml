@@ -51,7 +51,6 @@ jobs:
         include:
           - arch: aarch64
           - arch: armv7
-          - arch: armv6
 
     steps:
       - uses: actions/checkout@v2.1.0
@@ -62,5 +61,5 @@ jobs:
           githubToken: ${{ github.token }}
           install: |
             apt-get update -q -y
-            apt-get install -q -y default-jre
+            apt-get install -q -y default-jre-headless
           run: ./gradlew build

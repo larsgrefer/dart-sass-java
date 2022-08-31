@@ -41,12 +41,11 @@ jobs:
           files: jacoco*.xml,*Jacoco*.xml
 
   build_arm:
-    # The host should always be linux
     runs-on: ubuntu-latest
     name: Build on Linux ${{ matrix.arch }}
 
-    # Run steps on a matrix of 3 arch/distro combinations
     strategy:
+      fail-fast: false
       matrix:
         include:
           - arch: aarch64
@@ -61,5 +60,5 @@ jobs:
           githubToken: ${{ github.token }}
           install: |
             apt-get update -q -y
-            apt-get install -q -y default-jre-headless
+            apt-get install -q -y openjdk-8-jre-headless
           run: ./gradlew build

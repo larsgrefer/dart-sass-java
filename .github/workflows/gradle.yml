@@ -43,18 +43,15 @@ jobs:
   build_arm:
     # The host should always be linux
     runs-on: ubuntu-latest
-    name: Build on ${{ matrix.distro }} ${{ matrix.arch }}
+    name: Build on Linux ${{ matrix.arch }}
 
     # Run steps on a matrix of 3 arch/distro combinations
     strategy:
       matrix:
         include:
           - arch: aarch64
-            distro: ubuntu18.04
           - arch: ppc64le
-            distro: alpine_latest
           - arch: s390x
-            distro: fedora_latest
 
     steps:
       - uses: actions/checkout@v2.1.0
@@ -63,5 +60,6 @@ jobs:
         id: build
         with:
           arch: ${{ matrix.arch }}
-          distro: ${{ matrix.distro }}
+          distro: bullseye
+          install: sudo apt-get install default-jre
           run: ./gradlew build

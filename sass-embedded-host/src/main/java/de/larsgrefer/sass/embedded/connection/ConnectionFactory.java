@@ -76,8 +76,11 @@ public class ConnectionFactory {
             classifier = osArch.contains("64") ? "windows-x64" : "windows-ia32";
         }
         else {
-            if (osArch.equals("aarch64") || osArch.contains("arm")) {
+            if (osArch.equals("aarch64") || osArch.equals("arm64")) {
                 classifier = "linux-arm64";
+            }
+            else if (osArch.contains("arm")) {
+                classifier = "linux-arm";
             }
             else if (osArch.contains("64")) {
                 classifier = "linux-x64";

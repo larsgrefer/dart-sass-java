@@ -56,10 +56,9 @@ jobs:
     steps:
       - uses: actions/checkout@v2.1.0
       - uses: uraimo/run-on-arch-action@v2
-        name: Build artifact
-        id: build
         with:
           arch: ${{ matrix.arch }}
           distro: bullseye
-          install: sudo apt-get install default-jre
+          githubToken: ${{ github.token }}
+          install: apt-get install -q -y default-jre
           run: ./gradlew build

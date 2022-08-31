@@ -50,8 +50,8 @@ jobs:
       matrix:
         include:
           - arch: aarch64
-          - arch: ppc64le
-          - arch: s390x
+          - arch: armv7
+          - arch: armv6
 
     steps:
       - uses: actions/checkout@v2.1.0
@@ -60,5 +60,7 @@ jobs:
           arch: ${{ matrix.arch }}
           distro: bullseye
           githubToken: ${{ github.token }}
-          install: apt-get install -q -y default-jre
+          install: |
+            apt-get update -q -y
+            apt-get install -q -y default-jre
           run: ./gradlew build

@@ -60,5 +60,5 @@ jobs:
           githubToken: ${{ github.token }}
           install: |
             apt-get update -q -y
-            apt-get install -q -y openjdk-8-jre-headless
+            apt-get install -q -y default-jre-headless
           run: ./gradlew build

@@ -50,8 +50,6 @@ jobs:
         include:
           - arch: aarch64
             distro: bullseye
-          - arch: armv7
-            distro: stretch
 
     steps:
       - uses: actions/checkout@v2.1.0

@@ -49,14 +49,16 @@ jobs:
       matrix:
         include:
           - arch: aarch64
+            distro: bullseye
           - arch: armv7
+            distro: stretch
 
     steps:
       - uses: actions/checkout@v2.1.0
       - uses: uraimo/run-on-arch-action@v2
         with:
           arch: ${{ matrix.arch }}
-          distro: bullseye
+          distro: ${{ matrix.distro }}
           githubToken: ${{ github.token }}
           install: |
             apt-get update -q -y

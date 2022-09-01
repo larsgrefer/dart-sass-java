@@ -49,7 +49,7 @@ jobs:
       matrix:
         include:
           - arch: aarch64
-          #- arch: armv7
+          - arch: armv7
 
     steps:
       - uses: actions/checkout@v2.1.0
@@ -61,4 +61,6 @@ jobs:
           install: |
             apt-get update -q -y
             apt-get install -q -y default-jre-headless
-          run: ./gradlew build
+          run: |
+            java -XshowSettings:properties -version
+            ./gradlew build

@@ -65,4 +65,4 @@ jobs:
             apt-get install -q -y default-jre-headless
           run: |
             java -XshowSettings:properties -version
-            ./gradlew build
+            ./gradlew -V build

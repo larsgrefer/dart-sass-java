@@ -8,6 +8,8 @@ import java.io.IOException;
 
 /**
  * @author Lars Grefer
+ * @see ProcessConnection
+ * @see ConnectionFactory#bundled()
  */
 public interface CompilerConnection extends Closeable {
 

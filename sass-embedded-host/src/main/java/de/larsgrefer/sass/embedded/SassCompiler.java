@@ -36,7 +36,7 @@ import static de.larsgrefer.sass.embedded.util.ProtocolUtil.inboundMessage;
 
 /**
  * @author Lars Grefer
- * @see SassCompilerFactory
+ * @see SassCompilerFactory#bundled()
  */
 @Slf4j
 public class SassCompiler implements Closeable {

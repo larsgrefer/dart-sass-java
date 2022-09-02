@@ -13,6 +13,9 @@ import java.nio.file.Path;
 @UtilityClass
 public class ConnectionFactory {
 
+    /**
+     * Path of the extracted compiler executable.
+     */
     private static File bundledDartExec;
 
     public static ProcessConnection bundled() throws IOException {

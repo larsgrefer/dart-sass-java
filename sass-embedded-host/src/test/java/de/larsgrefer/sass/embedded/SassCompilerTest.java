@@ -1,6 +1,7 @@
 package de.larsgrefer.sass.embedded;
 
 import de.larsgrefer.sass.embedded.functions.HostFunction;
+import org.intellij.lang.annotations.Language;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -51,7 +52,8 @@ class SassCompilerTest {
     @Test
     void compileFileToString() throws SassCompilationFailedException, IOException {
         sassCompiler.setOutputStyle(EmbeddedSass.OutputStyle.COMPRESSED);
-        String css = sassCompiler.compileFile(new File("src/test/resources/foo/bar.scss")).getCss();
+        CompileSuccess compileSuccess = sassCompiler.compileFile(new File("src/test/resources/foo/bar.scss"));
+        String css = compileSuccess.getCss();
 
         assertThat(css).contains("color:red");
     }
@@ -84,7 +86,7 @@ class SassCompilerTest {
 
     @Test
     void customFunction() throws Exception {
-        String scss = ".foo { .bar { color : foo(#ffffff);}}";
+        @Language("SCSS") String scss = ".foo { .bar { color : foo(#ffffff);}}";
 
         HostFunction sassFunction = new HostFunction("foo", Collections.singletonList(new HostFunction.Argument("col", null))) {
             @Override
@@ -108,7 +110,7 @@ class SassCompilerTest {
 
     @Test
     void customFunction_error() {
-        String scss = ".foo { .bar { color : foo(#ffffff);}}";
+        @Language("SCSS") String scss = ".foo { .bar { color : foo(#ffffff);}}";
 
         HostFunction sassFunction = new HostFunction("foo", Collections.singletonList(new HostFunction.Argument("col", null))) {
             @Override

@@ -60,6 +60,27 @@ public class SassCompiler implements Closeable {
     @Setter
     private boolean generateSourceMaps = false;
 
+    /**
+     * Whether to include sources in the generated sourcemap
+     *
+     * @see CompileRequest#getSourceMapIncludeSources()
+     */
+    @Getter
+    @Setter
+    private boolean sourceMapIncludeSources = false;
+
+    /**
+     * Whether to report all deprecation warnings or only the first few ones.
+     * If this is `false`, the compiler may choose not to send events for
+     * repeated deprecation warnings. If this is `true`, the compiler must emit
+     * an event for every deprecation warning it encounters.
+     *
+     * @see CompileRequest#getVerbose()
+     */
+    @Getter
+    @Setter
+    private boolean verbose = false;
+
     private final CompilerConnection connection;
 
     private final Random compileRequestIds = new Random();
@@ -102,6 +123,8 @@ public class SassCompiler implements Closeable {
         builder.setId(Math.abs(compileRequestIds.nextInt()));
         builder.setStyle(outputStyle);
         builder.setSourceMap(generateSourceMaps);
+        builder.setSourceMapIncludeSources(sourceMapIncludeSources);
+        builder.setVerbose(verbose);
 
         for (File loadPath : loadPaths) {
             CompileRequest.Importer importer = CompileRequest.Importer.newBuilder()

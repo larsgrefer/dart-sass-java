@@ -91,8 +91,7 @@ public class ColorUtil {
         double t2;
         if (light <= .5) {
             t2 = light * (sat + 1);
-        }
-        else {
+        } else {
             t2 = light + sat - (light * sat);
         }
         double t1 = light * 2 - t2;
@@ -103,7 +102,7 @@ public class ColorUtil {
     }
 
     /**
-     * https://www.w3.org/TR/css-color-3/#hsl-color
+     * @see <a href="https://www.w3.org/TR/css-color-3/#hsl-color">https://www.w3.org/TR/css-color-3/#hsl-color</a>
      */
     private double hueToRgb(double t1, double t2, double hue) {
         if (hue < 0) hue += 6;

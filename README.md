@@ -29,7 +29,7 @@ First import `sass-embedded-protcol` as dependency into your project. For exampl
 </dependency>
 ```
 
-Now you can instatiate *SassCompiler* to compile your sass file: 
+Now you can instantiate *SassCompiler* to compile your sass file: 
 
 ```
 SassCompiler sassCompiler = SassCompilerFactory.bundled();
@@ -41,7 +41,7 @@ String css = compileSuccess.getCss();
 
 ## Advanced usage with `WebJars`
 
-WebJars is a project amed to provide client-side libraries distributions as Maven dependency. Using classpath URLs we can read SCSS files directly from our WebJars dependency. For example let's say we are using the WebJars dependency for Bootstrap 5.1.3:
+WebJars is a project aimed to provide client-side libraries distributions as Maven dependency. Using classpath URLs we can read SCSS files directly from our WebJars dependency. For example let's say we are using the WebJars dependency for Bootstrap 5.1.3:
 
 ```
 <dependency>

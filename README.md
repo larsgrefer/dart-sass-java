@@ -18,7 +18,7 @@ This module contains the actual host-implementation including the embedded compi
 
 ## Basic usage
 
-First import `sass-embedded-protcol` as dependency into your project. For example using Maven add the following XML to your dependencies section:
+First import `sass-embedded-host` as dependency into your project. For example using Maven add the following XML to your dependencies section:
 
 ```
 <dependency>

@@ -18,7 +18,7 @@ This module contains the actual host-implementation including the embedded compi
 
 ## Basic usage
 
-First import `sass-embedded-protcol` as dependency into your project. For example using Maven add the following XML to your dependencises section:
+First import `sass-embedded-protcol` as dependency into your project. For example using Maven add the following XML to your dependencies section:
 
 ```
 <dependency>
@@ -38,3 +38,24 @@ CompileSuccess compileSuccess = sassCompiler.compileFile(new File("src/test/reso
 //get compiled css
 String css = compileSuccess.getCss();
 ```
+
+## Advanced usage with `WebJars`
+
+WebJars is a fancy project amed to provide client-side libraries distributions as Maven dependency. Using classpath URLs we can read scss files directly from our WebJars dependency. For example let's say we are using the following WebJars dependency for Bootstrap 5.1.3:
+
+```
+<dependency>
+    <groupId>org.webjars.npm</groupId>
+    <artifactId>bootstrap</artifactId>
+    <version>5.1.3</version>
+</dependency>
+```
+
+The following code compiles the main Bootstrap scss file into css:
+
+```
+URL resource = getClass().getResource("/META-INF/resources/webjars/bootstrap/5.1.3/scss/bootstrap.scss");
+CompileSuccess compileSuccess = sassCompiler.compile(resource);
+String css = compileSuccess.getCss(); 
+```
+

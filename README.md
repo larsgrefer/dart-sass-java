@@ -33,7 +33,7 @@ Now you can instatiate *SassCompiler* to compile your sass file:
 
 ```
 SassCompiler sassCompiler = SassCompilerFactory.bundled();
-CompileSuccess compileSuccess = sassCompiler.compileFile(new File("src/test/resources/foo/bar.scss"));
+CompileSuccess compileSuccess = sassCompiler.compileFile(new File("src/main/resources/foo/bar.scss"));
 
 //get compiled css
 String css = compileSuccess.getCss();
@@ -41,7 +41,7 @@ String css = compileSuccess.getCss();
 
 ## Advanced usage with `WebJars`
 
-WebJars is a fancy project amed to provide client-side libraries distributions as Maven dependency. Using classpath URLs we can read scss files directly from our WebJars dependency. For example let's say we are using the following WebJars dependency for Bootstrap 5.1.3:
+WebJars is a project amed to provide client-side libraries distributions as Maven dependency. Using classpath URLs we can read SCSS files directly from our WebJars dependency. For example let's say we are using the WebJars dependency for Bootstrap 5.1.3:
 
 ```
 <dependency>
@@ -51,7 +51,7 @@ WebJars is a fancy project amed to provide client-side libraries distributions a
 </dependency>
 ```
 
-The following code compiles the main Bootstrap scss file into css:
+The following code compiles the main Bootstrap SCSS file into css:
 
 ```
 URL resource = getClass().getResource("/META-INF/resources/webjars/bootstrap/5.1.3/scss/bootstrap.scss");
@@ -59,3 +59,25 @@ CompileSuccess compileSuccess = sassCompiler.compile(resource);
 String css = compileSuccess.getCss(); 
 ```
 
+Files form WebJars can be also imported directly from SCSS files. Let'say for example that we would like to customize Bootstrap with our favourite colors. We could create a custom SCSS file (let's say src/main/resources/custom-bootstrap.scss) with this content:
+
+```
+//VARIABLE OVERRIDING
+$primary: #712cf9;
+$secondary: #f19027;
+
+//INCLUDING MAIN BOOTSTRAP SCSSS
+@import "META-INF/resources/webjars/bootstrap/5.1.3/scss/bootstrap.scss";
+```
+
+To compile the file above we need to register a *WebjarsImporter* into our compiler:
+
+```
+SassCompiler sassCompiler = SassCompilerFactory.bundled();
+sassCompiler.registerImporter(new WebjarsImporter().autoCanonicalize());
+
+URL resource = getClass().getResource("/custom-bootstrap.scss");
+CompileSuccess compileSuccess = sassCompiler.compile(resource);
+
+String css = compileSuccess.getCss();
+```

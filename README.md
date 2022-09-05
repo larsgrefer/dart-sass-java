@@ -59,7 +59,7 @@ CompileSuccess compileSuccess = sassCompiler.compile(resource);
 String css = compileSuccess.getCss(); 
 ```
 
-Files form WebJars can be also imported directly from SCSS files. Let'say for example that we would like to customize Bootstrap with our favourite colors. We could create a custom SCSS file (let's say src/main/resources/custom-bootstrap.scss) with this content:
+Files form WebJars can be also imported directly from SCSS files. Let'say for example that we would like to customize Bootstrap with our favorite colors. We could create a custom SCSS file (let's say src/main/resources/custom-bootstrap.scss) with this content:
 
 ```
 //VARIABLE OVERRIDING
@@ -79,5 +79,6 @@ sassCompiler.registerImporter(new WebjarsImporter().autoCanonicalize());
 URL resource = getClass().getResource("/custom-bootstrap.scss");
 CompileSuccess compileSuccess = sassCompiler.compile(resource);
 
+//custom Bootstrap css
 String css = compileSuccess.getCss();
 ```

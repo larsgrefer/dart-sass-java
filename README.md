@@ -20,7 +20,7 @@ This module contains the actual host-implementation including the embedded compi
 
 First import `sass-embedded-host` as dependency into your project. For example using Maven add the following XML to your dependencies section:
 
-```
+```xml
 <dependency>
     <groupId>de.larsgrefer.sass</groupId>
     <artifactId>sass-embedded-host</artifactId>
@@ -31,19 +31,20 @@ First import `sass-embedded-host` as dependency into your project. For example u
 
 Now you can instantiate *SassCompiler* to compile your sass file: 
 
-```
-SassCompiler sassCompiler = SassCompilerFactory.bundled();
-CompileSuccess compileSuccess = sassCompiler.compileFile(new File("src/main/resources/foo/bar.scss"));
+```java
+try (SassCompiler sassCompiler = SassCompilerFactory.bundled()) {
+    CompileSuccess compileSuccess = sassCompiler.compileFile(new File("src/main/resources/foo/bar.scss"));
 
-//get compiled css
-String css = compileSuccess.getCss();
+    //get compiled css
+    String css = compileSuccess.getCss();
+}
 ```
 
 ## Advanced usage with `WebJars`
 
 WebJars is a project aimed to provide client-side libraries distributions as Maven dependency. Using classpath URLs we can read SCSS files directly from our WebJars dependency. For example let's say we are using the WebJars dependency for Bootstrap 5.1.3:
 
-```
+```xml
 <dependency>
     <groupId>org.webjars.npm</groupId>
     <artifactId>bootstrap</artifactId>
@@ -53,7 +54,7 @@ WebJars is a project aimed to provide client-side libraries distributions as Mav
 
 The following code compiles the main Bootstrap SCSS file into css:
 
-```
+```java
 URL resource = getClass().getResource("/META-INF/resources/webjars/bootstrap/5.1.3/scss/bootstrap.scss");
 CompileSuccess compileSuccess = sassCompiler.compile(resource);
 String css = compileSuccess.getCss(); 
@@ -61,7 +62,7 @@ String css = compileSuccess.getCss();
 
 Files form WebJars can be also imported directly from SCSS files. Let's say for example that we would like to customize Bootstrap with our favorite colors. We could create a custom SCSS file (for example: src/main/resources/custom-bootstrap.scss) with this content:
 
-```
+```scss
 //VARIABLE OVERRIDING
 $primary: #712cf9;
 $secondary: #f19027;
@@ -72,13 +73,14 @@ $secondary: #f19027;
 
 To compile the file above we need to register a *WebjarsImporter* into our compiler:
 
-```
-SassCompiler sassCompiler = SassCompilerFactory.bundled();
-sassCompiler.registerImporter(new WebjarsImporter().autoCanonicalize());
+```java
+try (SassCompiler sassCompiler = SassCompilerFactory.bundled()) {
+    sassCompiler.registerImporter(new WebjarsImporter().autoCanonicalize());
 
-URL resource = getClass().getResource("/custom-bootstrap.scss");
-CompileSuccess compileSuccess = sassCompiler.compile(resource);
+    URL resource = getClass().getResource("/custom-bootstrap.scss");
+    CompileSuccess compileSuccess = sassCompiler.compile(resource);
 
-//custom Bootstrap css
-String css = compileSuccess.getCss();
+    //custom Bootstrap css
+    String css = compileSuccess.getCss();
+}
 ```

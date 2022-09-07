@@ -2,6 +2,7 @@ package de.larsgrefer.sass.embedded.functions;
 
 import sass.embedded_protocol.EmbeddedSass;
 
+import javax.annotation.Nonnull;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
@@ -26,6 +27,7 @@ class FunctionHostFunction<T> extends HostFunction {
     }
 
     @Override
+    @Nonnull
     public EmbeddedSass.Value invoke(List<EmbeddedSass.Value> arguments) {
         if (arguments.size() != 1) {
             throw new IllegalArgumentException("Invalid argument count: Expected 1 instead of " + arguments.size());

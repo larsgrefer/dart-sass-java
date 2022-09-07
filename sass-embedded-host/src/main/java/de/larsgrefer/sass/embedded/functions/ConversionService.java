@@ -6,6 +6,8 @@ import lombok.experimental.UtilityClass;
 import sass.embedded_protocol.EmbeddedSass.SingletonValue;
 import sass.embedded_protocol.EmbeddedSass.Value;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.awt.Color;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -25,7 +27,8 @@ import static de.larsgrefer.sass.embedded.util.ProtocolUtil.*;
 @UtilityClass
 class ConversionService {
 
-    static Value toSassValue(Object object) {
+    @Nonnull
+    static Value toSassValue(@Nullable Object object) {
         if (object == null) {
             return value(SingletonValue.NULL);
         }
@@ -133,6 +136,7 @@ class ConversionService {
     }
 
     @SuppressWarnings("unchecked")
+    @Nullable
     static <T> T toJavaValue(@NonNull Value value, Class<T> targetType, Type parameterizedType) {
         if (targetType.equals(Value.class)) {
             return (T) value;

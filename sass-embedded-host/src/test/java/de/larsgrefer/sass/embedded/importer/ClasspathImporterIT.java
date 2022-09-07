@@ -66,7 +66,7 @@ public class ClasspathImporterIT {
 
     @Test
     void interClasspathImport_fromJar() throws SassCompilationFailedException, IOException {
-        String css = sassCompiler.compileScssString("@import 'META-INF/resources/webjars/bootstrap/5.1.3/scss/bootstrap.scss';").getCss();
+        String css = sassCompiler.compileScssString("@import 'META-INF/resources/webjars/bootstrap/5.2.0/scss/bootstrap.scss';").getCss();
 
         assertThat(css).contains("green");
     }

@@ -55,7 +55,7 @@ WebJars is a project aimed to provide client-side libraries distributions as Mav
 The following code compiles the main Bootstrap SCSS file into css:
 
 ```java
-URL resource = getClass().getResource("/META-INF/resources/webjars/bootstrap/5.1.3/scss/bootstrap.scss");
+URL resource = getClass().getResource("/META-INF/resources/webjars/bootstrap/5.2.0/scss/bootstrap.scss");
 CompileSuccess compileSuccess = sassCompiler.compile(resource);
 String css = compileSuccess.getCss(); 
 ```
@@ -68,7 +68,7 @@ $primary: #712cf9;
 $secondary: #f19027;
 
 //INCLUDING MAIN BOOTSTRAP SCSSS
-@import "META-INF/resources/webjars/bootstrap/5.1.3/scss/bootstrap.scss";
+@import "META-INF/resources/webjars/bootstrap/5.2.0/scss/bootstrap.scss";
 ```
 
 To compile the file above we need to register a *WebjarsImporter* into our compiler:

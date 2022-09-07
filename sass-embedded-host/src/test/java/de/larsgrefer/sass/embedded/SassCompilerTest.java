@@ -78,7 +78,7 @@ class SassCompilerTest {
 
     @Test
     void compileClasspathUrl() throws IOException, SassCompilationFailedException {
-        URL resource = getClass().getResource("/META-INF/resources/webjars/bootstrap/5.1.3/scss/bootstrap.scss");
+        URL resource = getClass().getResource("/META-INF/resources/webjars/bootstrap/5.2.0/scss/bootstrap.scss");
 
         CompileSuccess compileSuccess = sassCompiler.compile(resource);
 

@@ -265,7 +265,6 @@ public class SassCompiler implements Closeable {
         CompileRequest compileRequest = compileRequestBuilder()
                 .setString(string)
                 .setStyle(outputStyle)
-                .setId(new Random().nextInt())
                 .build();
 
         return execCompileRequest(compileRequest);

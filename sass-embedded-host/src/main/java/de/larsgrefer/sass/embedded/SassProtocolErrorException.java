@@ -5,6 +5,7 @@ import sass.embedded_protocol.EmbeddedSass.ProtocolError;
 
 /**
  * @author Lars Grefer
+ * @see ProtocolError
  */
 @Getter
 public class SassProtocolErrorException extends RuntimeException {

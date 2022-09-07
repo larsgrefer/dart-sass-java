@@ -7,6 +7,9 @@ import sass.embedded_protocol.EmbeddedSass.Syntax;
 import java.io.File;
 import java.net.URL;
 
+/**
+ * @author Lars Grefer
+ */
 @UtilityClass
 public class SyntaxUtil {
 

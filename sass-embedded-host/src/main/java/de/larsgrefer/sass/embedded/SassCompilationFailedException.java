@@ -5,6 +5,7 @@ import sass.embedded_protocol.EmbeddedSass.OutboundMessage.CompileResponse.Compi
 
 /**
  * @author Lars Grefer
+ * @see CompileFailure
  */
 public class SassCompilationFailedException extends Exception {
 

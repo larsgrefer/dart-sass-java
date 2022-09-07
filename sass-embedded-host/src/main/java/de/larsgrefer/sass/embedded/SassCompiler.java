@@ -61,13 +61,23 @@ public class SassCompiler implements Closeable {
     private boolean generateSourceMaps = false;
 
     /**
-     * Whether to include sources in the generated sourcemap
+     * Whether to use terminal colors in the formatted message of errors and
+     * logs.
      *
-     * @see CompileRequest#getSourceMapIncludeSources()
+     * @see CompileRequest#getAlertColor()
      */
     @Getter
     @Setter
-    private boolean sourceMapIncludeSources = false;
+    private boolean alertColor = false;
+
+    /**
+     * Whether to encode the formatted message of errors and logs in ASCII.
+     *
+     * @see CompileRequest#getAlertAscii()
+     */
+    @Getter
+    @Setter
+    private boolean alertAscii = false;
 
     /**
      * Whether to report all deprecation warnings or only the first few ones.
@@ -80,6 +90,34 @@ public class SassCompiler implements Closeable {
     @Getter
     @Setter
     private boolean verbose = false;
+
+    /**
+     * Whether to omit events for deprecation warnings coming from dependencies
+     * (files loaded from a different importer than the input).
+     *
+     * @see CompileRequest#getQuietDeps()
+     */
+    @Getter
+    @Setter
+    private boolean quietDeps = false;
+
+    /**
+     * Whether to include sources in the generated sourcemap
+     *
+     * @see CompileRequest#getSourceMapIncludeSources()
+     */
+    @Getter
+    @Setter
+    private boolean sourceMapIncludeSources = false;
+
+    /**
+     * Whether to emit a `@charset`/BOM for non-ASCII stylesheets.
+     *
+     * @see CompileRequest#getCharset()
+     */
+    @Getter
+    @Setter
+    private boolean emitCharset = false;
 
     private final CompilerConnection connection;
 
@@ -123,8 +161,6 @@ public class SassCompiler implements Closeable {
         builder.setId(Math.abs(compileRequestIds.nextInt()));
         builder.setStyle(outputStyle);
         builder.setSourceMap(generateSourceMaps);
-        builder.setSourceMapIncludeSources(sourceMapIncludeSources);
-        builder.setVerbose(verbose);
 
         for (File loadPath : loadPaths) {
             CompileRequest.Importer importer = CompileRequest.Importer.newBuilder()
@@ -150,6 +186,13 @@ public class SassCompiler implements Closeable {
         for (HostFunction sassFunction : globalFunctions.values()) {
             builder.addGlobalFunctions(sassFunction.getSignature());
         }
+
+        builder.setAlertColor(alertColor);
+        builder.setAlertAscii(alertAscii);
+        builder.setVerbose(verbose);
+        builder.setQuietDeps(quietDeps);
+        builder.setSourceMapIncludeSources(sourceMapIncludeSources);
+        builder.setCharset(emitCharset);
 
         return builder;
     }

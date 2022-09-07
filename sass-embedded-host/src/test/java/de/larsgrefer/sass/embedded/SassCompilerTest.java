@@ -24,6 +24,8 @@ class SassCompilerTest {
     @BeforeEach
     void init() throws IOException {
         sassCompiler = SassCompilerFactory.bundled();
+        sassCompiler.setSourceMapIncludeSources(true);
+        sassCompiler.setGenerateSourceMaps(true);
     }
 
     @AfterEach

@@ -17,7 +17,10 @@ public class ExampleApp {
 
     @Bean
     public SassCompiler sassCompiler() throws IOException {
-        return SassCompilerFactory.bundled();
+        SassCompiler sassCompiler = SassCompilerFactory.bundled();
+        sassCompiler.setGenerateSourceMaps(true);
+        sassCompiler.setSourceMapIncludeSources(true);
+        return sassCompiler;
     }
 
     @Bean

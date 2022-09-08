@@ -42,4 +42,17 @@ class ExampleAppTest {
         assertThat(testEntity.getHeaders().getContentType().toString()).isEqualTo("text/css");
     }
 
+    @Test
+    void sassCompiledMinifiedSourceMap() {
+        ResponseEntity<String> testEntity = restTemplate.getForEntity("/test2.css.map", String.class);
+
+        assertThat(testEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+        String body = testEntity.getBody();
+        assertThat(body).isNotEmpty();
+
+        assertThat(body).startsWith("{");
+        assertThat(body).contains("version");
+    }
+
 }

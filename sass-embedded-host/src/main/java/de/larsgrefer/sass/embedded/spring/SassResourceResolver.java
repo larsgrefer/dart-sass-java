@@ -6,10 +6,12 @@ import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.resource.AbstractResourceResolver;
 import org.springframework.web.servlet.resource.ResourceResolverChain;
+import org.springframework.web.servlet.resource.TransformedResource;
 import sass.embedded_protocol.EmbeddedSass;
 import sass.embedded_protocol.EmbeddedSass.InboundMessage.CompileRequest.StringInput;
 import sass.embedded_protocol.EmbeddedSass.OutboundMessage.CompileResponse.CompileSuccess;
@@ -41,8 +43,9 @@ public class SassResourceResolver extends AbstractResourceResolver {
 
         String filename = StringUtils.getFilename(requestPath);
 
-        if (filename.endsWith(".css")) {
-            String basePath = requestPath.substring(0, requestPath.length() - 4);
+        if (filename.endsWith(".css") || (filename.endsWith(".css.map") && sassCompiler.isGenerateSourceMaps())) {
+            boolean sourcemap = filename.endsWith(".css.map");
+            String basePath = requestPath.substring(0, requestPath.length() - (sourcemap ? 8 : 4));
 
             for (String extension : Arrays.asList(".scss", ".sass")) {
 
@@ -54,7 +57,11 @@ public class SassResourceResolver extends AbstractResourceResolver {
                     try {
                         StringInput si = SassResourceUtil.toStringInput(scssResource);
                         CompileSuccess compileSuccess = sassCompiler.compileString(si, outputStyle);
-                        return new CompiledResource(scssResource, compileSuccess, filename, outputStyle);
+                        if (sourcemap) {
+                            return new SourceMapResource(scssResource, compileSuccess, filename, outputStyle);
+                        } else {
+                            return new CompiledResource(scssResource, compileSuccess, filename, outputStyle);
+                        }
                     } catch (SassCompilationFailedException | IOException e) {
                         log.info(e.getLocalizedMessage(), e);
                     }

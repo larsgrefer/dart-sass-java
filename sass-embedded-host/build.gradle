@@ -24,7 +24,7 @@ repositories {
     }
 }
 
-def dartSassVersion = "1.54.9"
+def dartSassVersion = "1.55.0"
 def slf4jVersion = '2.0.2'
 def springVersion = '5.3.23'
 def webjarsVersion = '0.52'
@@ -46,8 +46,10 @@ dependencies {
     sassEmbedded "sass:sass_embedded:$dartSassVersion:linux-x64@tar.gz"
     sassEmbedded "sass:sass_embedded:$dartSassVersion:linux-arm@tar.gz"
     sassEmbedded "sass:sass_embedded:$dartSassVersion:linux-arm64@tar.gz"
+
     sassEmbedded "sass:sass_embedded:$dartSassVersion:macos-x64@tar.gz"
     sassEmbedded "sass:sass_embedded:$dartSassVersion:macos-arm64@tar.gz"
+
     sassEmbedded "sass:sass_embedded:$dartSassVersion:windows-ia32@zip"
     sassEmbedded "sass:sass_embedded:$dartSassVersion:windows-x64@zip"
 

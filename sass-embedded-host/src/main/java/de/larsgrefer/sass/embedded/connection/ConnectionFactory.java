@@ -1,11 +1,14 @@
 package de.larsgrefer.sass.embedded.connection;
 
+import com.google.protobuf.ByteString;
 import de.larsgrefer.sass.embedded.SassCompilerFactory;
 import de.larsgrefer.sass.embedded.util.IOUtils;
 import lombok.experimental.UtilityClass;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -13,6 +16,7 @@ import java.nio.file.Path;
 /**
  * @author Lars Grefer
  */
+@Slf4j
 @UtilityClass
 public class ConnectionFactory {
 
@@ -53,8 +57,7 @@ public class ConnectionFactory {
 
         if (execFile == null || execFile.length != 1) {
             throw new IllegalStateException("No (unique) executable file found in " + execDir);
-        }
-        else {
+        } else {
             bundledDartExec = execFile[0];
         }
 
@@ -70,32 +73,42 @@ public class ConnectionFactory {
         String archiveExtension = "tar.gz";
 
         if (osName.contains("mac")) {
-            if (osArch.equals("aarch64") || osArch.contains("arm")) {
+            if (osArch.equals("aarch64") || osArch.contains("arm") || isRunningOnRosetta2()) {
                 classifier = "macos-arm64";
-            }
-            else {
+            } else {
                 classifier = "macos-x64";
             }
-        }
-        else if (osName.contains("win")) {
+        } else if (osName.contains("win")) {
             archiveExtension = "zip";
             classifier = osArch.contains("64") ? "windows-x64" : "windows-ia32";
-        }
-        else {
+        } else {
             if (osArch.equals("aarch64") || osArch.equals("arm64")) {
                 classifier = "linux-arm64";
-            }
-            else if (osArch.contains("arm")) {
+            } else if (osArch.contains("arm")) {
                 classifier = "linux-arm";
-            }
-            else if (osArch.contains("64")) {
+            } else if (osArch.contains("64")) {
                 classifier = "linux-x64";
-            }
-            else {
+            } else {
                 classifier = "linux-ia32";
             }
         }
 
         return String.format("/de/larsgrefer/sass/embedded/sass_embedded-%s.%s", classifier, archiveExtension);
+    }
+
+    private static boolean isRunningOnRosetta2() {
+        try {
+            Process sysctl = Runtime.getRuntime().exec("sysctl -in sysctl.proc_translated");
+            ByteString stdOut;
+            try (InputStream in = sysctl.getInputStream()) {
+                stdOut = ByteString.readFrom(in);
+            }
+            if (sysctl.exitValue() == 0 && stdOut.toStringUtf8().equals("1\n")) {
+                return true;
+            }
+        } catch (Exception e) {
+            log.info("Unable to check for rosetta", e);
+        }
+        return false;
     }
 }

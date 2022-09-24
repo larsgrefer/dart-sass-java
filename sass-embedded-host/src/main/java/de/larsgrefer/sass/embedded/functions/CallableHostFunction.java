@@ -1,6 +1,6 @@
 package de.larsgrefer.sass.embedded.functions;
 
-import sass.embedded_protocol.EmbeddedSass;
+import sass.embedded_protocol.EmbeddedSass.Value;
 
 import javax.annotation.Nonnull;
 import java.util.Collections;
@@ -21,7 +21,7 @@ class CallableHostFunction extends HostFunction {
 
     @Override
     @Nonnull
-    public EmbeddedSass.Value invoke(List<EmbeddedSass.Value> arguments) throws Throwable {
+    public Value invoke(List<Value> arguments) throws Throwable {
         Object call = callable.call();
         return ConversionService.toSassValue(call);
     }

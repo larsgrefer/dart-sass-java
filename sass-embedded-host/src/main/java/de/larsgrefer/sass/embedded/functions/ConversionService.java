@@ -5,6 +5,10 @@ import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 import sass.embedded_protocol.EmbeddedSass.SingletonValue;
 import sass.embedded_protocol.EmbeddedSass.Value;
+import sass.embedded_protocol.EmbeddedSass.Value.Calculation;
+import sass.embedded_protocol.EmbeddedSass.Value.HslColor;
+import sass.embedded_protocol.EmbeddedSass.Value.HwbColor;
+import sass.embedded_protocol.EmbeddedSass.Value.RgbColor;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -55,7 +59,7 @@ class ConversionService {
         if (object instanceof Color) {
             Color color = (Color) object;
 
-            Value.RgbColor sassColor = ColorUtil.toRgbColor(color);
+            RgbColor sassColor = ColorUtil.toRgbColor(color);
             return value(sassColor);
         }
 
@@ -92,12 +96,12 @@ class ConversionService {
             return value((Value.Number) object);
         }
 
-        if (object instanceof Value.RgbColor) {
-            return value((Value.RgbColor) object);
+        if (object instanceof RgbColor) {
+            return value((RgbColor) object);
         }
 
-        if (object instanceof Value.HslColor) {
-            return value((Value.HslColor) object);
+        if (object instanceof HslColor) {
+            return value((HslColor) object);
         }
 
         if (object instanceof Value.List) {
@@ -124,12 +128,12 @@ class ConversionService {
             return value((Value.ArgumentList) object);
         }
 
-        if (object instanceof Value.HwbColor) {
-            return value((Value.HwbColor) object);
+        if (object instanceof HwbColor) {
+            return value((HwbColor) object);
         }
 
-        if (object instanceof Value.Calculation) {
-            return value((Value.Calculation) object);
+        if (object instanceof Calculation) {
+            return value((Calculation) object);
         }
 
         throw new RuntimeException("Cant convert to Sass value");
@@ -179,8 +183,8 @@ class ConversionService {
                     throw new IllegalArgumentException("Cant convert sass Number to " + targetType);
                 }
             case RGB_COLOR:
-                Value.RgbColor rgbColor = value.getRgbColor();
-                if (targetType.isAssignableFrom(Value.RgbColor.class)) {
+                RgbColor rgbColor = value.getRgbColor();
+                if (targetType.isAssignableFrom(RgbColor.class)) {
                     return (T) rgbColor;
                 } else if (targetType.isAssignableFrom(Color.class)) {
                     return (T) ColorUtil.toJavaColor(rgbColor);
@@ -188,8 +192,8 @@ class ConversionService {
                     throw new IllegalArgumentException("Cant convert sass RgbColor to " + targetType);
                 }
             case HSL_COLOR:
-                Value.HslColor hslColor = value.getHslColor();
-                if (targetType.isAssignableFrom(Value.HslColor.class)) {
+                HslColor hslColor = value.getHslColor();
+                if (targetType.isAssignableFrom(HslColor.class)) {
                     return (T) hslColor;
                 } else if (targetType.isAssignableFrom(Color.class)) {
                     return (T) ColorUtil.toJavaColor(hslColor);
@@ -197,8 +201,8 @@ class ConversionService {
                     throw new IllegalArgumentException("Cant convert sass HslColor to " + targetType);
                 }
             case HWB_COLOR:
-                Value.HwbColor hwbColor = value.getHwbColor();
-                if (targetType.isAssignableFrom(Value.HwbColor.class)) {
+                HwbColor hwbColor = value.getHwbColor();
+                if (targetType.isAssignableFrom(HwbColor.class)) {
                     return (T) hwbColor;
                 } else if (targetType.isAssignableFrom(Color.class)) {
                     return (T) ColorUtil.toJavaColor(hwbColor);
@@ -270,8 +274,8 @@ class ConversionService {
                 }
 
             case CALCULATION:
-                Value.Calculation calculation = value.getCalculation();
-                if (targetType.isAssignableFrom(Value.Calculation.class)) {
+                Calculation calculation = value.getCalculation();
+                if (targetType.isAssignableFrom(Calculation.class)) {
                     return (T) calculation;
                 } else {
                     throw new IllegalArgumentException("Cant convert sass Calculation to " + targetType);

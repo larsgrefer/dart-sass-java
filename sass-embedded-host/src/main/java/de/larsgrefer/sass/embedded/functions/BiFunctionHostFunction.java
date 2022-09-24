@@ -1,6 +1,6 @@
 package de.larsgrefer.sass.embedded.functions;
 
-import sass.embedded_protocol.EmbeddedSass;
+import sass.embedded_protocol.EmbeddedSass.Value;
 
 import javax.annotation.Nonnull;
 import java.util.Arrays;
@@ -32,7 +32,7 @@ class BiFunctionHostFunction<T, U> extends HostFunction {
 
     @Override
     @Nonnull
-    public EmbeddedSass.Value invoke(List<EmbeddedSass.Value> arguments) {
+    public Value invoke(List<Value> arguments) {
         if (arguments.size() != 2) {
             throw new IllegalArgumentException("Invalid argument count: Expected 2 instead of " + arguments.size());
         }

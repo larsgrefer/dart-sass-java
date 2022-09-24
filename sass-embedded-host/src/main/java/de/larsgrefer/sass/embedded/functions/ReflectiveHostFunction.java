@@ -1,7 +1,8 @@
 package de.larsgrefer.sass.embedded.functions;
 
-import sass.embedded_protocol.EmbeddedSass;
+import sass.embedded_protocol.EmbeddedSass.Value;
 
+import javax.annotation.Nonnull;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -41,7 +42,8 @@ class ReflectiveHostFunction extends HostFunction {
     }
 
     @Override
-    public EmbeddedSass.Value invoke(List<EmbeddedSass.Value> arguments) throws Throwable {
+    @Nonnull
+    public Value invoke(List<Value> arguments) throws Throwable {
         Object[] javaArgs = resolveArguments(arguments);
         Object result;
         try {
@@ -52,7 +54,7 @@ class ReflectiveHostFunction extends HostFunction {
         return ConversionService.toSassValue(result);
     }
 
-    private Object[] resolveArguments(List<EmbeddedSass.Value> arguments) {
+    private Object[] resolveArguments(List<Value> arguments) {
         if (method.getParameterCount() != arguments.size()) {
             throw new IllegalArgumentException("Invalid argument size");
         }

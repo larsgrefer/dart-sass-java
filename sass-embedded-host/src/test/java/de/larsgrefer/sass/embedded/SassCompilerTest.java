@@ -2,6 +2,7 @@ package de.larsgrefer.sass.embedded;
 
 import de.larsgrefer.sass.embedded.functions.HostFunction;
 import org.intellij.lang.annotations.Language;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -92,7 +93,7 @@ class SassCompilerTest {
 
         HostFunction sassFunction = new HostFunction("foo", Collections.singletonList(new HostFunction.Argument("col", null))) {
             @Override
-            public EmbeddedSass.Value invoke(List<EmbeddedSass.Value> arguments) {
+            public EmbeddedSass.@NotNull Value invoke(List<EmbeddedSass.Value> arguments) {
                 return EmbeddedSass.Value.newBuilder()
                         .setRgbColor(EmbeddedSass.Value.RgbColor.newBuilder()
                                 .setRed(255)
@@ -116,7 +117,7 @@ class SassCompilerTest {
 
         HostFunction sassFunction = new HostFunction("foo", Collections.singletonList(new HostFunction.Argument("col", null))) {
             @Override
-            public EmbeddedSass.Value invoke(List<EmbeddedSass.Value> arguments) {
+            public EmbeddedSass.@NotNull Value invoke(List<EmbeddedSass.Value> arguments) {
                 throw new RuntimeException("bazinga");
             }
         };

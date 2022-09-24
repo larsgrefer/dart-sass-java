@@ -107,12 +107,12 @@ public abstract class CustomUrlImporter extends CustomImporter {
     public ImportSuccess handleImport(URL url) throws Exception {
         ImportSuccess.Builder result = ImportSuccess.newBuilder();
 
-        try (InputStream in = url.openStream()) {
+        URLConnection urlConnection = url.openConnection();
+        try (InputStream in = urlConnection.getInputStream()) {
             ByteString content = ByteString.readFrom(in);
             result.setContentsBytes(content);
+            result.setSyntax(SyntaxUtil.guessSyntax(urlConnection));
         }
-
-        result.setSyntax(SyntaxUtil.guessSyntax(url));
 
         return result.build();
     }

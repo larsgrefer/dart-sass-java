@@ -30,6 +30,7 @@ import sass.embedded_protocol.EmbeddedSass.Syntax;
 import javax.annotation.Nonnull;
 import java.io.*;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.*;
 
 import static de.larsgrefer.sass.embedded.util.ProtocolUtil.inboundMessage;
@@ -207,10 +208,12 @@ public class SassCompiler implements Closeable {
             return compileFile(file);
         }
 
-        Syntax syntax = SyntaxUtil.guessSyntax(source);
+        Syntax syntax;
         ByteString content;
-        try (InputStream in = source.openStream()) {
+        URLConnection urlConnection = source.openConnection();
+        try (InputStream in = urlConnection.getInputStream()) {
             content = ByteString.readFrom(in);
+            syntax = SyntaxUtil.guessSyntax(urlConnection);
         }
 
         CustomImporter importer = new RelativeUrlImporter(source).autoCanonicalize();

@@ -60,7 +60,7 @@ jobs:
           githubToken: ${{ github.token }}
           install: |
             apt-get update -q -y
-            apt-get install -q -y default-jre-headless
+            apt-get install -q -y default-jre-headless tar
           run: |
             java -XshowSettings:properties -version
             ./gradlew -V build

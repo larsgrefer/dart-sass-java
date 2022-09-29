@@ -49,7 +49,11 @@ public class ConnectionFactory {
 
         Path tempDirectory = Files.createTempDirectory("dart-sass");
 
-        IOUtils.extract(dist, tempDirectory);
+        try {
+            IOUtils.extract(dist, tempDirectory);
+        } catch (IOException e) {
+            throw new IOException(String.format("Failed to extract %s into %s", dist, tempDirectory), e);
+        }
 
         File execDir = tempDirectory.resolve("sass_embedded").toFile();
 

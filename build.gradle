@@ -52,6 +52,12 @@ allprojects {
 
         tasks.withType(Test).configureEach {
             useJUnitPlatform()
+            testLogging {
+                exceptionFormat "full"
+                showExceptions true
+                showCauses true
+                showStackTraces true
+            }
         }
 
         afterEvaluate {

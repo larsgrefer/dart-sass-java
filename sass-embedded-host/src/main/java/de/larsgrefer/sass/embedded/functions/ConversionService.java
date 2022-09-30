@@ -1,6 +1,5 @@
 package de.larsgrefer.sass.embedded.functions;
 
-import de.larsgrefer.sass.embedded.util.ColorUtil;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 import sass.embedded_protocol.EmbeddedSass.SingletonValue;
@@ -12,7 +11,6 @@ import sass.embedded_protocol.EmbeddedSass.Value.RgbColor;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.awt.Color;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
@@ -54,13 +52,6 @@ class ConversionService {
                     .setValue(((Number) object).doubleValue())
                     .build();
             return value(sassNumber);
-        }
-
-        if (object instanceof Color) {
-            Color color = (Color) object;
-
-            RgbColor sassColor = ColorUtil.toRgbColor(color);
-            return value(sassColor);
         }
 
         if (object instanceof Collection) {
@@ -186,8 +177,6 @@ class ConversionService {
                 RgbColor rgbColor = value.getRgbColor();
                 if (targetType.isAssignableFrom(RgbColor.class)) {
                     return (T) rgbColor;
-                } else if (targetType.isAssignableFrom(Color.class)) {
-                    return (T) ColorUtil.toJavaColor(rgbColor);
                 } else {
                     throw new IllegalArgumentException("Cant convert sass RgbColor to " + targetType);
                 }
@@ -195,8 +184,6 @@ class ConversionService {
                 HslColor hslColor = value.getHslColor();
                 if (targetType.isAssignableFrom(HslColor.class)) {
                     return (T) hslColor;
-                } else if (targetType.isAssignableFrom(Color.class)) {
-                    return (T) ColorUtil.toJavaColor(hslColor);
                 } else {
                     throw new IllegalArgumentException("Cant convert sass HslColor to " + targetType);
                 }
@@ -204,8 +191,6 @@ class ConversionService {
                 HwbColor hwbColor = value.getHwbColor();
                 if (targetType.isAssignableFrom(HwbColor.class)) {
                     return (T) hwbColor;
-                } else if (targetType.isAssignableFrom(Color.class)) {
-                    return (T) ColorUtil.toJavaColor(hwbColor);
                 } else {
                     throw new IllegalArgumentException("Cant convert sass HwbColor to " + targetType);
                 }

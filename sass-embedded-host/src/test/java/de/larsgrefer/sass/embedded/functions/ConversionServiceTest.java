@@ -1,6 +1,5 @@
 package de.larsgrefer.sass.embedded.functions;
 
-import de.larsgrefer.sass.embedded.util.ColorUtil;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestFactory;
@@ -9,7 +8,6 @@ import sass.embedded_protocol.EmbeddedSass;
 import sass.embedded_protocol.EmbeddedSass.Value;
 import sass.embedded_protocol.EmbeddedSass.Value.ValueCase;
 
-import java.awt.*;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -53,20 +51,6 @@ class ConversionServiceTest {
 
         assertThat(toJavaValue(trueValue, String.class, null)).isEqualTo("true");
         assertThat(toJavaValue(falseValue, String.class, null)).isEqualTo("false");
-    }
-
-    private static final List<Color> colors = Arrays.asList(Color.RED, Color.CYAN, Color.WHITE, Color.BLACK, Color.ORANGE);
-
-    @TestFactory
-    Stream<DynamicTest> colorConversion_rgb() {
-        return colors.stream()
-                .map(color -> DynamicTest.dynamicTest(color.toString(), () -> testColor_rgb(color)));
-    }
-
-    private void testColor_rgb(Color color) {
-        Value sassColor = toSassValue(color);
-        assertThat(sassColor).isNotNull();
-        assertThat(toJavaValue(sassColor, Color.class, null)).isEqualTo(color);
     }
 
     @Test

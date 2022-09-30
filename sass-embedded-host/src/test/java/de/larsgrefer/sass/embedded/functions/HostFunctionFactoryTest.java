@@ -79,6 +79,7 @@ class HostFunctionFactoryTest {
         assertThat(s).contains("3");
     }
 
+    @SuppressWarnings("SameReturnValue")
     public static class Foo {
 
         @SassFunction

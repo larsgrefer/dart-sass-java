@@ -2,9 +2,6 @@ package de.larsgrefer.sass.embedded.spring;
 
 import lombok.Getter;
 import org.springframework.core.io.Resource;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.web.servlet.resource.HttpResource;
 import org.springframework.web.servlet.resource.TransformedResource;
 import sass.embedded_protocol.EmbeddedSass.OutboundMessage.CompileResponse.CompileSuccess;
 import sass.embedded_protocol.EmbeddedSass.OutputStyle;

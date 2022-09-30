@@ -13,10 +13,10 @@ import java.util.function.BiFunction;
  */
 class BiFunctionHostFunction<T, U> extends HostFunction {
 
-    private static final List<Argument> args = Collections.unmodifiableList(Arrays.asList(
+    private static final List<Argument> args = List.of(
             new Argument("arg0", null),
             new Argument("arg1", null)
-    ));
+    );
 
     private final BiFunction<T, U, ?> lambda;
 

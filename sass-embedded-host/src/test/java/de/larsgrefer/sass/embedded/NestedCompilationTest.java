@@ -5,7 +5,6 @@ import de.larsgrefer.sass.embedded.functions.HostFunctionFactory;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import sass.embedded_protocol.EmbeddedSass;
 import sass.embedded_protocol.EmbeddedSass.OutboundMessage.CompileResponse.CompileSuccess;
 
 import java.io.IOException;

@@ -1,6 +1,5 @@
 package de.larsgrefer.sass.embedded.functions;
 
-import de.larsgrefer.sass.embedded.util.ColorUtil;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestFactory;

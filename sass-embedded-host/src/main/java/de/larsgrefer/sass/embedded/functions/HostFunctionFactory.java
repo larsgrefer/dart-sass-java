@@ -52,7 +52,7 @@ public class HostFunctionFactory {
     }
 
     public <T> HostFunction ofLambda(String name, Class<T> argType, Function<T, ?> lambda) {
-        return new FunctionHostFunction<T>(name, argType, lambda);
+        return new FunctionHostFunction<>(name, argType, lambda);
     }
 
     public <T, U> HostFunction ofLambda(String name, Class<T> arg0Type, Class<U> arg1Type, BiFunction<T, U, ?> lambda) {

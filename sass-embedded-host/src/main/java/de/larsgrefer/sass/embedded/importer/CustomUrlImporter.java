@@ -136,23 +136,18 @@ public abstract class CustomUrlImporter extends CustomImporter {
             } catch (FileNotFoundException e) {
                 return false;
             }
-        }
-        else if (connection instanceof HttpURLConnection) {
-            try (InputStream in = connection.getInputStream()) {
-                String contentType = connection.getContentType();
+        } else if (connection instanceof HttpURLConnection) {
+            HttpURLConnection httpURLConnection = (HttpURLConnection) connection;
+            httpURLConnection.setRequestMethod("HEAD");
 
-                if (urlPath.lastIndexOf("/") > urlPath.lastIndexOf(".")) {
-                    if (!contentType.startsWith("text/")) {
-                        return false;
-                    }
-                    if (contentType.startsWith("text/html")) {
-                        return false;
-                    }
-                }
-
-            } catch (FileNotFoundException e) {
+            int responseCode = httpURLConnection.getResponseCode();
+            if (responseCode > 400) {
                 return false;
             }
+            if (responseCode == 200) {
+                return true;
+            }
+
         }
 
         if (urlPath.endsWith(".css") || urlPath.endsWith(".scss") || urlPath.endsWith(".sass")) {

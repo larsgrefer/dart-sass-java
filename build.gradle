@@ -58,6 +58,9 @@ allprojects {
                 showCauses true
                 showStackTraces true
             }
+            javaLauncher = javaToolchains.launcherFor {
+                languageVersion = JavaLanguageVersion.of(17)
+            }
         }
 
         afterEvaluate {

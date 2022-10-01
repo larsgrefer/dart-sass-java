@@ -31,7 +31,7 @@ class ColorUtilTest {
     @Test
     void toJavaColor_hwb_black() {
         HwbColor black = HwbColor.newBuilder()
-                .setHue(.33d)
+                .setHue(120d)
                 .setWhiteness(0d)
                 .setBlackness(100d)
                 .setAlpha(1d)
@@ -44,7 +44,7 @@ class ColorUtilTest {
     @Test
     void toJavaColor_hwb_grey() {
         HwbColor grey = HwbColor.newBuilder()
-                .setHue(.33d)
+                .setHue(120d)
                 .setWhiteness(50d)
                 .setBlackness(50d)
                 .setAlpha(1d)

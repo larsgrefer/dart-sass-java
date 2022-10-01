@@ -4,7 +4,7 @@ import lombok.experimental.UtilityClass;
 import sass.embedded_protocol.EmbeddedSass.Value.*;
 
 import javax.annotation.Nonnull;
-import java.awt.*;
+import java.awt.Color;
 
 import static de.larsgrefer.sass.embedded.util.ColorValidator.assertValid;
 
@@ -18,28 +18,19 @@ public class ColorUtil {
     /**
      * @see <a href="https://www.w3.org/TR/css-color-4/#hwb-to-rgb">https://www.w3.org/TR/css-color-4/#hwb-to-rgb</a>
      */
+    @Deprecated
     public static Color toJavaColor(HwbColorOrBuilder hwbColor) {
         assertValid(hwbColor);
-
-        float white = (float) (hwbColor.getWhiteness() / 100f);
-        float black = (float) (hwbColor.getBlackness() / 100f);
-
-        double[] rgb = hslToRgb(hwbColor.getHue(), 1, .5);
-
-        for (int i = 0; i < 3; i++) {
-            rgb[i] *= (1 - white - black);
-            rgb[i] += white;
-        }
-
-        return new Color((float) rgb[0], (float) rgb[1], (float) rgb[2], (float) hwbColor.getAlpha());
+        return toJavaColor(toRgbColor(hwbColor));
     }
 
+    @Deprecated
     public static Color toJavaColor(HslColorOrBuilder hslColor) {
         assertValid(hslColor);
-        double[] rgb = hslToRgb(hslColor.getHue(), hslColor.getSaturation(), hslColor.getLightness());
-        return new Color((float) rgb[0], (float) rgb[1], (float) rgb[2], (float) hslColor.getAlpha());
+        return toJavaColor(toRgbColor(hslColor));
     }
 
+    @Deprecated
     public static Color toJavaColor(RgbColorOrBuilder rgbColor) {
         assertValid(rgbColor);
         return new Color(rgbColor.getRed(), rgbColor.getGreen(), rgbColor.getBlue(), (int) (rgbColor.getAlpha() * 255));
@@ -47,20 +38,59 @@ public class ColorUtil {
 
     public static RgbColor toRgbColor(HwbColorOrBuilder hwbColor) {
         assertValid(hwbColor);
-        return toRgbColor(toJavaColor(hwbColor));
+
+        double[] rgb = CssColorSpecUtil.hwbToRgb(hwbColor.getHue(), hwbColor.getWhiteness(), hwbColor.getBlackness());
+
+        return RgbColor.newBuilder()
+                .setRed((int) Math.round(rgb[0] * 255d))
+                .setGreen((int) Math.round(rgb[1] * 255d))
+                .setBlue((int) Math.round(rgb[2] * 255d))
+                .setAlpha(hwbColor.getAlpha())
+                .build();
     }
 
     public static RgbColor toRgbColor(HslColorOrBuilder hslColor) {
         assertValid(hslColor);
-        return toRgbColor(toJavaColor(hslColor));
+
+        double[] rgb = CssColorSpecUtil.hslToRgb((int) hslColor.getHue(), hslColor.getSaturation(), hslColor.getLightness());
+
+        return RgbColor.newBuilder()
+                .setRed((int) Math.round(rgb[0] * 255d))
+                .setGreen((int) Math.round(rgb[1] * 255d))
+                .setBlue((int) Math.round(rgb[2] * 255d))
+                .setAlpha(hslColor.getAlpha())
+                .build();
     }
 
+    @Deprecated
     public static RgbColor toRgbColor(Color color) {
         return RgbColor.newBuilder()
                 .setRed(color.getRed())
                 .setGreen(color.getGreen())
                 .setBlue(color.getBlue())
                 .setAlpha(color.getAlpha() / 255d)
+                .build();
+    }
+
+    public static HslColor toHslColor(HwbColorOrBuilder hwbColor) {
+        assertValid(hwbColor);
+        return toHslColor(toRgbColor(hwbColor));
+    }
+
+    public static HslColor toHslColor(RgbColorOrBuilder rgbColor) {
+        assertValid(rgbColor);
+
+        double red = rgbColor.getRed() / 255d;
+        double green = rgbColor.getGreen() / 255d;
+        double blue = rgbColor.getBlue() / 255d;
+
+        double[] hsl = CssColorSpecUtil.rgbToHsl(red, green, blue);
+
+        return HslColor.newBuilder()
+                .setHue(hsl[0])
+                .setSaturation(hsl[1])
+                .setLightness(hsl[2])
+                .setAlpha(rgbColor.getAlpha())
                 .build();
     }
 
@@ -71,7 +101,12 @@ public class ColorUtil {
 
     public static HwbColor toHwbColor(RgbColorOrBuilder rgbColor) {
         assertValid(rgbColor);
-        double[] hwb = rgbToHwb(rgbColor.getRed(), rgbColor.getGreen(), rgbColor.getBlue());
+
+        double red = rgbColor.getRed() / 255d;
+        double green = rgbColor.getGreen() / 255d;
+        double blue = rgbColor.getBlue() / 255d;
+
+        double[] hwb = CssColorSpecUtil.rgbToHwb(red, green, blue);
 
         return HwbColor.newBuilder()
                 .setHue(hwb[0])
@@ -81,59 +116,4 @@ public class ColorUtil {
                 .build();
     }
 
-    /**
-     * https://www.w3.org/TR/css-color-3/#hsl-color
-     */
-    private double[] hslToRgb(double hue, double sat, double light) {
-
-        hue = hue * 6d;
-
-        double t2;
-        if (light <= .5) {
-            t2 = light * (sat + 1);
-        } else {
-            t2 = light + sat - (light * sat);
-        }
-        double t1 = light * 2 - t2;
-        double r = hueToRgb(t1, t2, hue + 2);
-        double g = hueToRgb(t1, t2, hue);
-        double b = hueToRgb(t1, t2, hue - 2);
-        return new double[]{r, g, b};
-    }
-
-    /**
-     * @see <a href="https://www.w3.org/TR/css-color-3/#hsl-color">https://www.w3.org/TR/css-color-3/#hsl-color</a>
-     */
-    private double hueToRgb(double t1, double t2, double hue) {
-        if (hue < 0) hue += 6;
-        if (hue >= 6) hue -= 6;
-
-        if (hue < 1) return (t2 - t1) * hue + t1;
-        else if (hue < 3) return t2;
-        else if (hue < 4) return (t2 - t1) * (4 - hue) + t1;
-        else return t1;
-    }
-
-    private double[] rgbToHwb(int red, int green, int blue) {
-        float[] hsl = Color.RGBtoHSB(red, green, blue, null);
-        double white = min(red, green, blue) / 255d;
-        double black = 1 - (max(red, green, blue) / 255d);
-        return new double[]{hsl[0], white * 100, black * 100};
-    }
-
-    private double min(double... vals) {
-        double min = vals[0];
-        for (double val : vals) {
-            min = Math.min(min, val);
-        }
-        return min;
-    }
-
-    private double max(double... vals) {
-        double max = vals[0];
-        for (double val : vals) {
-            max = Math.max(max, val);
-        }
-        return max;
-    }
 }

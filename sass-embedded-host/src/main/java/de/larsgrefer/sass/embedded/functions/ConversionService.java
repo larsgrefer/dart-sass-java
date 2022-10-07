@@ -186,6 +186,10 @@ class ConversionService {
                 RgbColor rgbColor = value.getRgbColor();
                 if (targetType.isAssignableFrom(RgbColor.class)) {
                     return (T) rgbColor;
+                } else if (targetType.isAssignableFrom(HslColor.class)) {
+                    return (T) ColorUtil.toHslColor(rgbColor);
+                } else if (targetType.isAssignableFrom(HwbColor.class)) {
+                    return (T) ColorUtil.toHwbColor(rgbColor);
                 } else if (targetType.isAssignableFrom(Color.class)) {
                     return (T) ColorUtil.toJavaColor(rgbColor);
                 } else {
@@ -193,8 +197,12 @@ class ConversionService {
                 }
             case HSL_COLOR:
                 HslColor hslColor = value.getHslColor();
-                if (targetType.isAssignableFrom(HslColor.class)) {
+                if (targetType.isAssignableFrom(RgbColor.class)) {
+                    return (T) ColorUtil.toRgbColor(hslColor);
+                } else if (targetType.isAssignableFrom(HslColor.class)) {
                     return (T) hslColor;
+                } else if (targetType.isAssignableFrom(HwbColor.class)) {
+                    return (T) ColorUtil.toHwbColor(hslColor);
                 } else if (targetType.isAssignableFrom(Color.class)) {
                     return (T) ColorUtil.toJavaColor(hslColor);
                 } else {
@@ -202,7 +210,11 @@ class ConversionService {
                 }
             case HWB_COLOR:
                 HwbColor hwbColor = value.getHwbColor();
-                if (targetType.isAssignableFrom(HwbColor.class)) {
+                if (targetType.isAssignableFrom(RgbColor.class)) {
+                    return (T) ColorUtil.toRgbColor(hwbColor);
+                } else if (targetType.isAssignableFrom(HslColor.class)) {
+                    return (T) ColorUtil.toHslColor(hwbColor);
+                } else if (targetType.isAssignableFrom(HwbColor.class)) {
                     return (T) hwbColor;
                 } else if (targetType.isAssignableFrom(Color.class)) {
                     return (T) ColorUtil.toJavaColor(hwbColor);

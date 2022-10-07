@@ -4,16 +4,20 @@ import lombok.experimental.UtilityClass;
 import sass.embedded_protocol.EmbeddedSass.Value.*;
 
 import javax.annotation.Nonnull;
-import java.awt.Color;
+import java.awt.*;
 
 import static de.larsgrefer.sass.embedded.util.ColorValidator.assertValid;
 
 /**
  * @author Lars Grefer
+ * @see de.larsgrefer.sass.embedded.functions.SassColor
  */
 @UtilityClass
 @Nonnull
 public class ColorUtil {
+
+    public static final RgbColor white = rgba(255, 255, 255, 1);
+    public static final RgbColor black = rgba(0, 0, 0, 1);
 
     /**
      * @see <a href="https://www.w3.org/TR/css-color-4/#hwb-to-rgb">https://www.w3.org/TR/css-color-4/#hwb-to-rgb</a>
@@ -113,6 +117,28 @@ public class ColorUtil {
                 .setWhiteness(hwb[1])
                 .setBlackness(hwb[2])
                 .setAlpha(rgbColor.getAlpha())
+                .build();
+    }
+
+    public RgbColor rgb(int rgb) {
+        return rgba(rgb, 1);
+    }
+
+    @SuppressWarnings("PointlessBitwiseExpression")
+    public RgbColor rgba(int rgb, double alpha) {
+        int r = (rgb >> 16) & 0xFF;
+        int g = (rgb >> 8) & 0xFF;
+        int b = (rgb >> 0) & 0xFF;
+
+        return rgba(r, g, b, alpha);
+    }
+
+    public RgbColor rgba(int red, int green, int blue, double alpha) {
+        return RgbColor.newBuilder()
+                .setRed(red)
+                .setGreen(green)
+                .setBlue(blue)
+                .setAlpha(alpha)
                 .build();
     }
 

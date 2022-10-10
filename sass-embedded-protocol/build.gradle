@@ -46,13 +46,3 @@ tasks.named("jar", Jar) {
                 'Specification-Version': "$protocolVersion"
     }
 }
-
-afterEvaluate {
-    tasks.named("sourcesJar") {
-        from tasks.generateProto
-    }
-
-    tasks.named("javadoc") {
-        source tasks.generateProto
-    }
-}

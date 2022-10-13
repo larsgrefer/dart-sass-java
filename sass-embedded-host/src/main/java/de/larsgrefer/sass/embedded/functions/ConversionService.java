@@ -1,5 +1,6 @@
 package de.larsgrefer.sass.embedded.functions;
 
+import de.larsgrefer.sass.embedded.util.ColorUtil;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 import sass.embedded_protocol.EmbeddedSass.SingletonValue;
@@ -177,19 +178,31 @@ class ConversionService {
                 RgbColor rgbColor = value.getRgbColor();
                 if (targetType.isAssignableFrom(RgbColor.class)) {
                     return (T) rgbColor;
+                } else if (targetType.isAssignableFrom(HslColor.class)) {
+                    return (T) ColorUtil.toHslColor(rgbColor);
+                } else if (targetType.isAssignableFrom(HwbColor.class)) {
+                    return (T) ColorUtil.toHwbColor(rgbColor);
                 } else {
                     throw new IllegalArgumentException("Cant convert sass RgbColor to " + targetType);
                 }
             case HSL_COLOR:
                 HslColor hslColor = value.getHslColor();
-                if (targetType.isAssignableFrom(HslColor.class)) {
+                if (targetType.isAssignableFrom(RgbColor.class)) {
+                    return (T) ColorUtil.toRgbColor(hslColor);
+                } else if (targetType.isAssignableFrom(HslColor.class)) {
                     return (T) hslColor;
+                } else if (targetType.isAssignableFrom(HwbColor.class)) {
+                    return (T) ColorUtil.toHwbColor(hslColor);
                 } else {
                     throw new IllegalArgumentException("Cant convert sass HslColor to " + targetType);
                 }
             case HWB_COLOR:
                 HwbColor hwbColor = value.getHwbColor();
-                if (targetType.isAssignableFrom(HwbColor.class)) {
+                if (targetType.isAssignableFrom(RgbColor.class)) {
+                    return (T) ColorUtil.toRgbColor(hwbColor);
+                } else if (targetType.isAssignableFrom(HslColor.class)) {
+                    return (T) ColorUtil.toHslColor(hwbColor);
+                } else if (targetType.isAssignableFrom(HwbColor.class)) {
                     return (T) hwbColor;
                 } else {
                     throw new IllegalArgumentException("Cant convert sass HwbColor to " + targetType);

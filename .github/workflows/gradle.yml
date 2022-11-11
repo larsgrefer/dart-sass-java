@@ -43,28 +43,3 @@ jobs:
         uses: codecov/codecov-action@v3.1.1
         with:
           files: jacoco*.xml,*Jacoco*.xml
-
-  build_arm:
-    runs-on: ubuntu-latest
-    name: Build on Linux ${{ matrix.arch }}
-
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - arch: aarch64
-            distro: bullseye
-
-    steps:
-      - uses: actions/checkout@v2.1.0
-      - uses: uraimo/run-on-arch-action@v2
-        with:
-          arch: ${{ matrix.arch }}
-          distro: ${{ matrix.distro }}
-          githubToken: ${{ github.token }}
-          install: |
-            apt-get update -q -y
-            apt-get install -q -y default-jre-headless tar
-          run: |
-            java -XshowSettings:properties -version
-            ./gradlew -V build

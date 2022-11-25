@@ -53,7 +53,7 @@ dependencies {
     sassEmbedded "sass:sass_embedded:$dartSassVersion:windows-x64@zip"
 
     testImplementation "org.springframework:spring-core:$springVersion"
-    testImplementation 'ch.qos.logback:logback-classic:1.3.5'
+    testImplementation 'ch.qos.logback:logback-classic:1.4.5'
 
     testCompileOnly 'org.jetbrains:annotations:23.0.0'
 

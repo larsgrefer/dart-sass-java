@@ -15,5 +15,11 @@ updates:
   # Maintain dependencies for Gradle
   - package-ecosystem: "gradle"
     directory: "/"
+    target-branch: "1.x"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/"
+    target-branch: "2.x"
     schedule:
       interval: "daily"

@@ -11,7 +11,7 @@ import sass.embedded_protocol.EmbeddedSass.InboundMessage.CompileRequest.StringI
 import sass.embedded_protocol.EmbeddedSass.OutboundMessage.CompileResponse.CompileSuccess;
 import sass.embedded_protocol.EmbeddedSass.OutputStyle;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
 /**

@@ -33,7 +33,7 @@ dependencies {
     api project(":sass-embedded-protocol")
     api "org.slf4j:slf4j-api:$slf4jVersion"
 
-    compileOnly 'org.jetbrains:annotations:23.1.0'
+    compileOnly 'org.jetbrains:annotations:24.0.0'
     compileOnly 'com.google.code.findbugs:jsr305:3.0.2'
     compileOnly 'jakarta.servlet:jakarta.servlet-api:6.0.0'
     compileOnly 'org.apache.logging.log4j:log4j-api:2.19.0'
@@ -55,7 +55,7 @@ dependencies {
     testImplementation "org.springframework:spring-core:$springVersion"
     testImplementation 'ch.qos.logback:logback-classic:1.4.5'
 
-    testCompileOnly 'org.jetbrains:annotations:23.0.0'
+    testCompileOnly 'org.jetbrains:annotations:24.0.0'
 
     testRuntimeOnly "org.webjars:webjars-locator-core:$webjarsVersion"
     testRuntimeOnly 'org.webjars:bootstrap:5.2.0'

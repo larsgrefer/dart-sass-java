@@ -84,3 +84,14 @@ try (SassCompiler sassCompiler = SassCompilerFactory.bundled()) {
     String css = compileSuccess.getCss();
 }
 ```
+
+## Performance and Thread safety
+
+By default - using `SassCompilerFactory.bundled()` - each created `SassCompiler` gets a fresh `CompilerConnection` based on a newly spawned subprocess of the embedded dart-sass-embedded binary.
+
+This has two consequences:
+
+1. Creating a new `SassCompiler` is a rather expensive operation, so try to re-use one (or few) instances instead of creating a new one for each compilation.
+2. Make sure to `close()` the `SassCompiler` when you`re done with it, so the subprocess can be stopped and the allocated memory can be freed.
+
+The important parts of the communication with the actual compiler are `synchronized` on the `CompilerConnection` object, so it should be safe to use a single `SassCompiler` instance in a multithreaded environment. For better performance you might want to create multiple instances in order to avoid threads blocking each other, but keep in mind that creating new instances is still an expensive operation.

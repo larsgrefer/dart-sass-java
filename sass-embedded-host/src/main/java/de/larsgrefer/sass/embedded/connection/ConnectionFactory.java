@@ -100,6 +100,9 @@ public class ConnectionFactory {
         return String.format("/de/larsgrefer/sass/embedded/sass_embedded-%s.%s", classifier, archiveExtension);
     }
 
+    /**
+     * Check if we are running on an Intel x86_64 JDK emulated by Rosetta2 on an ARM mac.
+     */
     private static boolean isRunningOnRosetta2() {
         try {
             Process sysctl = Runtime.getRuntime().exec("sysctl -in sysctl.proc_translated");

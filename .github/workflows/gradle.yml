@@ -31,7 +31,6 @@ jobs:
           distribution: 'temurin'
 
       - run: java -XshowSettings:properties -version
-      - run: ./gradlew -q javaToolchains
       - name: Build with Gradle
         run: ./gradlew build
 

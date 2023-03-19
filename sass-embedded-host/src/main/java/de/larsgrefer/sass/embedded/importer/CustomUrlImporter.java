@@ -3,6 +3,8 @@ package de.larsgrefer.sass.embedded.importer;
 import com.google.protobuf.ByteString;
 import de.larsgrefer.sass.embedded.util.SyntaxUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.jboss.vfs.VFS;
+import org.jboss.vfs.VFSUtils;
 import sass.embedded_protocol.EmbeddedSass.InboundMessage.ImportResponse.ImportSuccess;
 
 import javax.annotation.Nullable;
@@ -125,6 +127,15 @@ public abstract class CustomUrlImporter extends CustomImporter {
             return file.exists() && file.isFile();
         }
 
+        if (url.getProtocol().equals("vfs")) {
+            try {
+                URI uri = VFSUtils.toURI(url);
+                return VFS.getChild(uri).isFile();
+            } catch (URISyntaxException e) {
+                throw new IOException(e);
+            }
+        }
+
         URLConnection connection = url.openConnection();
         if (connection instanceof JarURLConnection) {
             JarURLConnection jarURLConnection = (JarURLConnection) connection;
@@ -147,11 +158,14 @@ public abstract class CustomUrlImporter extends CustomImporter {
             if (responseCode == 200) {
                 return true;
             }
-
         }
 
-        if (urlPath.endsWith(".css") || urlPath.endsWith(".scss") || urlPath.endsWith(".sass")) {
-            // Best guess
+        // Best guess
+
+        long contentLength = connection.getContentLengthLong();
+        if (contentLength == 0) {
+            return false;
+        } else if (contentLength > 0) {
             return true;
         }
 

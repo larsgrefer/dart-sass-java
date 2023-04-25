@@ -1,6 +1,6 @@
 plugins {
     id 'io.freefair.settings.plugin-versions' version '8.0.1'
-    id 'org.gradle.toolchains.foojay-resolver-convention' version '0.4.0'
+    id 'org.gradle.toolchains.foojay-resolver-convention' version '0.5.0'
 }
 
 rootProject.name = 'dart-sass-java'

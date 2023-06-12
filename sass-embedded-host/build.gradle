@@ -13,10 +13,10 @@ configurations {
 
 repositories {
     ivy {
-        //https://github.com/sass/dart-sass-embedded/releases/download/$dartSassVersion/sass_embedded-$dartSassVersion-linux-ia32.tar.gz
-        url "https://github.com/sass/dart-sass-embedded/releases/download"
+        //https://github.com/sass/dart-sass/releases/download/1.63.3/dart-sass-1.63.3-linux-x64.tar.gz
+        url "https://github.com"
         patternLayout {
-            artifact "/[revision]/[artifact]-[revision](-[classifier])(.[ext])"
+            artifact "/[orgPath]/[artifact]/releases/download/[revision]/[artifact]-[revision](-[classifier])(.[ext])"
         }
         metadataSources {
             artifact()
@@ -24,7 +24,7 @@ repositories {
     }
 }
 
-def dartSassVersion = "1.62.1"
+def dartSassVersion = "1.63.3"
 def slf4jVersion = '2.0.7'
 def springVersion = '6.0.9'
 def webjarsVersion = '0.52'
@@ -42,16 +42,16 @@ dependencies {
     compileOnly "org.webjars:webjars-locator-core:$webjarsVersion"
     compileOnly "org.jboss:jboss-vfs:3.2.17.Final"
 
-    sassEmbedded "sass:sass_embedded:$dartSassVersion:linux-ia32@tar.gz"
-    sassEmbedded "sass:sass_embedded:$dartSassVersion:linux-x64@tar.gz"
-    sassEmbedded "sass:sass_embedded:$dartSassVersion:linux-arm@tar.gz"
-    sassEmbedded "sass:sass_embedded:$dartSassVersion:linux-arm64@tar.gz"
+    sassEmbedded "sass:dart-sass:$dartSassVersion:linux-ia32@tar.gz"
+    sassEmbedded "sass:dart-sass:$dartSassVersion:linux-x64@tar.gz"
+    sassEmbedded "sass:dart-sass:$dartSassVersion:linux-arm@tar.gz"
+    sassEmbedded "sass:dart-sass:$dartSassVersion:linux-arm64@tar.gz"
 
-    sassEmbedded "sass:sass_embedded:$dartSassVersion:macos-x64@tar.gz"
-    sassEmbedded "sass:sass_embedded:$dartSassVersion:macos-arm64@tar.gz"
+    sassEmbedded "sass:dart-sass:$dartSassVersion:macos-x64@tar.gz"
+    sassEmbedded "sass:dart-sass:$dartSassVersion:macos-arm64@tar.gz"
 
-    sassEmbedded "sass:sass_embedded:$dartSassVersion:windows-ia32@zip"
-    sassEmbedded "sass:sass_embedded:$dartSassVersion:windows-x64@zip"
+    sassEmbedded "sass:dart-sass:$dartSassVersion:windows-ia32@zip"
+    sassEmbedded "sass:dart-sass:$dartSassVersion:windows-x64@zip"
 
     testImplementation "org.springframework:spring-core:$springVersion"
     testImplementation 'ch.qos.logback:logback-classic:1.4.7'

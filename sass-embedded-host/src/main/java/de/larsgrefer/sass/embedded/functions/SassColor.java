@@ -1,9 +1,9 @@
 package de.larsgrefer.sass.embedded.functions;
 
+import com.sass_lang.embedded_protocol.Value.String;
+import com.sass_lang.embedded_protocol.Value.*;
 import de.larsgrefer.sass.embedded.util.ColorUtil;
 import lombok.experimental.UtilityClass;
-import sass.embedded_protocol.EmbeddedSass.Value.String;
-import sass.embedded_protocol.EmbeddedSass.Value.*;
 
 import java.util.Locale;
 

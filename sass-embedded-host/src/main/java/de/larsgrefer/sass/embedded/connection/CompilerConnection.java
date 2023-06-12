@@ -1,7 +1,7 @@
 package de.larsgrefer.sass.embedded.connection;
 
-import sass.embedded_protocol.EmbeddedSass.InboundMessage;
-import sass.embedded_protocol.EmbeddedSass.OutboundMessage;
+import com.sass_lang.embedded_protocol.InboundMessage;
+import com.sass_lang.embedded_protocol.OutboundMessage;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -21,7 +21,7 @@ public interface CompilerConnection extends Closeable {
      * @param inboundMessage The {@link InboundMessage} to send.
      * @throws IOException If the communication with the compiler fails.
      */
-    void sendMessage(InboundMessage inboundMessage) throws IOException;
+    void sendMessage(int compilationId, InboundMessage inboundMessage) throws IOException;
 
     /**
      * Read a {@link OutboundMessage} from the compiler.

@@ -1,7 +1,7 @@
 package de.larsgrefer.sass.embedded;
 
+import com.sass_lang.embedded_protocol.ProtocolError;
 import lombok.Getter;
-import sass.embedded_protocol.EmbeddedSass.ProtocolError;
 
 /**
  * @author Lars Grefer

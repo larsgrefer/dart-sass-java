@@ -1,17 +1,20 @@
 package de.larsgrefer.sass.embedded.spring;
 
+import com.sass_lang.embedded_protocol.InboundMessage.CompileRequest.StringInput;
+import com.sass_lang.embedded_protocol.OutboundMessage;
+import com.sass_lang.embedded_protocol.OutputStyle;
+import com.sass_lang.embedded_protocol.Syntax;
 import de.larsgrefer.sass.embedded.SassCompiler;
-import lombok.*;
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.springframework.core.io.Resource;
 import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.resource.ResourceTransformer;
 import org.springframework.web.servlet.resource.ResourceTransformerChain;
-import sass.embedded_protocol.EmbeddedSass;
-import sass.embedded_protocol.EmbeddedSass.InboundMessage.CompileRequest.StringInput;
-import sass.embedded_protocol.EmbeddedSass.OutboundMessage.CompileResponse.CompileSuccess;
-import sass.embedded_protocol.EmbeddedSass.OutputStyle;
 
-import jakarta.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
 /**
@@ -43,12 +46,12 @@ public class SassResourceTransformer implements ResourceTransformer {
             return resource;
         }
 
-        StringInput stringInput = SassResourceUtil.toStringInput(resource, EmbeddedSass.Syntax.CSS);
+        StringInput stringInput = SassResourceUtil.toStringInput(resource, Syntax.CSS);
 
         try {
-            CompileSuccess compileSuccess = sassCompiler.compileString(stringInput, outputStyle);
+            OutboundMessage.CompileResponse compileSuccess = sassCompiler.compileString(stringInput, outputStyle);
 
-            return new CompiledResource(resource, compileSuccess, resource.getFilename(), outputStyle);
+            return new CompiledResource(resource, compileSuccess.getSuccess(), resource.getFilename(), outputStyle);
         } catch (Exception e) {
             return resource;
         }

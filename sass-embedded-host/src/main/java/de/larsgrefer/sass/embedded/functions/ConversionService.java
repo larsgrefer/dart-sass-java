@@ -1,14 +1,14 @@
 package de.larsgrefer.sass.embedded.functions;
 
+import com.sass_lang.embedded_protocol.SingletonValue;
+import com.sass_lang.embedded_protocol.Value;
+import com.sass_lang.embedded_protocol.Value.Calculation;
+import com.sass_lang.embedded_protocol.Value.HslColor;
+import com.sass_lang.embedded_protocol.Value.HwbColor;
+import com.sass_lang.embedded_protocol.Value.RgbColor;
 import de.larsgrefer.sass.embedded.util.ColorUtil;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
-import sass.embedded_protocol.EmbeddedSass.SingletonValue;
-import sass.embedded_protocol.EmbeddedSass.Value;
-import sass.embedded_protocol.EmbeddedSass.Value.Calculation;
-import sass.embedded_protocol.EmbeddedSass.Value.HslColor;
-import sass.embedded_protocol.EmbeddedSass.Value.HwbColor;
-import sass.embedded_protocol.EmbeddedSass.Value.RgbColor;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

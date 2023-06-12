@@ -1,12 +1,12 @@
 package de.larsgrefer.sass.embedded.functions;
 
+import com.sass_lang.embedded_protocol.SingletonValue;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestFactory;
 import org.springframework.core.ParameterizedTypeReference;
-import sass.embedded_protocol.EmbeddedSass;
-import sass.embedded_protocol.EmbeddedSass.Value;
-import sass.embedded_protocol.EmbeddedSass.Value.ValueCase;
+import com.sass_lang.embedded_protocol.Value;
+import com.sass_lang.embedded_protocol.Value.ValueCase;
 
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
@@ -30,7 +30,7 @@ class ConversionServiceTest {
 
         assertThat(nullValue).isNotNull();
         assertThat(nullValue.getValueCase()).isEqualTo(ValueCase.SINGLETON);
-        assertThat(nullValue.getSingleton()).isEqualTo(EmbeddedSass.SingletonValue.NULL);
+        assertThat(nullValue.getSingleton()).isEqualTo(SingletonValue.NULL);
 
         assertThat(toJavaValue(nullValue, String.class, null)).isNull();
     }
@@ -43,8 +43,8 @@ class ConversionServiceTest {
         assertThat(trueValue.getValueCase()).isEqualTo(ValueCase.SINGLETON);
         assertThat(falseValue.getValueCase()).isEqualTo(ValueCase.SINGLETON);
 
-        assertThat(trueValue.getSingleton()).isEqualTo(EmbeddedSass.SingletonValue.TRUE);
-        assertThat(falseValue.getSingleton()).isEqualTo(EmbeddedSass.SingletonValue.FALSE);
+        assertThat(trueValue.getSingleton()).isEqualTo(SingletonValue.TRUE);
+        assertThat(falseValue.getSingleton()).isEqualTo(SingletonValue.FALSE);
 
         assertThat(toJavaValue(trueValue, Boolean.class, null)).isTrue();
         assertThat(toJavaValue(falseValue, Boolean.class, null)).isFalse();
@@ -186,7 +186,7 @@ class ConversionServiceTest {
         assertThat(toSassValue(Value.HslColor.getDefaultInstance()).getValueCase()).isEqualTo(ValueCase.HSL_COLOR);
         assertThat(toSassValue(Value.List.getDefaultInstance()).getValueCase()).isEqualTo(ValueCase.LIST);
         assertThat(toSassValue(Value.Map.getDefaultInstance()).getValueCase()).isEqualTo(ValueCase.MAP);
-        assertThat(toSassValue(EmbeddedSass.SingletonValue.NULL).getValueCase()).isEqualTo(ValueCase.SINGLETON);
+        assertThat(toSassValue(SingletonValue.NULL).getValueCase()).isEqualTo(ValueCase.SINGLETON);
     }
 
     @TestFactory
@@ -198,7 +198,7 @@ class ConversionServiceTest {
                         Value.HslColor.getDefaultInstance(),
                         Value.List.getDefaultInstance(),
                         Value.Map.getDefaultInstance(),
-                        EmbeddedSass.SingletonValue.NULL
+                        SingletonValue.NULL
                 )
                 .map(val -> DynamicTest.dynamicTest("foo-" + val.toString(), () -> {
                     Value value = toSassValue(val);

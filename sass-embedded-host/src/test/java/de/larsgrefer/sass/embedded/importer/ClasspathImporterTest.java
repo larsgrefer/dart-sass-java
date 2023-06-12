@@ -1,8 +1,9 @@
 package de.larsgrefer.sass.embedded.importer;
 
+import com.sass_lang.embedded_protocol.InboundMessage;
+import com.sass_lang.embedded_protocol.Syntax;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import sass.embedded_protocol.EmbeddedSass;
 
 import java.net.URL;
 
@@ -26,11 +27,11 @@ class ClasspathImporterTest {
 
         URL newUrl = new URL(canonicalize);
 
-        EmbeddedSass.InboundMessage.ImportResponse.ImportSuccess success = classpathImporter.handleImport(newUrl);
+        InboundMessage.ImportResponse.ImportSuccess success = classpathImporter.handleImport(newUrl);
         assertThat(success).isNotNull();
 
         assertThat(success.getContents()).contains("red");
-        assertThat(success.getSyntax()).isEqualTo(EmbeddedSass.Syntax.SCSS);
+        assertThat(success.getSyntax()).isEqualTo(Syntax.SCSS);
     }
 
     @Test
@@ -41,7 +42,7 @@ class ClasspathImporterTest {
 
         URL newUrl = new URL(canonicalize);
 
-        EmbeddedSass.InboundMessage.ImportResponse.ImportSuccess success = classpathImporter.handleImport(newUrl);
+        InboundMessage.ImportResponse.ImportSuccess success = classpathImporter.handleImport(newUrl);
         assertThat(success).isNotNull();
 
         assertThat(success.getContents()).contains("@import");

@@ -3,9 +3,9 @@ package de.larsgrefer.sass.embedded.util;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestFactory;
-import sass.embedded_protocol.EmbeddedSass.Value.HslColor;
-import sass.embedded_protocol.EmbeddedSass.Value.HwbColor;
-import sass.embedded_protocol.EmbeddedSass.Value.RgbColor;
+import com.sass_lang.embedded_protocol.Value.HslColor;
+import com.sass_lang.embedded_protocol.Value.HwbColor;
+import com.sass_lang.embedded_protocol.Value.RgbColor;
 
 import java.util.stream.Stream;
 

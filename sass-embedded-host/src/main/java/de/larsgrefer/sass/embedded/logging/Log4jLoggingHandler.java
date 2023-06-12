@@ -1,9 +1,10 @@
 package de.larsgrefer.sass.embedded.logging;
 
+import com.sass_lang.embedded_protocol.LogEventType;
+import com.sass_lang.embedded_protocol.OutboundMessage;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
-import sass.embedded_protocol.EmbeddedSass;
 
 /**
  * Log4j2 based {@link LoggingHandler} implementation.
@@ -16,12 +17,12 @@ public class Log4jLoggingHandler implements LoggingHandler {
     private final Logger logger;
 
     @Override
-    public void handle(EmbeddedSass.OutboundMessage.LogEventOrBuilder logEvent) {
+    public void handle(OutboundMessage.LogEventOrBuilder logEvent) {
         Level level = getLogLevel(logEvent.getType());
         logger.log(level, logEvent.getFormatted());
     }
 
-    protected Level getLogLevel(EmbeddedSass.LogEventType type) {
+    protected Level getLogLevel(LogEventType type) {
         switch (type) {
             case WARNING:
                 return Level.WARN;

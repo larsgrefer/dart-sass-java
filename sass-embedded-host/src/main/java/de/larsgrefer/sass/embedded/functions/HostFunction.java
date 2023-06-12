@@ -1,9 +1,8 @@
 package de.larsgrefer.sass.embedded.functions;
 
+import com.sass_lang.embedded_protocol.Value;
 import lombok.Getter;
-import lombok.Value;
 import lombok.With;
-import sass.embedded_protocol.EmbeddedSass;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -37,7 +36,7 @@ public abstract class HostFunction {
     }
 
     @Nonnull
-    public abstract EmbeddedSass.Value invoke(List<EmbeddedSass.Value> arguments) throws Throwable;
+    public abstract Value invoke(List<Value> arguments) throws Throwable;
 
     private String prepareSignature() {
         String functionName = getName();
@@ -47,7 +46,7 @@ public abstract class HostFunction {
                 .collect(Collectors.joining(", ", "(", ")"));
     }
 
-    @Value
+    @lombok.Value
     @With
     public static class Argument {
         String name;

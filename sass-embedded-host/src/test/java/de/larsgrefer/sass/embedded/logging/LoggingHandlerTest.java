@@ -1,12 +1,13 @@
 package de.larsgrefer.sass.embedded.logging;
 
+import com.sass_lang.embedded_protocol.OutboundMessage;
 import de.larsgrefer.sass.embedded.SassCompilationFailedException;
 import de.larsgrefer.sass.embedded.SassCompiler;
 import de.larsgrefer.sass.embedded.SassCompilerFactory;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import sass.embedded_protocol.EmbeddedSass.OutboundMessage.CompileResponse.CompileSuccess;
+import com.sass_lang.embedded_protocol.OutboundMessage.CompileResponse.CompileSuccess;
 
 import java.io.IOException;
 
@@ -61,11 +62,11 @@ abstract class LoggingHandlerTest {
 
     @Test
     void testWarn() throws SassCompilationFailedException, IOException {
-        CompileSuccess compileSuccess = sassCompiler.compileScssString(warnScss);
+        OutboundMessage.CompileResponse compileSuccess = sassCompiler.compileScssString(warnScss);
     }
 
     @Test
     void testDebug() throws SassCompilationFailedException, IOException {
-        CompileSuccess compileSuccess = sassCompiler.compileScssString(debugScss);
+        OutboundMessage.CompileResponse compileSuccess = sassCompiler.compileScssString(debugScss);
     }
 }

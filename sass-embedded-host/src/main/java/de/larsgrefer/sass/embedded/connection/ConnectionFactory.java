@@ -26,7 +26,7 @@ public class ConnectionFactory {
     private static File bundledDartExec;
 
     public static ProcessConnection bundled() throws IOException {
-        ProcessBuilder processBuilder = new ProcessBuilder(getBundledDartExec().getAbsolutePath());
+        ProcessBuilder processBuilder = new ProcessBuilder(getBundledDartExec().getAbsolutePath(), "--embedded");
 
         return new ProcessConnection(processBuilder);
     }
@@ -55,9 +55,9 @@ public class ConnectionFactory {
             throw new IOException(String.format("Failed to extract %s into %s", dist, tempDirectory), e);
         }
 
-        File execDir = tempDirectory.resolve("sass_embedded").toFile();
+        File execDir = tempDirectory.resolve("dart-sass").toFile();
 
-        File[] execFile = execDir.listFiles(pathname -> pathname.isFile() && pathname.getName().startsWith("dart-sass-embedded"));
+        File[] execFile = execDir.listFiles(pathname -> pathname.isFile() && pathname.getName().startsWith("sass"));
 
         if (execFile == null || execFile.length != 1) {
             throw new IllegalStateException("No (unique) executable file found in " + execDir);
@@ -97,7 +97,7 @@ public class ConnectionFactory {
             }
         }
 
-        return String.format("/de/larsgrefer/sass/embedded/sass_embedded-%s.%s", classifier, archiveExtension);
+        return String.format("/de/larsgrefer/sass/embedded/dart-sass-%s.%s", classifier, archiveExtension);
     }
 
     /**

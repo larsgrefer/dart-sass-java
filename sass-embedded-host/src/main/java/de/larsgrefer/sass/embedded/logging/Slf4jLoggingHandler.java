@@ -1,9 +1,9 @@
 package de.larsgrefer.sass.embedded.logging;
 
+import com.sass_lang.embedded_protocol.LogEventType;
+import com.sass_lang.embedded_protocol.OutboundMessage.LogEventOrBuilder;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
-import sass.embedded_protocol.EmbeddedSass;
-import sass.embedded_protocol.EmbeddedSass.OutboundMessage.LogEventOrBuilder;
 
 /**
  * Slf4j based {@link LoggingHandler} implementation.
@@ -17,7 +17,7 @@ public class Slf4jLoggingHandler implements LoggingHandler {
 
     @Override
     public void handle(LogEventOrBuilder logEvent) {
-        EmbeddedSass.LogEventType type = logEvent.getType();
+        LogEventType type = logEvent.getType();
 
         switch (type) {
             case WARNING:

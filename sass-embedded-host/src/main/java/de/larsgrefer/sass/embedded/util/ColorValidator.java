@@ -1,11 +1,11 @@
 package de.larsgrefer.sass.embedded.util;
 
 
+import com.sass_lang.embedded_protocol.Value.HslColorOrBuilder;
+import com.sass_lang.embedded_protocol.Value.HwbColorOrBuilder;
+import com.sass_lang.embedded_protocol.Value.RgbColorOrBuilder;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
-import sass.embedded_protocol.EmbeddedSass.Value.HslColorOrBuilder;
-import sass.embedded_protocol.EmbeddedSass.Value.HwbColorOrBuilder;
-import sass.embedded_protocol.EmbeddedSass.Value.RgbColorOrBuilder;
 
 /**
  * @author Lars Grefer

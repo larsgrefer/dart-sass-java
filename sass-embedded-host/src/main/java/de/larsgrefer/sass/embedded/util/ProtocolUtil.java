@@ -1,10 +1,10 @@
 package de.larsgrefer.sass.embedded.util;
 
+import com.sass_lang.embedded_protocol.InboundMessage;
+import com.sass_lang.embedded_protocol.InboundMessage.*;
+import com.sass_lang.embedded_protocol.SingletonValue;
+import com.sass_lang.embedded_protocol.Value;
 import lombok.experimental.UtilityClass;
-import sass.embedded_protocol.EmbeddedSass;
-import sass.embedded_protocol.EmbeddedSass.InboundMessage;
-import sass.embedded_protocol.EmbeddedSass.InboundMessage.*;
-import sass.embedded_protocol.EmbeddedSass.Value;
 
 import java.util.Arrays;
 
@@ -86,7 +86,7 @@ public class ProtocolUtil {
                 .build();
     }
 
-    public static Value value(EmbeddedSass.SingletonValue singletonValue) {
+    public static Value value(SingletonValue singletonValue) {
         return Value.newBuilder()
                 .setSingleton(singletonValue)
                 .build();

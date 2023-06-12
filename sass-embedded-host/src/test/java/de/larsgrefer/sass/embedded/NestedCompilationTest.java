@@ -1,11 +1,12 @@
 package de.larsgrefer.sass.embedded;
 
+import com.sass_lang.embedded_protocol.OutboundMessage;
 import de.larsgrefer.sass.embedded.functions.HostFunction;
 import de.larsgrefer.sass.embedded.functions.HostFunctionFactory;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import sass.embedded_protocol.EmbeddedSass.OutboundMessage.CompileResponse.CompileSuccess;
+import com.sass_lang.embedded_protocol.OutboundMessage.CompileResponse.CompileSuccess;
 
 import java.io.IOException;
 
@@ -27,17 +28,17 @@ public class NestedCompilationTest {
     void nestedCompilation() throws SassCompilationFailedException, IOException {
 
         HostFunction dummyFunction = HostFunctionFactory.ofLambda("dummy", () -> {
-            CompileSuccess compileSuccess = sassCompiler.compileScssString("body {color: red; size: 1+2}");
+            OutboundMessage.CompileResponse compileSuccess = sassCompiler.compileScssString("body {color: red; size: 1+2}");
 
-            System.out.println(compileSuccess.getCss());
+            System.out.println(compileSuccess.getSuccess().getCss());
 
-            return compileSuccess.getCss();
+            return compileSuccess.getSuccess().getCss();
         });
 
         sassCompiler.registerFunction(dummyFunction);
 
-        CompileSuccess compileSuccess = sassCompiler.compileScssString("body { color: dummy()}");
+        OutboundMessage.CompileResponse compileSuccess = sassCompiler.compileScssString("body { color: dummy()}");
 
-        System.out.println(compileSuccess.getCss());
+        System.out.println(compileSuccess.getSuccess().getCss());
     }
 }

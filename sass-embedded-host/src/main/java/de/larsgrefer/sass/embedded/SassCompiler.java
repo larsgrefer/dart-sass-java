@@ -1,6 +1,12 @@
 package de.larsgrefer.sass.embedded;
 
 import com.google.protobuf.ByteString;
+import com.sass_lang.embedded_protocol.*;
+import com.sass_lang.embedded_protocol.InboundMessage.*;
+import com.sass_lang.embedded_protocol.OutboundMessage.CanonicalizeRequest;
+import com.sass_lang.embedded_protocol.OutboundMessage.FileImportRequest;
+import com.sass_lang.embedded_protocol.OutboundMessage.FunctionCallRequest;
+import com.sass_lang.embedded_protocol.OutboundMessage.ImportRequest;
 import de.larsgrefer.sass.embedded.connection.CompilerConnection;
 import de.larsgrefer.sass.embedded.functions.HostFunction;
 import de.larsgrefer.sass.embedded.importer.CustomImporter;
@@ -15,17 +21,6 @@ import lombok.NonNull;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.intellij.lang.annotations.Language;
-import sass.embedded_protocol.EmbeddedSass;
-import sass.embedded_protocol.EmbeddedSass.InboundMessage;
-import sass.embedded_protocol.EmbeddedSass.InboundMessage.*;
-import sass.embedded_protocol.EmbeddedSass.OutboundMessage;
-import sass.embedded_protocol.EmbeddedSass.OutboundMessage.CanonicalizeRequest;
-import sass.embedded_protocol.EmbeddedSass.OutboundMessage.CompileResponse.CompileSuccess;
-import sass.embedded_protocol.EmbeddedSass.OutboundMessage.FileImportRequest;
-import sass.embedded_protocol.EmbeddedSass.OutboundMessage.FunctionCallRequest;
-import sass.embedded_protocol.EmbeddedSass.OutboundMessage.ImportRequest;
-import sass.embedded_protocol.EmbeddedSass.OutputStyle;
-import sass.embedded_protocol.EmbeddedSass.Syntax;
 
 import javax.annotation.Nonnull;
 import java.io.*;
@@ -141,7 +136,7 @@ public class SassCompiler implements Closeable {
     }
 
     public OutboundMessage.VersionResponse getVersion() throws IOException {
-        return exec(inboundMessage(VersionRequest.getDefaultInstance())).getVersionResponse();
+        return exec(0, inboundMessage(VersionRequest.getDefaultInstance())).getVersionResponse();
     }
 
     public void registerFunction(@NonNull HostFunction sassFunction) {
@@ -159,7 +154,6 @@ public class SassCompiler implements Closeable {
     protected CompileRequest.Builder compileRequestBuilder() {
         CompileRequest.Builder builder = CompileRequest.newBuilder();
 
-        builder.setId(Math.abs(compileRequestIds.nextInt()));
         builder.setStyle(outputStyle);
         builder.setSourceMap(generateSourceMaps);
 
@@ -198,11 +192,11 @@ public class SassCompiler implements Closeable {
         return builder;
     }
 
-    public CompileSuccess compile(@NonNull URL source) throws SassCompilationFailedException, IOException {
+    public OutboundMessage.CompileResponse compile(@NonNull URL source) throws SassCompilationFailedException, IOException {
         return compile(source, getOutputStyle());
     }
 
-    public CompileSuccess compile(@NonNull URL source, OutputStyle outputStyle) throws SassCompilationFailedException, IOException {
+    public OutboundMessage.CompileResponse compile(@NonNull URL source, OutputStyle outputStyle) throws SassCompilationFailedException, IOException {
         if (source.getProtocol().equals("file")) {
             File file = new File(source.getPath());
             return compileFile(file);
@@ -237,23 +231,23 @@ public class SassCompiler implements Closeable {
     }
 
     //region compileString and overloads
-    public CompileSuccess compileScssString(@NonNull @Language("SCSS") String source) throws IOException, SassCompilationFailedException {
+    public OutboundMessage.CompileResponse compileScssString(@NonNull @Language("SCSS") String source) throws IOException, SassCompilationFailedException {
         return compileString(source, Syntax.SCSS);
     }
 
-    public CompileSuccess compileSassString(@NonNull @Language("SASS") String source) throws IOException, SassCompilationFailedException {
+    public OutboundMessage.CompileResponse compileSassString(@NonNull @Language("SASS") String source) throws IOException, SassCompilationFailedException {
         return compileString(source, Syntax.INDENTED);
     }
 
-    public CompileSuccess compileCssString(@NonNull @Language("CSS") String source) throws IOException, SassCompilationFailedException {
+    public OutboundMessage.CompileResponse compileCssString(@NonNull @Language("CSS") String source) throws IOException, SassCompilationFailedException {
         return compileString(source, Syntax.CSS);
     }
 
-    public CompileSuccess compileString(String source, Syntax syntax) throws SassCompilationFailedException, IOException {
+    public OutboundMessage.CompileResponse compileString(String source, Syntax syntax) throws SassCompilationFailedException, IOException {
         return compileString(source, syntax, getOutputStyle());
     }
 
-    public CompileSuccess compileString(@NonNull String source, Syntax syntax, OutputStyle outputStyle) throws IOException, SassCompilationFailedException {
+    public OutboundMessage.CompileResponse compileString(@NonNull String source, Syntax syntax, OutputStyle outputStyle) throws IOException, SassCompilationFailedException {
         CompileRequest.StringInput stringInput = CompileRequest.StringInput.newBuilder()
                 .setSource(source)
                 .setSyntax(syntax)
@@ -263,7 +257,7 @@ public class SassCompiler implements Closeable {
     }
 
     @Nonnull
-    public CompileSuccess compileString(CompileRequest.StringInput string, @NonNull OutputStyle outputStyle) throws IOException, SassCompilationFailedException {
+    public OutboundMessage.CompileResponse compileString(CompileRequest.StringInput string, @NonNull OutputStyle outputStyle) throws IOException, SassCompilationFailedException {
 
         CompileRequest compileRequest = compileRequestBuilder()
                 .setString(string)
@@ -276,11 +270,11 @@ public class SassCompiler implements Closeable {
 
     //region compileFile
 
-    public CompileSuccess compileFile(@NonNull File inputFile) throws IOException, SassCompilationFailedException {
+    public OutboundMessage.CompileResponse compileFile(@NonNull File inputFile) throws IOException, SassCompilationFailedException {
         return compileFile(inputFile, getOutputStyle());
     }
 
-    public CompileSuccess compileFile(@NonNull File file, @NonNull OutputStyle outputStyle) throws IOException, SassCompilationFailedException {
+    public OutboundMessage.CompileResponse compileFile(@NonNull File file, @NonNull OutputStyle outputStyle) throws IOException, SassCompilationFailedException {
         CompileRequest compileRequest = compileRequestBuilder()
                 .setPath(file.getPath())
                 .setStyle(outputStyle)
@@ -291,9 +285,11 @@ public class SassCompiler implements Closeable {
 
     //endregion
 
-    private CompileSuccess execCompileRequest(CompileRequest compileRequest) throws IOException, SassCompilationFailedException {
+    private OutboundMessage.CompileResponse execCompileRequest(CompileRequest compileRequest) throws IOException, SassCompilationFailedException {
 
-        OutboundMessage outboundMessage = exec(inboundMessage(compileRequest));
+        int compilationId = Math.abs(compileRequestIds.nextInt());
+
+        OutboundMessage outboundMessage = exec(compilationId, inboundMessage(compileRequest));
 
         if (!outboundMessage.hasCompileResponse()) {
             throw new IllegalStateException("No compile response");
@@ -301,23 +297,18 @@ public class SassCompiler implements Closeable {
 
         OutboundMessage.CompileResponse compileResponse = outboundMessage.getCompileResponse();
 
-        if (compileResponse.getId() != compileRequest.getId()) {
-            //Should never happen
-            throw new IllegalStateException(String.format("Compilation ID mismatch: expected %d, but got %d", compileRequest.getId(), compileResponse.getId()));
-        }
-
         if (compileResponse.hasSuccess()) {
-            return compileResponse.getSuccess();
+            return compileResponse;
         } else if (compileResponse.hasFailure()) {
-            throw new SassCompilationFailedException(compileResponse.getFailure());
+            throw new SassCompilationFailedException(compileResponse);
         } else {
             throw new IllegalStateException("Neither success nor failure");
         }
     }
 
-    private OutboundMessage exec(InboundMessage inboundMessage) throws IOException {
+    private OutboundMessage exec(int compilationId, InboundMessage inboundMessage) throws IOException {
         synchronized (connection) {
-            connection.sendMessage(inboundMessage);
+            connection.sendMessage(compilationId, inboundMessage);
 
             while (true) {
                 OutboundMessage outboundMessage = connection.readResponse();
@@ -333,16 +324,16 @@ public class SassCompiler implements Closeable {
                         loggingHandler.handle(outboundMessage.getLogEvent());
                         break;
                     case CANONICALIZE_REQUEST:
-                        handleCanonicalizeRequest(outboundMessage.getCanonicalizeRequest());
+                        handleCanonicalizeRequest(compilationId, outboundMessage.getCanonicalizeRequest());
                         break;
                     case IMPORT_REQUEST:
-                        handleImportRequest(outboundMessage.getImportRequest());
+                        handleImportRequest(compilationId, outboundMessage.getImportRequest());
                         break;
                     case FILE_IMPORT_REQUEST:
-                        handleFileImportRequest(outboundMessage.getFileImportRequest());
+                        handleFileImportRequest(compilationId, outboundMessage.getFileImportRequest());
                         break;
                     case FUNCTION_CALL_REQUEST:
-                        handleFunctionCallRequest(outboundMessage.getFunctionCallRequest());
+                        handleFunctionCallRequest(compilationId, outboundMessage.getFunctionCallRequest());
                         break;
                     case MESSAGE_NOT_SET:
                         throw new IllegalStateException("No message set");
@@ -353,7 +344,7 @@ public class SassCompiler implements Closeable {
         }
     }
 
-    private void handleFileImportRequest(FileImportRequest fileImportRequest) throws IOException {
+    private void handleFileImportRequest(int compilationId, FileImportRequest fileImportRequest) throws IOException {
         FileImportResponse.Builder fileImportResponse = FileImportResponse.newBuilder()
                 .setId(fileImportRequest.getId());
 
@@ -369,10 +360,10 @@ public class SassCompiler implements Closeable {
             fileImportResponse.setError(getErrorMessage(t));
         }
 
-        connection.sendMessage(inboundMessage(fileImportResponse.build()));
+        connection.sendMessage(compilationId, inboundMessage(fileImportResponse.build()));
     }
 
-    private void handleImportRequest(ImportRequest importRequest) throws IOException {
+    private void handleImportRequest(int compilationId, ImportRequest importRequest) throws IOException {
         ImportResponse.Builder importResponse = ImportResponse.newBuilder()
                 .setId(importRequest.getId());
 
@@ -388,10 +379,10 @@ public class SassCompiler implements Closeable {
             importResponse.setError(getErrorMessage(t));
         }
 
-        connection.sendMessage(inboundMessage(importResponse.build()));
+        connection.sendMessage(compilationId, inboundMessage(importResponse.build()));
     }
 
-    private void handleCanonicalizeRequest(CanonicalizeRequest canonicalizeRequest) throws IOException {
+    private void handleCanonicalizeRequest(int compilationId, CanonicalizeRequest canonicalizeRequest) throws IOException {
         CanonicalizeResponse.Builder canonicalizeResponse = CanonicalizeResponse.newBuilder()
                 .setId(canonicalizeRequest.getId());
 
@@ -407,10 +398,10 @@ public class SassCompiler implements Closeable {
             canonicalizeResponse.setError(getErrorMessage(e));
         }
 
-        connection.sendMessage(inboundMessage(canonicalizeResponse.build()));
+        connection.sendMessage(compilationId, inboundMessage(canonicalizeResponse.build()));
     }
 
-    private void handleFunctionCallRequest(FunctionCallRequest functionCallRequest) throws IOException {
+    private void handleFunctionCallRequest(int compilationId, FunctionCallRequest functionCallRequest) throws IOException {
         FunctionCallResponse.Builder response = FunctionCallResponse.newBuilder()
                 .setId(functionCallRequest.getId());
 
@@ -426,15 +417,15 @@ public class SassCompiler implements Closeable {
                     throw new IllegalArgumentException("FunctionCallRequest has no identifier");
             }
 
-            List<EmbeddedSass.Value> argumentsList = functionCallRequest.getArgumentsList();
-            EmbeddedSass.Value result = sassFunction.invoke(argumentsList);
+            List<Value> argumentsList = functionCallRequest.getArgumentsList();
+            Value result = sassFunction.invoke(argumentsList);
             response.setSuccess(result);
         } catch (Throwable e) {
             log.debug("Failed to handle FunctionCallRequest for function {}", sassFunction, e);
             response.setError(getErrorMessage(e));
         }
 
-        connection.sendMessage(inboundMessage(response.build()));
+        connection.sendMessage(compilationId, inboundMessage(response.build()));
     }
 
     private String getErrorMessage(Throwable t) {

@@ -1,10 +1,8 @@
 package de.larsgrefer.sass.embedded.functions;
 
-import sass.embedded_protocol.EmbeddedSass.Value;
+import com.sass_lang.embedded_protocol.Value;
 
 import javax.annotation.Nonnull;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.function.BiFunction;
 

@@ -1,6 +1,6 @@
 package de.larsgrefer.sass.embedded.importer;
 
-import sass.embedded_protocol.EmbeddedSass.OutboundMessage.FileImportRequest;
+import com.sass_lang.embedded_protocol.OutboundMessage.FileImportRequest;
 
 import java.io.File;
 

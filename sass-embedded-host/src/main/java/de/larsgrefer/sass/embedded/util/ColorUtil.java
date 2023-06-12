@@ -1,7 +1,7 @@
 package de.larsgrefer.sass.embedded.util;
 
+import com.sass_lang.embedded_protocol.Value.*;
 import lombok.experimental.UtilityClass;
-import sass.embedded_protocol.EmbeddedSass.Value.*;
 
 import javax.annotation.Nonnull;
 

@@ -1,10 +1,10 @@
 package de.larsgrefer.sass.embedded.spring;
 
+import com.sass_lang.embedded_protocol.OutboundMessage.CompileResponse.CompileSuccess;
+import com.sass_lang.embedded_protocol.OutputStyle;
 import lombok.Getter;
 import org.springframework.core.io.Resource;
 import org.springframework.web.servlet.resource.TransformedResource;
-import sass.embedded_protocol.EmbeddedSass.OutboundMessage.CompileResponse.CompileSuccess;
-import sass.embedded_protocol.EmbeddedSass.OutputStyle;
 
 /**
  * @author Lars Grefer

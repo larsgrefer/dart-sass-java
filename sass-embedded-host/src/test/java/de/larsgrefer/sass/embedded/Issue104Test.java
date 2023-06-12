@@ -1,5 +1,6 @@
 package de.larsgrefer.sass.embedded;
 
+import com.sass_lang.embedded_protocol.OutboundMessage;
 import de.larsgrefer.sass.embedded.importer.ClasspathImporter;
 import de.larsgrefer.sass.embedded.importer.WebjarsImporter;
 import org.junit.jupiter.api.AfterEach;
@@ -8,7 +9,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledOnOs;
 import org.junit.jupiter.api.condition.OS;
 import org.junit.jupiter.api.io.TempDir;
-import sass.embedded_protocol.EmbeddedSass;
 
 import java.io.File;
 import java.io.IOException;
@@ -59,17 +59,17 @@ public class Issue104Test {
     @Test
     public void directClasspath() throws SassCompilationFailedException, IOException {
         URL resource = classLoader.getResource("css/gh-104.scss");
-        EmbeddedSass.OutboundMessage.CompileResponse.CompileSuccess result = sassCompiler.compile(resource);
+        OutboundMessage.CompileResponse result = sassCompiler.compile(resource);
 
         result.getLoadedUrlsList().forEach(System.out::println);
-        assertThat(result.getCss()).isNotEmpty();
+        assertThat(result.getSuccess().getCss()).isNotEmpty();
     }
 
     @Test
     public void importClasspath() throws SassCompilationFailedException, IOException {
-        EmbeddedSass.OutboundMessage.CompileResponse.CompileSuccess result = sassCompiler.compileScssString("@import 'css/gh-104';");
+        OutboundMessage.CompileResponse result = sassCompiler.compileScssString("@import 'css/gh-104';");
 
         result.getLoadedUrlsList().forEach(System.out::println);
-        assertThat(result.getCss()).isNotEmpty();
+        assertThat(result.getSuccess().getCss()).isNotEmpty();
     }
 }

@@ -1,8 +1,8 @@
 package de.larsgrefer.sass.embedded.importer;
 
-import sass.embedded_protocol.EmbeddedSass.InboundMessage.ImportResponse.ImportSuccess;
-import sass.embedded_protocol.EmbeddedSass.OutboundMessage.CanonicalizeRequest;
-import sass.embedded_protocol.EmbeddedSass.OutboundMessage.ImportRequest;
+import com.sass_lang.embedded_protocol.InboundMessage.ImportResponse.ImportSuccess;
+import com.sass_lang.embedded_protocol.OutboundMessage.CanonicalizeRequest;
+import com.sass_lang.embedded_protocol.OutboundMessage.ImportRequest;
 
 /**
  * A custom importer as specified by the embedded sass protocol.

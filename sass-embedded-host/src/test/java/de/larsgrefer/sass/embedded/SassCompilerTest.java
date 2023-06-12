@@ -1,13 +1,16 @@
 package de.larsgrefer.sass.embedded;
 
+import com.sass_lang.embedded_protocol.InboundMessage;
+import com.sass_lang.embedded_protocol.OutboundMessage;
+import com.sass_lang.embedded_protocol.OutputStyle;
+import com.sass_lang.embedded_protocol.Value;
 import de.larsgrefer.sass.embedded.functions.HostFunction;
 import org.intellij.lang.annotations.Language;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import sass.embedded_protocol.EmbeddedSass;
-import sass.embedded_protocol.EmbeddedSass.OutboundMessage.CompileResponse.CompileSuccess;
+import com.sass_lang.embedded_protocol.OutboundMessage.CompileResponse.CompileSuccess;
 
 import java.io.File;
 import java.io.IOException;
@@ -36,9 +39,10 @@ class SassCompilerTest {
 
     @Test
     void getVersion() throws IOException {
-        EmbeddedSass.OutboundMessage.VersionResponse version = sassCompiler.getVersion();
+        OutboundMessage.VersionResponse version = sassCompiler.getVersion();
 
         assertThat(version).isNotNull();
+        System.out.println(version);
     }
 
     @Test
@@ -47,33 +51,33 @@ class SassCompilerTest {
 
         String s = null;
         for (int i = 0; i < 100; i++) {
-            s = sassCompiler.compileScssString(sass).getCss();
+            s = sassCompiler.compileScssString(sass).getSuccess().getCss();
         }
         System.out.println(s);
     }
 
     @Test
     void compileFileToString() throws SassCompilationFailedException, IOException {
-        sassCompiler.setOutputStyle(EmbeddedSass.OutputStyle.COMPRESSED);
-        CompileSuccess compileSuccess = sassCompiler.compileFile(new File("src/test/resources/foo/bar.scss"));
-        String css = compileSuccess.getCss();
+        sassCompiler.setOutputStyle(OutputStyle.COMPRESSED);
+        OutboundMessage.CompileResponse compileSuccess = sassCompiler.compileFile(new File("src/test/resources/foo/bar.scss"));
+        String css = compileSuccess.getSuccess().getCss();
 
         assertThat(css).contains("color:red");
     }
 
     @Test
     void compileCssUrl() throws IOException, SassCompilationFailedException {
-        CompileSuccess compileSuccess = sassCompiler.compile(new URL("https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css"));
+        OutboundMessage.CompileResponse compileSuccess = sassCompiler.compile(new URL("https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css"));
 
-        String css = compileSuccess.getCss();
+        String css = compileSuccess.getSuccess().getCss();
         assertThat(css).isNotBlank();
     }
 
     @Test
     void compileScssUrl() throws IOException, SassCompilationFailedException {
-        CompileSuccess compileSuccess = sassCompiler.compile(new URL("https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/scss/bootstrap.scss"));
+        OutboundMessage.CompileResponse compileSuccess = sassCompiler.compile(new URL("https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/scss/bootstrap.scss"));
 
-        String css = compileSuccess.getCss();
+        String css = compileSuccess.getSuccess().getCss();
         assertThat(css).isNotBlank();
     }
 
@@ -81,9 +85,9 @@ class SassCompilerTest {
     void compileClasspathUrl() throws IOException, SassCompilationFailedException {
         URL resource = getClass().getResource("/META-INF/resources/webjars/bootstrap/5.2.0/scss/bootstrap.scss");
 
-        CompileSuccess compileSuccess = sassCompiler.compile(resource);
+        OutboundMessage.CompileResponse compileSuccess = sassCompiler.compile(resource);
 
-        String css = compileSuccess.getCss();
+        String css = compileSuccess.getSuccess().getCss();
         assertThat(css).isNotBlank();
     }
 
@@ -93,9 +97,9 @@ class SassCompilerTest {
 
         HostFunction sassFunction = new HostFunction("foo", Collections.singletonList(new HostFunction.Argument("col", null))) {
             @Override
-            public EmbeddedSass.@NotNull Value invoke(List<EmbeddedSass.Value> arguments) {
-                return EmbeddedSass.Value.newBuilder()
-                        .setRgbColor(EmbeddedSass.Value.RgbColor.newBuilder()
+            public @NotNull Value invoke(List<Value> arguments) {
+                return Value.newBuilder()
+                        .setRgbColor(Value.RgbColor.newBuilder()
                                 .setRed(255)
                                 .setBlue(25)
                                 .setAlpha(1d)
@@ -106,7 +110,7 @@ class SassCompilerTest {
 
         sassCompiler.registerFunction(sassFunction);
 
-        String css = sassCompiler.compileScssString(scss).getCss();
+        String css = sassCompiler.compileScssString(scss).getSuccess().getCss();
         System.out.println(css);
 
     }
@@ -117,14 +121,14 @@ class SassCompilerTest {
 
         HostFunction sassFunction = new HostFunction("foo", Collections.singletonList(new HostFunction.Argument("col", null))) {
             @Override
-            public EmbeddedSass.@NotNull Value invoke(List<EmbeddedSass.Value> arguments) {
+            public @NotNull Value invoke(List<Value> arguments) {
                 throw new RuntimeException("bazinga");
             }
         };
 
         sassCompiler.registerFunction(sassFunction);
         SassCompilationFailedException e = assertThrows(SassCompilationFailedException.class, () -> {
-            String css = sassCompiler.compileScssString(scss).getCss();
+            String css = sassCompiler.compileScssString(scss).getSuccess().getCss();
         });
 
         assertThat(e.getMessage()).contains("bazinga");
@@ -134,19 +138,19 @@ class SassCompilerTest {
     void sourceMapPaths() throws SassCompilationFailedException, IOException {
         String sass = ".foo { .bar { color : foo(#ffffff);}}";
 
-        EmbeddedSass.InboundMessage.CompileRequest.StringInput string = EmbeddedSass.InboundMessage.CompileRequest.StringInput.newBuilder()
+        InboundMessage.CompileRequest.StringInput string = InboundMessage.CompileRequest.StringInput.newBuilder()
                 .setSource(sass)
                 .build();
 
-        CompileSuccess compileSuccess = sassCompiler.compileString(string, EmbeddedSass.OutputStyle.EXPANDED);
+        OutboundMessage.CompileResponse compileSuccess = sassCompiler.compileString(string, OutputStyle.EXPANDED);
 
-        System.out.println(compileSuccess.getSourceMap());
+        System.out.println(compileSuccess.getSuccess().getSourceMap());
 
         File file = new File("src/test/resources/foo/bar.scss");
 
-        CompileSuccess compileSuccess1 = sassCompiler.compileFile(file);
+        OutboundMessage.CompileResponse compileSuccess1 = sassCompiler.compileFile(file);
 
-        System.out.println(compileSuccess1.getSourceMap());
+        System.out.println(compileSuccess1.getSuccess().getSourceMap());
     }
 
 }

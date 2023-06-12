@@ -1,7 +1,10 @@
 package de.larsgrefer.sass.embedded;
 
+import com.sass_lang.embedded_protocol.OutboundMessage;
+import com.sass_lang.embedded_protocol.OutboundMessage.CompileResponse.CompileFailure;
 import lombok.Getter;
-import sass.embedded_protocol.EmbeddedSass.OutboundMessage.CompileResponse.CompileFailure;
+
+import java.util.List;
 
 /**
  * @author Lars Grefer
@@ -12,9 +15,13 @@ public class SassCompilationFailedException extends Exception {
     @Getter
     private final CompileFailure compileFailure;
 
-    public SassCompilationFailedException(CompileFailure failure) {
-        super(failure.getFormatted());
-        this.compileFailure = failure;
+    @Getter
+    private final List<String> loadedUrls;
+
+    public SassCompilationFailedException(OutboundMessage.CompileResponse response) {
+        super(response.getFailure().getFormatted());
+        this.compileFailure = response.getFailure();
+        this.loadedUrls = response.getLoadedUrlsList();
     }
 
 }

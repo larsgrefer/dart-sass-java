@@ -1,7 +1,11 @@
 package de.larsgrefer.sass.embedded.spring;
 
+import com.sass_lang.embedded_protocol.InboundMessage.CompileRequest.StringInput;
+import com.sass_lang.embedded_protocol.OutboundMessage;
+import com.sass_lang.embedded_protocol.OutputStyle;
 import de.larsgrefer.sass.embedded.SassCompilationFailedException;
 import de.larsgrefer.sass.embedded.SassCompiler;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -10,11 +14,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.resource.AbstractResourceResolver;
 import org.springframework.web.servlet.resource.ResourceResolverChain;
-import sass.embedded_protocol.EmbeddedSass;
-import sass.embedded_protocol.EmbeddedSass.InboundMessage.CompileRequest.StringInput;
-import sass.embedded_protocol.EmbeddedSass.OutboundMessage.CompileResponse.CompileSuccess;
 
-import jakarta.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
@@ -30,7 +30,7 @@ public class SassResourceResolver extends AbstractResourceResolver {
     private final SassCompiler sassCompiler;
 
     @Setter
-    private EmbeddedSass.OutputStyle outputStyle = EmbeddedSass.OutputStyle.COMPRESSED;
+    private OutputStyle outputStyle = OutputStyle.COMPRESSED;
 
     @Override
     protected Resource resolveResourceInternal(HttpServletRequest request, String requestPath, List<? extends Resource> locations, ResourceResolverChain chain) {
@@ -54,11 +54,11 @@ public class SassResourceResolver extends AbstractResourceResolver {
                 if (scssResource != null && scssResource.exists()) {
                     try {
                         StringInput si = SassResourceUtil.toStringInput(scssResource);
-                        CompileSuccess compileSuccess = sassCompiler.compileString(si, outputStyle);
+                        OutboundMessage.CompileResponse compileSuccess = sassCompiler.compileString(si, outputStyle);
                         if (sourcemap) {
-                            return new SourceMapResource(scssResource, compileSuccess, filename, outputStyle);
+                            return new SourceMapResource(scssResource, compileSuccess.getSuccess(), filename, outputStyle);
                         } else {
-                            return new CompiledResource(scssResource, compileSuccess, filename, outputStyle);
+                            return new CompiledResource(scssResource, compileSuccess.getSuccess(), filename, outputStyle);
                         }
                     } catch (SassCompilationFailedException | IOException e) {
                         log.info(e.getLocalizedMessage(), e);

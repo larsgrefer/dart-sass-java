@@ -1,11 +1,11 @@
 package de.larsgrefer.sass.embedded.importer;
 
 import com.google.protobuf.ByteString;
+import com.sass_lang.embedded_protocol.InboundMessage.ImportResponse.ImportSuccess;
 import de.larsgrefer.sass.embedded.util.SyntaxUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.jboss.vfs.VFS;
 import org.jboss.vfs.VFSUtils;
-import sass.embedded_protocol.EmbeddedSass.InboundMessage.ImportResponse.ImportSuccess;
 
 import javax.annotation.Nullable;
 import java.io.File;

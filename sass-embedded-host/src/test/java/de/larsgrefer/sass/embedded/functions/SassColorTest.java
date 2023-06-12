@@ -5,8 +5,8 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
-import sass.embedded_protocol.EmbeddedSass.Value.HwbColor;
-import sass.embedded_protocol.EmbeddedSass.Value.RgbColor;
+import com.sass_lang.embedded_protocol.Value.HwbColor;
+import com.sass_lang.embedded_protocol.Value.RgbColor;
 
 import static de.larsgrefer.sass.embedded.util.ColorUtil.*;
 import static org.assertj.core.api.Assertions.assertThat;

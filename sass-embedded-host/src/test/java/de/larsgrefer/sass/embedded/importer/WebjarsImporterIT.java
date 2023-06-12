@@ -35,7 +35,7 @@ class WebjarsImporterIT {
         ).map(name -> DynamicTest.dynamicTest("import " + name, () -> {
             String scss = "@import '" + name + "';";
 
-            String css = sassCompiler.compileScssString(scss).getCss();
+            String css = sassCompiler.compileScssString(scss).getSuccess().getCss();
 
             assertThat(css).contains("red");
         }));

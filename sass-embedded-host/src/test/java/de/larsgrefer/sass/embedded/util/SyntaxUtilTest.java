@@ -1,7 +1,7 @@
 package de.larsgrefer.sass.embedded.util;
 
 import org.junit.jupiter.api.Test;
-import sass.embedded_protocol.EmbeddedSass.Syntax;
+import com.sass_lang.embedded_protocol.Syntax;
 
 import java.io.File;
 import java.net.MalformedURLException;

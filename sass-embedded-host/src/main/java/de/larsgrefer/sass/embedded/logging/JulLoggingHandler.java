@@ -1,8 +1,8 @@
 package de.larsgrefer.sass.embedded.logging;
 
+import com.sass_lang.embedded_protocol.LogEventType;
+import com.sass_lang.embedded_protocol.OutboundMessage.LogEventOrBuilder;
 import lombok.RequiredArgsConstructor;
-import sass.embedded_protocol.EmbeddedSass;
-import sass.embedded_protocol.EmbeddedSass.OutboundMessage.LogEventOrBuilder;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -23,7 +23,7 @@ public class JulLoggingHandler implements LoggingHandler {
         logger.log(logLevel, logEvent.getFormatted());
     }
 
-    protected Level getLogLevel(EmbeddedSass.LogEventType type) {
+    protected Level getLogLevel(LogEventType type) {
         switch (type) {
             case WARNING:
             case DEPRECATION_WARNING:

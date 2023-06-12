@@ -1,7 +1,7 @@
 package de.larsgrefer.sass.embedded.importer;
 
+import com.sass_lang.embedded_protocol.InboundMessage;
 import lombok.RequiredArgsConstructor;
-import sass.embedded_protocol.EmbeddedSass;
 
 import java.util.Collection;
 import java.util.LinkedHashSet;
@@ -54,7 +54,7 @@ class AutoCanonicalizingImporter extends CustomImporter {
     }
 
     @Override
-    public EmbeddedSass.InboundMessage.ImportResponse.ImportSuccess handleImport(String url) throws Exception {
+    public InboundMessage.ImportResponse.ImportSuccess handleImport(String url) throws Exception {
         return delegate.handleImport(url);
     }
 

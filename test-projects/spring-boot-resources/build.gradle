@@ -7,6 +7,7 @@ plugins {
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation project(":sass-embedded-host")
+    implementation project(":sass-embedded-spring6")
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 

@@ -8,4 +8,7 @@ rootProject.name = 'dart-sass-java'
 include "sass-embedded-protocol"
 include "sass-embedded-host"
 
+include "sass-embedded-spring5"
+include "sass-embedded-spring6"
+
 include "test-projects:spring-boot-resources"

@@ -1,0 +1,20 @@
+plugins {
+    id "java-library"
+    id "io.freefair.maven-publish-java"
+    id "io.freefair.lombok"
+}
+
+description = "SASS Embedded Spring 6"
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
+dependencies {
+    api project(":sass-embedded-host")
+
+    api "org.springframework:spring-webmvc:6.0.9"
+    compileOnly 'jakarta.servlet:jakarta.servlet-api:6.0.0'
+}

@@ -4,6 +4,7 @@ import com.sass_lang.embedded_protocol.InboundMessage.CompileRequest.StringInput
 import com.sass_lang.embedded_protocol.OutboundMessage;
 import com.sass_lang.embedded_protocol.OutputStyle;
 import com.sass_lang.embedded_protocol.Syntax;
+import de.larsgrefer.sass.embedded.CompileSuccess;
 import de.larsgrefer.sass.embedded.SassCompiler;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
@@ -49,9 +50,9 @@ public class SassResourceTransformer implements ResourceTransformer {
         StringInput stringInput = SassResourceUtil.toStringInput(resource, Syntax.CSS);
 
         try {
-            OutboundMessage.CompileResponse compileSuccess = sassCompiler.compileString(stringInput, outputStyle);
+            CompileSuccess compileSuccess = sassCompiler.compileString(stringInput, outputStyle);
 
-            return new CompiledResource(resource, compileSuccess.getSuccess(), resource.getFilename(), outputStyle);
+            return new CompiledResource(resource, compileSuccess, resource.getFilename(), outputStyle);
         } catch (Exception e) {
             return resource;
         }

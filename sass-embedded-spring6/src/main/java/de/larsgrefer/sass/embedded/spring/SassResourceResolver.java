@@ -3,6 +3,7 @@ package de.larsgrefer.sass.embedded.spring;
 import com.sass_lang.embedded_protocol.InboundMessage.CompileRequest.StringInput;
 import com.sass_lang.embedded_protocol.OutboundMessage;
 import com.sass_lang.embedded_protocol.OutputStyle;
+import de.larsgrefer.sass.embedded.CompileSuccess;
 import de.larsgrefer.sass.embedded.SassCompilationFailedException;
 import de.larsgrefer.sass.embedded.SassCompiler;
 import jakarta.servlet.http.HttpServletRequest;
@@ -54,11 +55,11 @@ public class SassResourceResolver extends AbstractResourceResolver {
                 if (scssResource != null && scssResource.exists()) {
                     try {
                         StringInput si = SassResourceUtil.toStringInput(scssResource);
-                        OutboundMessage.CompileResponse compileSuccess = sassCompiler.compileString(si, outputStyle);
+                        CompileSuccess compileSuccess = sassCompiler.compileString(si, outputStyle);
                         if (sourcemap) {
-                            return new SourceMapResource(scssResource, compileSuccess.getSuccess(), filename, outputStyle);
+                            return new SourceMapResource(scssResource, compileSuccess, filename, outputStyle);
                         } else {
-                            return new CompiledResource(scssResource, compileSuccess.getSuccess(), filename, outputStyle);
+                            return new CompiledResource(scssResource, compileSuccess, filename, outputStyle);
                         }
                     } catch (SassCompilationFailedException | IOException e) {
                         log.info(e.getLocalizedMessage(), e);

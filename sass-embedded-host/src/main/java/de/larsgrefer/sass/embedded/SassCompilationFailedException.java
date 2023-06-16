@@ -10,7 +10,7 @@ import java.util.List;
  * @author Lars Grefer
  * @see CompileFailure
  */
-public class SassCompilationFailedException extends Exception {
+public class SassCompilationFailedException extends Exception implements CompliationResult {
 
     @Getter
     private final CompileFailure compileFailure;

@@ -1,11 +1,11 @@
 package de.larsgrefer.sass.embedded.functions;
 
+import com.sass_lang.embedded_protocol.Value;
 import de.larsgrefer.sass.embedded.SassCompilationFailedException;
 import de.larsgrefer.sass.embedded.SassCompiler;
 import de.larsgrefer.sass.embedded.SassCompilerFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import com.sass_lang.embedded_protocol.Value;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -34,7 +34,7 @@ class HostFunctionFactoryTest {
 
         hostFunctions.forEach(sassCompiler::registerFunction);
 
-        String s = sassCompiler.compileScssString(scss).getSuccess().getCss();
+        String s = sassCompiler.compileScssString(scss).getCss();
 
         assertThat(s).contains("Hello World");
         assertThat(s).contains("3");
@@ -73,7 +73,7 @@ class HostFunctionFactoryTest {
         sassCompiler.registerFunction(HostFunctionFactory.ofLambda("echo", String.class, Foo::echo));
         sassCompiler.registerFunction(HostFunctionFactory.ofLambda("my-add", Integer.class, Integer.class, Integer::sum));
 
-        String s = sassCompiler.compileScssString(scss).getSuccess().getCss();
+        String s = sassCompiler.compileScssString(scss).getCss();
 
         assertThat(s).contains("Hello World");
         assertThat(s).contains("3");

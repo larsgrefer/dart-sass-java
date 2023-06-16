@@ -192,11 +192,11 @@ public class SassCompiler implements Closeable {
         return builder;
     }
 
-    public OutboundMessage.CompileResponse compile(@NonNull URL source) throws SassCompilationFailedException, IOException {
+    public CompileSuccess compile(@NonNull URL source) throws SassCompilationFailedException, IOException {
         return compile(source, getOutputStyle());
     }
 
-    public OutboundMessage.CompileResponse compile(@NonNull URL source, OutputStyle outputStyle) throws SassCompilationFailedException, IOException {
+    public CompileSuccess compile(@NonNull URL source, OutputStyle outputStyle) throws SassCompilationFailedException, IOException {
         if (source.getProtocol().equals("file")) {
             File file = new File(source.getPath());
             return compileFile(file);
@@ -231,23 +231,23 @@ public class SassCompiler implements Closeable {
     }
 
     //region compileString and overloads
-    public OutboundMessage.CompileResponse compileScssString(@NonNull @Language("SCSS") String source) throws IOException, SassCompilationFailedException {
+    public CompileSuccess compileScssString(@NonNull @Language("SCSS") String source) throws IOException, SassCompilationFailedException {
         return compileString(source, Syntax.SCSS);
     }
 
-    public OutboundMessage.CompileResponse compileSassString(@NonNull @Language("SASS") String source) throws IOException, SassCompilationFailedException {
+    public CompileSuccess compileSassString(@NonNull @Language("SASS") String source) throws IOException, SassCompilationFailedException {
         return compileString(source, Syntax.INDENTED);
     }
 
-    public OutboundMessage.CompileResponse compileCssString(@NonNull @Language("CSS") String source) throws IOException, SassCompilationFailedException {
+    public CompileSuccess compileCssString(@NonNull @Language("CSS") String source) throws IOException, SassCompilationFailedException {
         return compileString(source, Syntax.CSS);
     }
 
-    public OutboundMessage.CompileResponse compileString(String source, Syntax syntax) throws SassCompilationFailedException, IOException {
+    public CompileSuccess compileString(String source, Syntax syntax) throws SassCompilationFailedException, IOException {
         return compileString(source, syntax, getOutputStyle());
     }
 
-    public OutboundMessage.CompileResponse compileString(@NonNull String source, Syntax syntax, OutputStyle outputStyle) throws IOException, SassCompilationFailedException {
+    public CompileSuccess compileString(@NonNull String source, Syntax syntax, OutputStyle outputStyle) throws IOException, SassCompilationFailedException {
         CompileRequest.StringInput stringInput = CompileRequest.StringInput.newBuilder()
                 .setSource(source)
                 .setSyntax(syntax)
@@ -257,7 +257,7 @@ public class SassCompiler implements Closeable {
     }
 
     @Nonnull
-    public OutboundMessage.CompileResponse compileString(CompileRequest.StringInput string, @NonNull OutputStyle outputStyle) throws IOException, SassCompilationFailedException {
+    public CompileSuccess compileString(CompileRequest.StringInput string, @NonNull OutputStyle outputStyle) throws IOException, SassCompilationFailedException {
 
         CompileRequest compileRequest = compileRequestBuilder()
                 .setString(string)
@@ -270,11 +270,11 @@ public class SassCompiler implements Closeable {
 
     //region compileFile
 
-    public OutboundMessage.CompileResponse compileFile(@NonNull File inputFile) throws IOException, SassCompilationFailedException {
+    public CompileSuccess compileFile(@NonNull File inputFile) throws IOException, SassCompilationFailedException {
         return compileFile(inputFile, getOutputStyle());
     }
 
-    public OutboundMessage.CompileResponse compileFile(@NonNull File file, @NonNull OutputStyle outputStyle) throws IOException, SassCompilationFailedException {
+    public CompileSuccess compileFile(@NonNull File file, @NonNull OutputStyle outputStyle) throws IOException, SassCompilationFailedException {
         CompileRequest compileRequest = compileRequestBuilder()
                 .setPath(file.getPath())
                 .setStyle(outputStyle)
@@ -285,7 +285,7 @@ public class SassCompiler implements Closeable {
 
     //endregion
 
-    private OutboundMessage.CompileResponse execCompileRequest(CompileRequest compileRequest) throws IOException, SassCompilationFailedException {
+    private CompileSuccess execCompileRequest(CompileRequest compileRequest) throws IOException, SassCompilationFailedException {
 
         int compilationId = Math.abs(compileRequestIds.nextInt());
 
@@ -298,7 +298,7 @@ public class SassCompiler implements Closeable {
         OutboundMessage.CompileResponse compileResponse = outboundMessage.getCompileResponse();
 
         if (compileResponse.hasSuccess()) {
-            return compileResponse;
+            return new CompileSuccess(compileResponse);
         } else if (compileResponse.hasFailure()) {
             throw new SassCompilationFailedException(compileResponse);
         } else {

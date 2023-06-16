@@ -1,7 +1,7 @@
 package de.larsgrefer.sass.embedded.spring;
 
-import com.sass_lang.embedded_protocol.OutboundMessage.CompileResponse.CompileSuccess;
 import com.sass_lang.embedded_protocol.OutputStyle;
+import de.larsgrefer.sass.embedded.CompileSuccess;
 import lombok.Getter;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;

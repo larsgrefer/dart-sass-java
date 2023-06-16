@@ -3,6 +3,8 @@ package de.larsgrefer.sass.embedded.functions;
 import com.sass_lang.embedded_protocol.Value;
 
 import javax.annotation.Nonnull;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.BiFunction;
 
@@ -11,10 +13,10 @@ import java.util.function.BiFunction;
  */
 class BiFunctionHostFunction<T, U> extends HostFunction {
 
-    private static final List<Argument> args = List.of(
+    private static final List<Argument> args = Collections.unmodifiableList(Arrays.asList(
             new Argument("arg0", null),
             new Argument("arg1", null)
-    );
+    ));
 
     private final BiFunction<T, U, ?> lambda;
 

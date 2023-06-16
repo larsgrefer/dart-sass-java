@@ -6,12 +6,6 @@ plugins {
 
 description = "SASS Embedded Spring 5"
 
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(11)
-    }
-}
-
 dependencies {
     api project(":sass-embedded-host")
 

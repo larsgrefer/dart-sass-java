@@ -24,6 +24,14 @@ repositories {
     }
 }
 
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(11)
+    }
+}
+
+compileJava.options.release.set(8)
+
 def dartSassVersion = "1.63.3"
 def slf4jVersion = '2.0.7'
 def webjarsVersion = '0.52'
@@ -34,6 +42,7 @@ dependencies {
 
     compileOnly 'org.jetbrains:annotations:24.0.1'
     compileOnly 'com.google.code.findbugs:jsr305:3.0.2'
+    compileOnly 'javax.servlet:javax.servlet-api:4.0.1'
     compileOnly 'jakarta.servlet:jakarta.servlet-api:6.0.0'
     compileOnly 'org.apache.logging.log4j:log4j-api:2.20.0'
     compileOnly "org.springframework:spring-core:5.3.21"

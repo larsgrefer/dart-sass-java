@@ -9,7 +9,7 @@ import java.net.URL;
  * @author Lars Grefer
  */
 @RequiredArgsConstructor
-public class Servlet5ContextImporter extends CustomUrlImporter {
+public class JakartaServletContextImporter extends CustomUrlImporter {
 
     private final ServletContext servletContext;
 

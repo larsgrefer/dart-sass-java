@@ -76,7 +76,7 @@ public class IOUtils {
                 .start();
 
         try (OutputStream os = tar.getOutputStream()) {
-            inputStream.transferTo(os);
+            copy(inputStream, os);
         }
 
         if (!tar.waitFor(5, TimeUnit.SECONDS)) {
@@ -90,6 +90,22 @@ public class IOUtils {
         int exitValue = tar.exitValue();
         if (exitValue != 0) {
             throw new IOException("tar process exited with " + exitValue);
+        }
+    }
+
+    private static final int bufferSize = 4096;
+
+    /**
+     * Backport of {@link InputStream#transferTo(OutputStream)}
+     * in order to support JDK 8
+     *
+     * @see InputStream#transferTo(OutputStream)
+     */
+    public static void copy(InputStream inputStream, OutputStream os) throws IOException {
+        byte[] buffer = new byte[bufferSize];
+        int read;
+        while ((read = inputStream.read(buffer, 0, bufferSize)) >= 0) {
+            os.write(buffer, 0, read);
         }
     }
 

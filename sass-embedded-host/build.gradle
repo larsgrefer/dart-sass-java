@@ -45,7 +45,7 @@ dependencies {
     compileOnly 'javax.servlet:javax.servlet-api:4.0.1'
     compileOnly 'jakarta.servlet:jakarta.servlet-api:6.0.0'
     compileOnly 'org.apache.logging.log4j:log4j-api:2.20.0'
-    compileOnly "org.springframework:spring-core:5.3.21"
+    compileOnly "org.springframework:spring-core:5.3.28"
     compileOnly "org.webjars:webjars-locator-core:$webjarsVersion"
     compileOnly "org.jboss:jboss-vfs:3.2.17.Final"
 
@@ -60,7 +60,7 @@ dependencies {
     sassEmbedded "sass:dart-sass:$dartSassVersion:windows-ia32@zip"
     sassEmbedded "sass:dart-sass:$dartSassVersion:windows-x64@zip"
 
-    testImplementation "org.springframework:spring-core:5.3.21"
+    testImplementation "org.springframework:spring-core:5.3.28"
     testImplementation 'ch.qos.logback:logback-classic:1.4.7'
 
     testCompileOnly 'org.jetbrains:annotations:24.0.1'

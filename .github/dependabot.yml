@@ -23,3 +23,8 @@ updates:
     target-branch: "2.x"
     schedule:
       interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/"
+    target-branch: "3.x"
+    schedule:
+      interval: "daily"

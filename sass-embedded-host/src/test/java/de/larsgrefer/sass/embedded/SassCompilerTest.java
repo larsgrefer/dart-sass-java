@@ -18,6 +18,7 @@ import java.net.URL;
 import java.util.Collections;
 import java.util.List;
 
+import static de.larsgrefer.sass.embedded.BootstrapUtil.getBoostrapVersion;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -75,7 +76,7 @@ class SassCompilerTest {
 
     @Test
     void compileScssUrl() throws IOException, SassCompilationFailedException {
-        OutboundMessage.CompileResponse compileSuccess = sassCompiler.compile(new URL("https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/scss/bootstrap.scss"));
+        OutboundMessage.CompileResponse compileSuccess = sassCompiler.compile(new URL("https://cdn.jsdelivr.net/npm/bootstrap@"+getBoostrapVersion()+"/scss/bootstrap.scss"));
 
         String css = compileSuccess.getSuccess().getCss();
         assertThat(css).isNotBlank();
@@ -83,7 +84,7 @@ class SassCompilerTest {
 
     @Test
     void compileClasspathUrl() throws IOException, SassCompilationFailedException {
-        URL resource = getClass().getResource("/META-INF/resources/webjars/bootstrap/5.2.0/scss/bootstrap.scss");
+        URL resource = getClass().getResource("/META-INF/resources/webjars/bootstrap/" + getBoostrapVersion() + "/scss/bootstrap.scss");
 
         OutboundMessage.CompileResponse compileSuccess = sassCompiler.compile(resource);
 

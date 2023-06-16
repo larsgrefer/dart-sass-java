@@ -8,6 +8,7 @@ import org.junit.jupiter.api.*;
 import java.io.IOException;
 import java.util.stream.Stream;
 
+import static de.larsgrefer.sass.embedded.BootstrapUtil.getBoostrapVersion;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class ClasspathImporterIT {
@@ -66,7 +67,7 @@ public class ClasspathImporterIT {
 
     @Test
     void interClasspathImport_fromJar() throws SassCompilationFailedException, IOException {
-        String css = sassCompiler.compileScssString("@import 'META-INF/resources/webjars/bootstrap/5.2.0/scss/bootstrap.scss';").getSuccess().getCss();
+        String css = sassCompiler.compileScssString("@import 'META-INF/resources/webjars/bootstrap/" + getBoostrapVersion() + "/scss/bootstrap.scss';").getSuccess().getCss();
 
         assertThat(css).contains("green");
     }

@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import java.net.URL;
 
+import static de.larsgrefer.sass.embedded.BootstrapUtil.getBoostrapVersion;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -36,7 +37,7 @@ class ClasspathImporterTest {
 
     @Test
     void canonicalizeToImport_jar() throws Exception {
-        String canonicalize = classpathImporter.canonicalize("META-INF/resources/webjars/bootstrap/5.2.0/scss/bootstrap.scss", false);
+        String canonicalize = classpathImporter.canonicalize("META-INF/resources/webjars/bootstrap/" + getBoostrapVersion() + "/scss/bootstrap.scss", false);
 
         assertThat(canonicalize).isNotNull();
 

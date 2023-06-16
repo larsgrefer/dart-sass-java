@@ -19,7 +19,7 @@ repositories {
     }
 }
 
-def protobufVersion = "3.23.0"
+def protobufVersion = "3.23.2"
 def protocolVersion = "2.1.0"
 
 tasks.withType(com.google.protobuf.gradle.ProtobufExtract).configureEach {

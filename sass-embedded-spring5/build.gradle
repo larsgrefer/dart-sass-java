@@ -9,6 +9,6 @@ description = "SASS Embedded Spring 5"
 dependencies {
     api project(":sass-embedded-host")
 
-    api "org.springframework:spring-webmvc:5.3.28"
+    api "org.springframework:spring-webmvc:6.0.10"
     compileOnly 'jakarta.servlet:jakarta.servlet-api:4.0.3'
 }

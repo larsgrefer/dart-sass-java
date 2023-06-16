@@ -29,12 +29,11 @@ java.toolchain.languageVersion = JavaLanguageVersion.of(11)
 compileJava.options.release.set(8)
 
 def dartSassVersion = "1.63.3"
-def slf4jVersion = '2.0.7'
 def webjarsVersion = '0.52'
 
 dependencies {
     api project(":sass-embedded-protocol")
-    api "org.slf4j:slf4j-api:$slf4jVersion"
+    api "org.slf4j:slf4j-api:1.7.36"
 
     compileOnly 'org.jetbrains:annotations:24.0.1'
     compileOnly 'com.google.code.findbugs:jsr305:3.0.2'

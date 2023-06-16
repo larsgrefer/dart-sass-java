@@ -28,7 +28,7 @@ java.toolchain.languageVersion = JavaLanguageVersion.of(11)
 
 compileJava.options.release.set(8)
 
-def dartSassVersion = "1.63.3"
+def dartSassVersion = "1.63.4"
 def webjarsVersion = '0.52'
 
 dependencies {

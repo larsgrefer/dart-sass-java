@@ -33,7 +33,7 @@ def webjarsVersion = '0.52'
 
 dependencies {
     api project(":sass-embedded-protocol")
-    api "org.slf4j:slf4j-api:1.7.36"
+    api "org.slf4j:slf4j-api:2.0.7"
 
     compileOnly 'org.jetbrains:annotations:24.0.1'
     compileOnly 'com.google.code.findbugs:jsr305:3.0.2'

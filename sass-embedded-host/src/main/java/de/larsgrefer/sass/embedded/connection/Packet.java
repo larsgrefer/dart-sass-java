@@ -43,13 +43,13 @@ public class Packet<T extends Message> {
             bufferSize = CodedOutputStream.DEFAULT_BUFFER_SIZE;
         }
 
-
         final CodedOutputStream codedOutput = CodedOutputStream.newInstance(outputStream, bufferSize);
+
         codedOutput.writeUInt32NoTag(fullSize);
         codedOutput.writeUInt32NoTag(compilationId);
         message.writeTo(codedOutput);
+
         codedOutput.flush();
-        outputStream.flush();
     }
 
     /**

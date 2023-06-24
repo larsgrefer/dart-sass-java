@@ -31,14 +31,14 @@ public abstract class StreamConnection implements CompilerConnection {
             packet.setCompilationId(0);
         }
 
-        packet.writeDelimitedTo(getOutputStream());
+        OutputStream outputStream = getOutputStream();
+        packet.writeDelimitedTo(outputStream);
+        outputStream.flush();
     }
 
     @Override
     public synchronized Packet<OutboundMessage> readResponse() throws IOException {
-        InputStream inputStream = getInputStream();
-
-        Packet<OutboundMessage> packet = Packet.parseDelimitedFrom(inputStream, OutboundMessage.parser());
+        Packet<OutboundMessage> packet = Packet.parseDelimitedFrom(getInputStream(), OutboundMessage.parser());
 
         if (log.isTraceEnabled()) {
             log.trace("{} <-- {}", packet.getCompilationId(), TextFormat.printer().shortDebugString(packet.getMessage()));

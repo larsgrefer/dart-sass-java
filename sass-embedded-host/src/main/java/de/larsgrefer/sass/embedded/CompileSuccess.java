@@ -11,7 +11,7 @@ import java.util.List;
  * @see com.sass_lang.embedded_protocol.OutboundMessage.CompileResponse.CompileSuccess
  */
 @Getter
-public class CompileSuccess implements CompliationResult {
+public class CompileSuccess implements CompilationResult {
 
     private final OutboundMessage.CompileResponse compileResponse;
 

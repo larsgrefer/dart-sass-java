@@ -7,7 +7,7 @@ import java.util.List;
  * @see CompileSuccess
  * @see SassCompilationFailedException
  */
-public interface CompliationResult {
+public interface CompilationResult {
 
     List<String> getLoadedUrls();
 }

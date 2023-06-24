@@ -8,6 +8,7 @@ import com.sass_lang.embedded_protocol.OutboundMessage.FileImportRequest;
 import com.sass_lang.embedded_protocol.OutboundMessage.FunctionCallRequest;
 import com.sass_lang.embedded_protocol.OutboundMessage.ImportRequest;
 import de.larsgrefer.sass.embedded.connection.CompilerConnection;
+import de.larsgrefer.sass.embedded.connection.Packet;
 import de.larsgrefer.sass.embedded.functions.HostFunction;
 import de.larsgrefer.sass.embedded.importer.CustomImporter;
 import de.larsgrefer.sass.embedded.importer.FileImporter;
@@ -311,7 +312,14 @@ public class SassCompiler implements Closeable {
             connection.sendMessage(compilationId, inboundMessage);
 
             while (true) {
-                OutboundMessage outboundMessage = connection.readResponse();
+                Packet<OutboundMessage> response = connection.readResponse();
+
+                if (response.getCompilationId() != compilationId) {
+                    //Should never happen
+                    throw new IllegalStateException(String.format("Compilation ID mismatch: expected %d, but got %d", compilationId, response.getCompilationId()));
+                }
+
+                OutboundMessage outboundMessage = response.getMessage();
 
                 switch (outboundMessage.getMessageCase()) {
 

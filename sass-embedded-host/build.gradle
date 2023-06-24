@@ -28,6 +28,15 @@ java.toolchain.languageVersion = JavaLanguageVersion.of(11)
 
 compileJava.options.release.set(8)
 
+java {
+    registerFeature('springSupport') {
+        usingSourceSet(sourceSets.main)
+    }
+    registerFeature('springWebmvcSupport') {
+        usingSourceSet(sourceSets.main)
+    }
+}
+
 def dartSassVersion = "1.63.4"
 def webjarsVersion = '0.52'
 
@@ -40,9 +49,11 @@ dependencies {
     compileOnly 'javax.servlet:javax.servlet-api:4.0.1'
     compileOnly 'jakarta.servlet:jakarta.servlet-api:6.0.0'
     compileOnly 'org.apache.logging.log4j:log4j-api:2.20.0'
-    compileOnly "org.springframework:spring-core:5.3.28"
     compileOnly "org.webjars:webjars-locator-core:$webjarsVersion"
     compileOnly "org.jboss:jboss-vfs:3.2.17.Final"
+
+    springSupportApi "org.springframework:spring-core:5.3.28"
+    springWebmvcSupportApi "org.springframework:spring-webmvc:5.3.28"
 
     sassEmbedded "sass:dart-sass:$dartSassVersion:linux-ia32@tar.gz"
     sassEmbedded "sass:dart-sass:$dartSassVersion:linux-x64@tar.gz"
@@ -55,7 +66,6 @@ dependencies {
     sassEmbedded "sass:dart-sass:$dartSassVersion:windows-ia32@zip"
     sassEmbedded "sass:dart-sass:$dartSassVersion:windows-x64@zip"
 
-    testImplementation "org.springframework:spring-core:5.3.28"
     testImplementation 'ch.qos.logback:logback-classic:1.4.8'
 
     testCompileOnly 'org.jetbrains:annotations:24.0.1'

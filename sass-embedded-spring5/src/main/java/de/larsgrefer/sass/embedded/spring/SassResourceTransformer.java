@@ -1,7 +1,6 @@
 package de.larsgrefer.sass.embedded.spring;
 
 import com.sass_lang.embedded_protocol.InboundMessage.CompileRequest.StringInput;
-import com.sass_lang.embedded_protocol.OutboundMessage;
 import com.sass_lang.embedded_protocol.OutputStyle;
 import com.sass_lang.embedded_protocol.Syntax;
 import de.larsgrefer.sass.embedded.CompileSuccess;

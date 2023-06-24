@@ -137,7 +137,7 @@ public class SassCompiler implements Closeable {
     }
 
     public OutboundMessage.VersionResponse getVersion() throws IOException {
-        return exec(0, inboundMessage(VersionRequest.getDefaultInstance())).getVersionResponse();
+        return exec(inboundMessage(VersionRequest.getDefaultInstance())).getVersionResponse();
     }
 
     public void registerFunction(@NonNull HostFunction sassFunction) {
@@ -288,9 +288,7 @@ public class SassCompiler implements Closeable {
 
     private CompileSuccess execCompileRequest(CompileRequest compileRequest) throws IOException, SassCompilationFailedException {
 
-        int compilationId = Math.abs(compileRequestIds.nextInt());
-
-        OutboundMessage outboundMessage = exec(compilationId, inboundMessage(compileRequest));
+        OutboundMessage outboundMessage = exec(inboundMessage(compileRequest));
 
         if (!outboundMessage.hasCompileResponse()) {
             throw new IllegalStateException("No compile response");
@@ -307,9 +305,21 @@ public class SassCompiler implements Closeable {
         }
     }
 
-    private OutboundMessage exec(int compilationId, InboundMessage inboundMessage) throws IOException {
+    private OutboundMessage exec(InboundMessage inboundMessage) throws IOException {
+        int compilationId;
+
+        if (inboundMessage.hasVersionRequest()) {
+            compilationId = 0;
+        } else if (inboundMessage.hasCompileRequest()) {
+            compilationId = Math.abs(compileRequestIds.nextInt());
+        } else {
+            throw new IllegalArgumentException("Invalid message type: " + inboundMessage.getMessageCase());
+        }
+
+        Packet<InboundMessage> request = new Packet<>(compilationId, inboundMessage);
+
         synchronized (connection) {
-            connection.sendMessage(compilationId, inboundMessage);
+            connection.sendMessage(request);
 
             while (true) {
                 Packet<OutboundMessage> response = connection.readResponse();

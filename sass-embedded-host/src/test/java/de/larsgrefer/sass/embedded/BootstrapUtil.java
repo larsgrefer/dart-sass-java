@@ -15,7 +15,7 @@ public class BootstrapUtil {
 
     private static String bootstrapVersion;
 
-    public String getBoostrapVersion() throws IOException {
+    public static String getBoostrapVersion() throws IOException {
 
         if (!StringUtils.hasText(bootstrapVersion)) {
             URL resource = BootstrapUtil.class.getResource("/META-INF/maven/org.webjars/bootstrap/pom.properties");

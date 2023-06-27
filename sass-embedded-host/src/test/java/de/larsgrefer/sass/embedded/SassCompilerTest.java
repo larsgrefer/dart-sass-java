@@ -67,7 +67,7 @@ class SassCompilerTest {
 
     @Test
     void compileCssUrl() throws IOException, SassCompilationFailedException {
-        CompileSuccess compileSuccess = sassCompiler.compile(new URL("https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css"));
+        CompileSuccess compileSuccess = sassCompiler.compile(new URL("https://cdn.jsdelivr.net/npm/bootstrap@" + getBoostrapVersion() + "/dist/css/bootstrap.min.css"));
 
         String css = compileSuccess.getCss();
         assertThat(css).isNotBlank();
@@ -75,7 +75,7 @@ class SassCompilerTest {
 
     @Test
     void compileScssUrl() throws IOException, SassCompilationFailedException {
-        CompileSuccess compileSuccess = sassCompiler.compile(new URL("https://cdn.jsdelivr.net/npm/bootstrap@"+getBoostrapVersion()+"/scss/bootstrap.scss"));
+        CompileSuccess compileSuccess = sassCompiler.compile(new URL("https://cdn.jsdelivr.net/npm/bootstrap@" + getBoostrapVersion() + "/scss/bootstrap.scss"));
 
         String css = compileSuccess.getCss();
         assertThat(css).isNotBlank();

@@ -59,9 +59,6 @@ allprojects {
                 showStackTraces true
                 showStandardStreams true
             }
-            javaLauncher = javaToolchains.launcherFor {
-                languageVersion = JavaLanguageVersion.of(17)
-            }
         }
 
         afterEvaluate {

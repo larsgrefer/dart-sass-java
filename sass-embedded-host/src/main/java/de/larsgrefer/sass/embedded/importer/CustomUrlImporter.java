@@ -2,6 +2,7 @@ package de.larsgrefer.sass.embedded.importer;
 
 import com.google.protobuf.ByteString;
 import com.sass_lang.embedded_protocol.InboundMessage.ImportResponse.ImportSuccess;
+import com.sass_lang.embedded_protocol.Syntax;
 import de.larsgrefer.sass.embedded.util.SyntaxUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.jboss.vfs.VFS;
@@ -113,7 +114,11 @@ public abstract class CustomUrlImporter extends CustomImporter {
         try (InputStream in = urlConnection.getInputStream()) {
             ByteString content = ByteString.readFrom(in);
             result.setContentsBytes(content);
-            result.setSyntax(SyntaxUtil.guessSyntax(urlConnection));
+            Syntax syntax = SyntaxUtil.guessSyntax(urlConnection);
+            if (syntax == Syntax.UNRECOGNIZED) {
+                throw new IllegalStateException("Failed to guess syntax for URL " + url)
+            }
+            result.setSyntax(syntax);
         }
 
         return result.build();

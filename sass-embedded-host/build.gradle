@@ -87,5 +87,3 @@ tasks.named("jar") {
         attributes 'Specification-Version': "$dartSassVersion"
     }
 }
-
-test.testLogging.showStandardStreams = true

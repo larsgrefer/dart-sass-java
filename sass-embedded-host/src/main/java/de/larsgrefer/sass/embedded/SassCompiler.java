@@ -409,6 +409,7 @@ public class SassCompiler implements Closeable {
         try {
             String canonicalize = customImporter.canonicalize(canonicalizeRequest.getUrl(), canonicalizeRequest.getFromImport());
             if (canonicalize != null) {
+                log.debug("{} canonicalized to {}", canonicalizeRequest.getUrl(), canonicalize);
                 canonicalizeResponse.setUrl(canonicalize);
             }
         } catch (Throwable e) {

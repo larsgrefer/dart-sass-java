@@ -41,7 +41,7 @@ dependencies {
     compileOnly "org.springframework:spring-core:$springVersion"
     compileOnly "org.springframework:spring-webmvc:$springVersion"
     compileOnly "org.webjars:webjars-locator-core:$webjarsVersion"
-    compileOnly "org.jboss:jboss-vfs:3.2.17.Final"
+    compileOnly "org.jboss:jboss-vfs:3.3.0.Final"
 
     sassEmbedded "sass:sass_embedded:$dartSassVersion:linux-ia32@tar.gz"
     sassEmbedded "sass:sass_embedded:$dartSassVersion:linux-x64@tar.gz"

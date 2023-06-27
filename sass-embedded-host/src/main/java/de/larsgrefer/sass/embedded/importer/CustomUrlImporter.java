@@ -116,7 +116,7 @@ public abstract class CustomUrlImporter extends CustomImporter {
             result.setContentsBytes(content);
             Syntax syntax = SyntaxUtil.guessSyntax(urlConnection);
             if (syntax == Syntax.UNRECOGNIZED) {
-                throw new IllegalStateException("Failed to guess syntax for URL " + url)
+                throw new IllegalStateException("Failed to guess syntax for URL " + url);
             }
             result.setSyntax(syntax);
         }

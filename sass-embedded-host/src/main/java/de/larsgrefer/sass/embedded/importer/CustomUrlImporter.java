@@ -157,6 +157,9 @@ public abstract class CustomUrlImporter extends CustomImporter {
             httpURLConnection.setRequestMethod("HEAD");
 
             int responseCode = httpURLConnection.getResponseCode();
+
+            log.debug("Got {} for HEAD {}", responseCode, connection.getURL());
+
             if (responseCode > 400) {
                 return false;
             }

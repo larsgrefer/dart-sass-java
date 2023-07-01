@@ -52,7 +52,7 @@ dependencies {
     compileOnly 'jakarta.servlet:jakarta.servlet-api:6.0.0'
     compileOnly 'org.apache.logging.log4j:log4j-api:2.20.0'
     webjarsSupportImplementation "org.webjars:webjars-locator-core:0.53"
-    compileOnly "org.jboss:jboss-vfs:3.2.17.Final"
+    compileOnly "org.jboss:jboss-vfs:3.3.0.Final"
 
     springSupportApi "org.springframework:spring-core:5.3.28"
     springWebmvcSupportApi "org.springframework:spring-webmvc:5.3.28"

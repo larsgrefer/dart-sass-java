@@ -10,5 +10,5 @@ dependencies {
     api project(":sass-embedded-host")
 
     api "org.springframework:spring-webmvc:5.3.28"
-    compileOnly 'jakarta.servlet:jakarta.servlet-api:4.0.3'
+    compileOnly 'jakarta.servlet:jakarta.servlet-api:6.0.0'
 }

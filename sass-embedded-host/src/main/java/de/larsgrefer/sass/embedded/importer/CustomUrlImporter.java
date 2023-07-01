@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.jboss.vfs.VFS;
 import org.jboss.vfs.VFSUtils;
 import sass.embedded_protocol.EmbeddedSass.InboundMessage.ImportResponse.ImportSuccess;
+import sass.embedded_protocol.EmbeddedSass.Syntax;
 
 import javax.annotation.Nullable;
 import java.io.File;
@@ -113,7 +114,13 @@ public abstract class CustomUrlImporter extends CustomImporter {
         try (InputStream in = urlConnection.getInputStream()) {
             ByteString content = ByteString.readFrom(in);
             result.setContentsBytes(content);
-            result.setSyntax(SyntaxUtil.guessSyntax(urlConnection));
+
+            Syntax syntax = SyntaxUtil.guessSyntax(urlConnection);
+            if (syntax == Syntax.UNRECOGNIZED) {
+                throw new IllegalStateException("Failed to guess syntax for " + url);
+            } else {
+                result.setSyntax(syntax);
+            }
         }
 
         return result.build();

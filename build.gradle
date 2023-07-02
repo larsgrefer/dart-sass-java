@@ -57,6 +57,7 @@ allprojects {
                 showExceptions true
                 showCauses true
                 showStackTraces true
+                showStandardStreams System.getenv("CI") == "true"
             }
             javaLauncher = javaToolchains.launcherFor {
                 languageVersion = JavaLanguageVersion.of(17)

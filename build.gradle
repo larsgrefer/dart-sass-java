@@ -57,7 +57,7 @@ allprojects {
                 showExceptions true
                 showCauses true
                 showStackTraces true
-                showStandardStreams true
+                showStandardStreams System.getenv("CI") == "true"
             }
         }
 

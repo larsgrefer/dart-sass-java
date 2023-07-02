@@ -161,12 +161,7 @@ public abstract class CustomUrlImporter extends CustomImporter {
 
             log.debug("Got {} with {} for HEAD {}", responseCode, httpURLConnection.getContentType(), connection.getURL());
 
-            if (responseCode > 400) {
-                return false;
-            }
-            if (responseCode == 200 && syntax != Syntax.UNRECOGNIZED) {
-                return true;
-            }
+            return responseCode == 200 && syntax != Syntax.UNRECOGNIZED;
         }
 
         // Best guess

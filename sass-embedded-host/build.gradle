@@ -55,7 +55,7 @@ dependencies {
     compileOnly "org.jboss:jboss-vfs:3.3.0.Final"
 
     springSupportApi "org.springframework:spring-core:5.3.28"
-    springWebmvcSupportApi "org.springframework:spring-webmvc:5.3.28"
+    springWebmvcSupportApi "org.springframework:spring-webmvc:5.3.29"
 
     sassEmbedded "sass:dart-sass:$dartSassVersion:linux-ia32@tar.gz"
     sassEmbedded "sass:dart-sass:$dartSassVersion:linux-x64@tar.gz"

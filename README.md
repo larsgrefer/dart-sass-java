@@ -1,7 +1,7 @@
 # dart-sass-java
 
 [![Java CI with Gradle](https://github.com/larsgrefer/dart-sass-java/actions/workflows/gradle.yml/badge.svg)](https://github.com/larsgrefer/dart-sass-java/actions/workflows/gradle.yml)
-[![codecov]([![codecov](https://codecov.io/gh/larsgrefer/dart-sass-java/branch/3.x/graph/badge.svg?token=WPUF2AWJVF)](https://codecov.io/gh/larsgrefer/dart-sass-java))](https://codecov.io/gh/larsgrefer/dart-sass-java)
+[![codecov](https://codecov.io/gh/larsgrefer/dart-sass-java/branch/3.x/graph/badge.svg?token=WPUF2AWJVF)](https://codecov.io/gh/larsgrefer/dart-sass-java)
 
 This is a Java library that implements the host side of the [Embedded Sass
 protocol](https://github.com/sass/sass/blob/main/spec/embedded-protocol.md)

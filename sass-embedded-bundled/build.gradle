@@ -1,0 +1,60 @@
+plugins {
+    id "java-library"
+    id "maven-publish"
+    id "io.freefair.lombok"
+}
+
+description = "SASS Embedded Bundled Compilers"
+
+java.toolchain.languageVersion = JavaLanguageVersion.of(11)
+
+compileJava.options.release.set(8)
+
+configurations {
+    sassEmbedded
+}
+
+repositories {
+    ivy {
+        //https://github.com/sass/dart-sass/releases/download/1.63.3/dart-sass-1.63.3-linux-x64.tar.gz
+        url "https://github.com"
+        patternLayout {
+            artifact "/[orgPath]/[artifact]/releases/download/[revision]/[artifact]-[revision](-[classifier])(.[ext])"
+        }
+        metadataSources {
+            artifact()
+        }
+    }
+}
+
+def dartSassVersion = "1.64.1"
+
+dependencies {
+    implementation "org.slf4j:slf4j-api:1.7.36"
+
+    sassEmbedded "sass:dart-sass:$dartSassVersion:linux-ia32@tar.gz"
+    sassEmbedded "sass:dart-sass:$dartSassVersion:linux-x64@tar.gz"
+    sassEmbedded "sass:dart-sass:$dartSassVersion:linux-arm@tar.gz"
+    sassEmbedded "sass:dart-sass:$dartSassVersion:linux-arm64@tar.gz"
+
+    sassEmbedded "sass:dart-sass:$dartSassVersion:macos-x64@tar.gz"
+    sassEmbedded "sass:dart-sass:$dartSassVersion:macos-arm64@tar.gz"
+
+    sassEmbedded "sass:dart-sass:$dartSassVersion:windows-ia32@zip"
+    sassEmbedded "sass:dart-sass:$dartSassVersion:windows-x64@zip"
+
+    testImplementation 'ch.qos.logback:logback-classic:1.4.8'
+}
+
+tasks.named("processResources") {
+    into("de/larsgrefer/sass/embedded/bundled") {
+        from configurations.sassEmbedded
+        rename "-$dartSassVersion-", "-"
+    }
+}
+
+tasks.named("jar") {
+    manifest {
+        attributes 'Specification-Version': "$dartSassVersion"
+    }
+}

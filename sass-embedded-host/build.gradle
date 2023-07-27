@@ -7,23 +7,6 @@ plugins {
 
 description = "SASS Embedded Host"
 
-configurations {
-    sassEmbedded
-}
-
-repositories {
-    ivy {
-        //https://github.com/sass/dart-sass/releases/download/1.63.3/dart-sass-1.63.3-linux-x64.tar.gz
-        url "https://github.com"
-        patternLayout {
-            artifact "/[orgPath]/[artifact]/releases/download/[revision]/[artifact]-[revision](-[classifier])(.[ext])"
-        }
-        metadataSources {
-            artifact()
-        }
-    }
-}
-
 java.toolchain.languageVersion = JavaLanguageVersion.of(11)
 
 compileJava.options.release.set(8)
@@ -40,10 +23,9 @@ java {
     }
 }
 
-def dartSassVersion = "1.64.1"
-
 dependencies {
     api project(":sass-embedded-protocol")
+    api project(":sass-embedded-bundled")
     api "org.slf4j:slf4j-api:1.7.36"
 
     compileOnly 'org.jetbrains:annotations:24.0.1'
@@ -57,33 +39,9 @@ dependencies {
     springSupportApi "org.springframework:spring-core:5.3.29"
     springWebmvcSupportApi "org.springframework:spring-webmvc:5.3.29"
 
-    sassEmbedded "sass:dart-sass:$dartSassVersion:linux-ia32@tar.gz"
-    sassEmbedded "sass:dart-sass:$dartSassVersion:linux-x64@tar.gz"
-    sassEmbedded "sass:dart-sass:$dartSassVersion:linux-arm@tar.gz"
-    sassEmbedded "sass:dart-sass:$dartSassVersion:linux-arm64@tar.gz"
-
-    sassEmbedded "sass:dart-sass:$dartSassVersion:macos-x64@tar.gz"
-    sassEmbedded "sass:dart-sass:$dartSassVersion:macos-arm64@tar.gz"
-
-    sassEmbedded "sass:dart-sass:$dartSassVersion:windows-ia32@zip"
-    sassEmbedded "sass:dart-sass:$dartSassVersion:windows-x64@zip"
-
     testImplementation 'ch.qos.logback:logback-classic:1.4.8'
 
     testCompileOnly 'org.jetbrains:annotations:24.0.1'
 
     testRuntimeOnly 'org.webjars:bootstrap:5.3.0'
-}
-
-tasks.named("processResources") {
-    into("de/larsgrefer/sass/embedded") {
-        from configurations.sassEmbedded
-        rename "-$dartSassVersion-", "-"
-    }
-}
-
-tasks.named("jar") {
-    manifest {
-        attributes 'Specification-Version': "$dartSassVersion"
-    }
 }

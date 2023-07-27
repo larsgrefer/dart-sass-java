@@ -1,21 +1,29 @@
 package de.larsgrefer.sass.embedded.connection;
 
+import de.larsgrefer.sass.embedded.bundled.BundledCompilerFactory;
 import org.junit.jupiter.api.Test;
 
+import java.io.File;
 import java.io.IOException;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 class ConnectionFactoryTest {
 
     @Test
-    void getBundledDartExec() throws IOException, InterruptedException {
+    void getExpectedProtocolVersion() {
+        String expectedProtocolVersion = ConnectionFactory.getExpectedProtocolVersion();
 
-        Process dartSass = new ProcessBuilder(ConnectionFactory.getBundledDartExec().getAbsolutePath(), "--embedded", "--version")
-                .redirectError(ProcessBuilder.Redirect.INHERIT)
-                .redirectOutput(ProcessBuilder.Redirect.INHERIT)
-                .start();
+        assertThat(expectedProtocolVersion).startsWith("2.");
+    }
 
-        dartSass.waitFor();
+    @Test
+    void bundled() throws IOException {
+        File bundledExecutable = new BundledCompilerFactory().call();
+
+        String protocolVersion = ConnectionFactory.findProtocolVersion(bundledExecutable);
+
+        assertThat(protocolVersion).isEqualTo(ConnectionFactory.getExpectedProtocolVersion());
+
     }
 }

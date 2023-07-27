@@ -1,4 +1,4 @@
-package de.larsgrefer.sass.embedded.util;
+package de.larsgrefer.sass.embedded.bundled;
 
 import lombok.SneakyThrows;
 import lombok.experimental.UtilityClass;
@@ -20,24 +20,22 @@ import java.util.zip.ZipInputStream;
 @UtilityClass
 public class IOUtils {
 
-    public static void extract(URL archiveUrl, Path destinationDir) throws IOException {
+    static void extract(URL archiveUrl, Path destinationDir) throws IOException {
         String file = archiveUrl.getPath();
         if (file.endsWith(".zip")) {
             try (ZipInputStream in = new ZipInputStream(archiveUrl.openStream())) {
                 unzip(in, destinationDir);
             }
-        }
-        else if (file.endsWith(".tar.gz")) {
+        } else if (file.endsWith(".tar.gz")) {
             try (InputStream in = archiveUrl.openStream()) {
                 untar(in, destinationDir.toFile());
             }
-        }
-        else {
+        } else {
             throw new IllegalArgumentException("Unknown archive extension: " + archiveUrl);
         }
     }
 
-    public void unzip(ZipInputStream zipInputStream, Path targetPath) throws IOException {
+    void unzip(ZipInputStream zipInputStream, Path targetPath) throws IOException {
         ZipEntry entry = zipInputStream.getNextEntry();
 
         while (entry != null) {
@@ -46,8 +44,7 @@ public class IOUtils {
 
             if (entry.isDirectory()) {
                 ensureDirectory(entryFile);
-            }
-            else {
+            } else {
                 ensureDirectory(entryFile.getParentFile());
 
                 Files.copy(zipInputStream, entryPath);
@@ -65,7 +62,7 @@ public class IOUtils {
     }
 
     @SneakyThrows(InterruptedException.class)
-    public void untar(InputStream inputStream, File targetDir) throws IOException {
+    void untar(InputStream inputStream, File targetDir) throws IOException {
         ensureDirectory(targetDir);
 
         Process tar = new ProcessBuilder("tar", "xz")

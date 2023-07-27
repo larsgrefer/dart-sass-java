@@ -1,17 +1,17 @@
 package de.larsgrefer.sass.embedded.connection;
 
 import com.google.protobuf.ByteString;
-import de.larsgrefer.sass.embedded.SassCompilerFactory;
-import de.larsgrefer.sass.embedded.util.IOUtils;
+import com.sass_lang.embedded_protocol.OutboundMessage;
+import lombok.SneakyThrows;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Path;
+import java.util.concurrent.Callable;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author Lars Grefer
@@ -20,102 +20,80 @@ import java.nio.file.Path;
 @UtilityClass
 public class ConnectionFactory {
 
-    /**
-     * Path of the extracted compiler executable.
-     */
-    private static File bundledDartExec;
-
     public static ProcessConnection bundled() throws IOException {
-        ProcessBuilder processBuilder = new ProcessBuilder(getBundledDartExec().getAbsolutePath(), "--embedded");
 
+        Callable<File> bundledExecCallable;
+
+        try {
+            Class<?> bundledFactoryClass = Class.forName("de.larsgrefer.sass.embedded.bundled.BundledCompilerFactory");
+            bundledExecCallable = (Callable<File>) bundledFactoryClass.getConstructor().newInstance();
+        } catch (ClassNotFoundException e) {
+            throw new IllegalStateException("Embedded Compilers are not available", e);
+        } catch (ReflectiveOperationException e) {
+            throw new IOException(e);
+        }
+
+        File bundledExecutable;
+        try {
+            bundledExecutable = bundledExecCallable.call().getAbsoluteFile();
+        } catch (IOException | RuntimeException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new IOException(e);
+        }
+
+        return ofExecutable(bundledExecutable);
+    }
+
+    public static ProcessConnection ofExecutable(File executable) throws IOException {
+        if (executable == null || !executable.isFile()) {
+            throw new IllegalArgumentException("executable is not a file");
+        }
+
+        if (!executable.canExecute()) {
+            throw new IllegalArgumentException(executable + " can not be executed");
+        }
+
+        String expectedProtocolVersion = getExpectedProtocolVersion();
+        String protocolVersion = findProtocolVersion(executable);
+        if (!expectedProtocolVersion.equalsIgnoreCase(protocolVersion)) {
+            log.warn("This Host uses protocolVersion {} but {} provides {}", expectedProtocolVersion, executable, protocolVersion);
+        }
+
+        ProcessBuilder processBuilder = new ProcessBuilder(executable.getAbsolutePath(), "--embedded");
         return new ProcessConnection(processBuilder);
     }
 
-    static File getBundledDartExec() throws IOException {
-        if (bundledDartExec == null) {
-            extractBundled();
-        }
-        return bundledDartExec;
+    public static String getExpectedProtocolVersion() {
+        return OutboundMessage.VersionResponse.class.getPackage().getSpecificationVersion();
     }
 
-    synchronized static void extractBundled() throws IOException {
-        String resourcePath = getBundledCompilerDistPath();
+    private static final Pattern protocolVersionPattern = Pattern.compile("\"protocolVersion\": \"(.*?)\"");
 
-        URL dist = SassCompilerFactory.class.getResource(resourcePath);
+    @SneakyThrows(InterruptedException.class)
+    String findProtocolVersion(File executable) throws IOException {
+        Process testProcess = new ProcessBuilder(executable.getAbsolutePath(), "--embedded", "--version")
+                .redirectOutput(ProcessBuilder.Redirect.PIPE)
+                .start();
 
-        if (dist == null) {
-            throw new IllegalStateException("Resource not found: " + resourcePath);
+        String stdOut;
+        try (InputStream in = testProcess.getInputStream()) {
+            stdOut = ByteString.readFrom(in).toStringUtf8();
         }
 
-        Path tempDirectory = Files.createTempDirectory("dart-sass");
+        int exitCode = testProcess.waitFor();
 
-        try {
-            IOUtils.extract(dist, tempDirectory);
-        } catch (IOException e) {
-            throw new IOException(String.format("Failed to extract %s into %s", dist, tempDirectory), e);
+        if (exitCode != 0) {
+            throw new IllegalStateException(executable + " exited with " + exitCode);
         }
 
-        File execDir = tempDirectory.resolve("dart-sass").toFile();
+        Matcher matcher = protocolVersionPattern.matcher(stdOut);
 
-        File[] execFile = execDir.listFiles(pathname -> pathname.isFile() && pathname.getName().startsWith("sass"));
-
-        if (execFile == null || execFile.length != 1) {
-            throw new IllegalStateException("No (unique) executable file found in " + execDir);
+        if (matcher.find()) {
+            return matcher.group(1);
         } else {
-            bundledDartExec = execFile[0];
+            throw new IllegalStateException("Can't find protocolVersion in " + stdOut);
         }
-
-        bundledDartExec.setWritable(false);
-        bundledDartExec.setExecutable(true, true);
     }
 
-    private static String getBundledCompilerDistPath() {
-        String osName = System.getProperty("os.name").toLowerCase();
-        String osArch = System.getProperty("os.arch").toLowerCase();
-
-        String classifier;
-        String archiveExtension = "tar.gz";
-
-        if (osName.contains("mac")) {
-            if (osArch.equals("aarch64") || osArch.contains("arm") || isRunningOnRosetta2()) {
-                classifier = "macos-arm64";
-            } else {
-                classifier = "macos-x64";
-            }
-        } else if (osName.contains("win")) {
-            archiveExtension = "zip";
-            classifier = osArch.contains("64") ? "windows-x64" : "windows-ia32";
-        } else {
-            if (osArch.equals("aarch64") || osArch.equals("arm64")) {
-                classifier = "linux-arm64";
-            } else if (osArch.contains("arm")) {
-                classifier = "linux-arm";
-            } else if (osArch.contains("64")) {
-                classifier = "linux-x64";
-            } else {
-                classifier = "linux-ia32";
-            }
-        }
-
-        return String.format("/de/larsgrefer/sass/embedded/dart-sass-%s.%s", classifier, archiveExtension);
-    }
-
-    /**
-     * Check if we are running on an Intel x86_64 JDK emulated by Rosetta2 on an ARM mac.
-     */
-    private static boolean isRunningOnRosetta2() {
-        try {
-            Process sysctl = Runtime.getRuntime().exec("sysctl -in sysctl.proc_translated");
-            ByteString stdOut;
-            try (InputStream in = sysctl.getInputStream()) {
-                stdOut = ByteString.readFrom(in);
-            }
-            if (sysctl.exitValue() == 0 && stdOut.toStringUtf8().equals("1\n")) {
-                return true;
-            }
-        } catch (Exception e) {
-            log.info("Unable to check for rosetta", e);
-        }
-        return false;
-    }
 }

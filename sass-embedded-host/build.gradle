@@ -36,7 +36,7 @@ dependencies {
     webjarsSupportImplementation "org.webjars:webjars-locator-core:0.53"
     compileOnly "org.jboss:jboss-vfs:3.3.0.Final"
 
-    springSupportApi "org.springframework:spring-core:5.3.29"
+    springSupportApi "org.springframework:spring-core:6.0.11"
     springWebmvcSupportApi "org.springframework:spring-webmvc:5.3.29"
 
     testImplementation 'ch.qos.logback:logback-classic:1.4.8'

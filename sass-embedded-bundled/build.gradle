@@ -55,6 +55,7 @@ tasks.named("processResources") {
 
 tasks.named("jar") {
     manifest {
-        attributes 'Specification-Version': "$dartSassVersion"
+        attributes 'Specification-Vendor': "Google LLC",
+                'Specification-Version': "$dartSassVersion"
     }
 }

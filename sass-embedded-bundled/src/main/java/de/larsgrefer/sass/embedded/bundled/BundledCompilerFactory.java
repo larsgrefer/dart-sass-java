@@ -36,7 +36,11 @@ public class BundledCompilerFactory implements Callable<File> {
             throw new IllegalStateException("Resource not found: " + resourcePath);
         }
 
-        Path tempDirectory = Files.createTempDirectory("dart-sass");
+        String version = BundledCompilerFactory.class.getPackage().getSpecificationVersion();
+
+        Path tempDirectory = Files.createTempDirectory("dart-sass-" + version);
+
+        Runtime.getRuntime().addShutdownHook(new Thread(new DirCleaner(tempDirectory)));
 
         try {
             IOUtils.extract(dist, tempDirectory);
@@ -101,7 +105,8 @@ public class BundledCompilerFactory implements Callable<File> {
                 int read = in.read(buffer);
                 stdOut = new String(buffer, 0, read, StandardCharsets.UTF_8);
             }
-            if (sysctl.exitValue() == 0 && stdOut.equals("1\n")) {
+            int exitValue = sysctl.waitFor();
+            if (exitValue == 0 && stdOut.equals("1\n")) {
                 return true;
             }
         } catch (Exception e) {

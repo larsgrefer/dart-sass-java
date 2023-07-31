@@ -11,6 +11,6 @@ java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 dependencies {
     api project(":sass-embedded-host")
 
-    api "org.springframework:spring-webmvc:6.0.11"
+    api "org.springframework:spring-webmvc:$spring6Version"
     compileOnly 'jakarta.servlet:jakarta.servlet-api:6.0.0'
 }

@@ -43,5 +43,5 @@ dependencies {
 
     testCompileOnly 'org.jetbrains:annotations:24.0.1'
 
-    testRuntimeOnly 'org.webjars:bootstrap:5.3.0'
+    testRuntimeOnly 'org.webjars:bootstrap:5.3.1'
 }

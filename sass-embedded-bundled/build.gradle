@@ -43,7 +43,7 @@ dependencies {
     sassEmbedded "sass:dart-sass:$dartSassVersion:windows-ia32@zip"
     sassEmbedded "sass:dart-sass:$dartSassVersion:windows-x64@zip"
 
-    testImplementation 'ch.qos.logback:logback-classic:1.4.9'
+    testImplementation 'ch.qos.logback:logback-classic:1.4.11'
 }
 
 tasks.named("processResources") {

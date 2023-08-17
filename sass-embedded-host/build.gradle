@@ -39,8 +39,6 @@ dependencies {
     springSupportApi "org.springframework:spring-core:$spring5Verison"
     springWebmvcSupportApi "org.springframework:spring-webmvc:$spring5Verison"
 
-    testImplementation 'ch.qos.logback:logback-classic:1.4.11'
-
     testCompileOnly 'org.jetbrains:annotations:24.0.1'
 
     testRuntimeOnly 'org.webjars:bootstrap:5.3.1'

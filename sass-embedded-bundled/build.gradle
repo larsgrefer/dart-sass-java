@@ -27,7 +27,7 @@ repositories {
     }
 }
 
-def dartSassVersion = "1.64.1"
+def dartSassVersion = "1.66.0"
 
 dependencies {
     implementation "org.slf4j:slf4j-api:1.7.36"

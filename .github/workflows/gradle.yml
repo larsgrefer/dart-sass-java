@@ -36,6 +36,7 @@ jobs:
         uses: gradle/gradle-build-action@v2
 
       - run: java -XshowSettings:properties -version
+      - run: env | grep "GIT"
       - name: Build with Gradle
         run: ./gradlew build
 

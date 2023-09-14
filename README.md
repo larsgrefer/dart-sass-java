@@ -8,13 +8,27 @@ protocol](https://github.com/sass/sass/blob/main/spec/embedded-protocol.md)
 
 Releases can be found on [Maven Central](https://mvnrepository.com/artifact/de.larsgrefer.sass).
 
-## `sass-embedded-protcol`
+## Modules
 
-This module contains the Java DTO-classes for the [Embedded Sass protocol](https://github.com/sass/embedded-protocol) as produced by protoc.
+### `sass-embedded-protcol`
 
-## `sass-embedded-host`
+This module contains the Java DTO-classes for the [Embedded Sass protocol](https://github.com/sass/sass/blob/main/spec/embedded-protocol.md) as produced by protoc.
 
-This module contains the actual host-implementation including the embedded compiler https://github.com/sass/dart-sass-embedded.
+### `sass-embedded-host`
+
+This module contains the actual host-implementation.
+
+### `sass-embedded-bundled`
+
+This module contains the embedded dart-sass executables.
+
+### `sass-embedded-spring5`
+
+Spring Framework 5, JavaEE specific classes.
+
+### `sass-embedded-spring6`
+
+Spring Framework 6, JakartaEE specific classes.
 
 ## Basic usage
 
@@ -87,7 +101,7 @@ try (SassCompiler sassCompiler = SassCompilerFactory.bundled()) {
 
 ## Performance and Thread safety
 
-By default - using `SassCompilerFactory.bundled()` - each created `SassCompiler` gets a fresh `CompilerConnection` based on a newly spawned subprocess of the embedded dart-sass-embedded binary.
+By default - using `SassCompilerFactory.bundled()` - each created `SassCompiler` gets a fresh `CompilerConnection` based on a newly spawned subprocess of the embedded dart-sass binary.
 
 This has two consequences:
 

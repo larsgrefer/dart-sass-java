@@ -1,0 +1,20 @@
+{
+  "resources": {
+    "includes": [
+      {
+        "condition": {
+          "typeReachable": "de.larsgrefer.sass.embedded.bundled.BundledCompilerFactory"
+        },
+        "pattern": "de/larsgrefer/sass/embedded/bundled/dart-sass-.*\\.zip"
+      },
+      {
+        "condition": {
+          "typeReachable": "de.larsgrefer.sass.embedded.bundled.BundledCompilerFactory"
+        },
+        "pattern": "de/larsgrefer/sass/embedded/bundled/dart-sass-.*\\.tar.gz"
+      }
+    ]
+  },
+  "bundles": [
+  ]
+}

@@ -37,3 +37,4 @@ include "sass-embedded-spring5"
 include "sass-embedded-spring6"
 
 include "test-projects:spring-boot-resources"
+include "test-projects:graalvm"

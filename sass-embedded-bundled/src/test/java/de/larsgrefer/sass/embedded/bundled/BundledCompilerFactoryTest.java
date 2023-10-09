@@ -1,6 +1,8 @@
 package de.larsgrefer.sass.embedded.bundled;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledOnOs;
+import org.junit.jupiter.api.condition.OS;
 
 import java.io.IOException;
 
@@ -20,6 +22,7 @@ class BundledCompilerFactoryTest {
     }
 
     @Test
+    @EnabledOnOs(value = OS.MAC)
     void isRunningOnRosetta2() {
         boolean runningOnRosetta2 = BundledCompilerFactory.isRunningOnRosetta2();
     }

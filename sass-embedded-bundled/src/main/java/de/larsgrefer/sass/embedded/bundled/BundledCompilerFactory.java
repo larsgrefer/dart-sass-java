@@ -58,7 +58,6 @@ public class BundledCompilerFactory implements Callable<File> {
             bundledDartExec = execFile[0];
         }
 
-        bundledDartExec.setWritable(false);
         bundledDartExec.setExecutable(true, true);
     }
 

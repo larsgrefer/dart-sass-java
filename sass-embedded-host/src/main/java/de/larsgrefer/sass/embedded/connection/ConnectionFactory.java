@@ -71,7 +71,19 @@ public class ConnectionFactory {
                 cmd.add(dartExe.getAbsolutePath());
                 cmd.add(sassSnapshot.getAbsolutePath());
             }
-        } else {
+        } else if (executable.length() < 1024) { // small shell-script
+            File dir = executable.getParentFile();
+
+            File dart = new File(dir, "src/dart");
+            File sassSnapshot = new File(dir, "src/sass.snapshot");
+
+            if (dart.isFile() && dart.canExecute() && sassSnapshot.isFile()) {
+                cmd.add(dart.getAbsolutePath());
+                cmd.add(sassSnapshot.getAbsolutePath());
+            }
+        }
+
+        if (cmd.isEmpty()) {
             if (!executable.canExecute()) {
                 throw new IllegalArgumentException(executable + " can not be executed");
             }

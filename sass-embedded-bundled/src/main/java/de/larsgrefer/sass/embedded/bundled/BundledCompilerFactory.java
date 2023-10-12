@@ -102,7 +102,11 @@ public class BundledCompilerFactory implements Callable<File> {
             try (InputStream in = sysctl.getInputStream()) {
                 byte[] buffer = new byte[16];
                 int read = in.read(buffer);
-                stdOut = new String(buffer, 0, read, StandardCharsets.UTF_8);
+                if (read > 0) {
+                    stdOut = new String(buffer, 0, read, StandardCharsets.UTF_8);
+                } else {
+                    stdOut = "";
+                }
             }
             int exitValue = sysctl.waitFor();
             if (exitValue == 0 && stdOut.equals("1\n")) {

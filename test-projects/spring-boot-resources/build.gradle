@@ -10,7 +10,3 @@ dependencies {
     implementation project(":sass-embedded-spring6")
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
-
-tasks.named('test') {
-    useJUnitPlatform()
-}

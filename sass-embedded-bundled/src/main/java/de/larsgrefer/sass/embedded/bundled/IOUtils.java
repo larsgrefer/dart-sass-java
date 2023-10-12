@@ -18,7 +18,7 @@ import java.util.zip.ZipInputStream;
  * @author Lars Grefer
  */
 @UtilityClass
-public class IOUtils {
+class IOUtils {
 
     static void extract(URL archiveUrl, Path destinationDir) throws IOException {
         String file = archiveUrl.getPath();
@@ -98,7 +98,7 @@ public class IOUtils {
      *
      * @see InputStream#transferTo(OutputStream)
      */
-    public static void copy(InputStream inputStream, OutputStream os) throws IOException {
+    private static void copy(InputStream inputStream, OutputStream os) throws IOException {
         byte[] buffer = new byte[bufferSize];
         int read;
         while ((read = inputStream.read(buffer, 0, bufferSize)) >= 0) {

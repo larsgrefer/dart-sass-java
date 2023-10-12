@@ -9,7 +9,7 @@ import java.nio.file.attribute.BasicFileAttributes;
 
 @Slf4j
 @RequiredArgsConstructor
-public class DirCleaner implements Runnable {
+class DirCleaner implements Runnable {
 
     private final Path path;
 

@@ -24,6 +24,9 @@ repositories {
         metadataSources {
             artifact()
         }
+        content {
+            includeModule("sass", "dart-sass")
+        }
     }
 }
 

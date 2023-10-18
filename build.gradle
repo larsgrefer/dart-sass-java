@@ -133,7 +133,3 @@ allprojects {
 
     }
 }
-
-tasks.named('wrapper') {
-    distributionType = Wrapper.DistributionType.ALL
-}

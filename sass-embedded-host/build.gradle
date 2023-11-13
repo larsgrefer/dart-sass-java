@@ -27,7 +27,7 @@ repositories {
 def dartSassVersion = "1.62.1"
 def slf4jVersion = '1.7.36'
 def springVersion = '5.3.30'
-def webjarsVersion = '0.54'
+def webjarsVersion = '0.55'
 
 dependencies {
     api project(":sass-embedded-protocol")

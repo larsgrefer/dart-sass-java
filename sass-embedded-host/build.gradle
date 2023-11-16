@@ -28,7 +28,7 @@ dependencies {
     api project(":sass-embedded-bundled")
     api "org.slf4j:slf4j-api:1.7.36"
 
-    compileOnly 'org.jetbrains:annotations:24.0.1'
+    compileOnly 'org.jetbrains:annotations:24.1.0'
     compileOnly 'com.google.code.findbugs:jsr305:3.0.2'
     compileOnly 'javax.servlet:javax.servlet-api:4.0.1'
     compileOnly 'jakarta.servlet:jakarta.servlet-api:6.0.0'
@@ -39,7 +39,7 @@ dependencies {
     springSupportApi "org.springframework:spring-core:$spring5Verison"
     springWebmvcSupportApi "org.springframework:spring-webmvc:$spring5Verison"
 
-    testCompileOnly 'org.jetbrains:annotations:24.0.1'
+    testCompileOnly 'org.jetbrains:annotations:24.1.0'
 
     testRuntimeOnly 'org.webjars:bootstrap:5.3.2'
 }

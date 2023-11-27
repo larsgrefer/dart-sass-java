@@ -32,7 +32,7 @@ dependencies {
     compileOnly 'com.google.code.findbugs:jsr305:3.0.2'
     compileOnly 'javax.servlet:javax.servlet-api:4.0.1'
     compileOnly 'jakarta.servlet:jakarta.servlet-api:6.0.0'
-    compileOnly 'org.apache.logging.log4j:log4j-api:2.21.1'
+    compileOnly 'org.apache.logging.log4j:log4j-api:2.22.0'
     webjarsSupportImplementation "org.webjars:webjars-locator-core:0.55"
     compileOnly "org.jboss:jboss-vfs:3.3.0.Final"
 

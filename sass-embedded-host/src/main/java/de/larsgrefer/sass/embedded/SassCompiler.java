@@ -116,6 +116,15 @@ public class SassCompiler implements Closeable {
     @Setter
     private boolean emitCharset = false;
 
+    /**
+     * Whether to silently suppresses all {@link com.sass_lang.embedded_protocol.OutboundMessage.LogEvent `LogEvent`s}.
+     *
+     * @see CompileRequest#getSilent()
+     */
+    @Getter
+    @Setter
+    private boolean silent = false;
+
     private final CompilerConnection connection;
 
     private final Random compileRequestIds = new Random();
@@ -189,6 +198,7 @@ public class SassCompiler implements Closeable {
         builder.setQuietDeps(quietDeps);
         builder.setSourceMapIncludeSources(sourceMapIncludeSources);
         builder.setCharset(emitCharset);
+        builder.setSilent(silent);
 
         return builder;
     }

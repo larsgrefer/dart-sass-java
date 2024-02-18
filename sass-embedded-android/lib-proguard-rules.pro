@@ -1,0 +1,4 @@
+-dontwarn javax.annotation.Nonnull
+-dontwarn lombok.Generated
+-dontwarn lombok.NonNull
+-dontwarn org.intellij.lang.annotations.Language

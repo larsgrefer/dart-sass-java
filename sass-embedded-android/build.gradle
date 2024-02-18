@@ -1,0 +1,136 @@
+plugins {
+    id "com.android.library" version "8.2.2"
+    id "maven-publish"
+}
+
+description = "SASS Embedded Android"
+
+android {
+    compileSdk 34
+    namespace "de.larsgrefer.sass.embedded.android"
+
+    buildFeatures {
+        buildConfig true
+    }
+
+    defaultConfig {
+        minSdk 26
+        targetSdk 34
+        consumerProguardFiles 'lib-proguard-rules.pro'
+
+        buildConfigField("String", "DART_SASS_VERSION", "\"$dartSassVersion\"")
+    }
+
+    packagingOptions.jniLibs.useLegacyPackaging true
+}
+
+repositories {
+    google()
+    ivy {
+        //https://github.com/sass/dart-sass/releases/download/1.63.3/dart-sass-1.63.3-linux-x64.tar.gz
+        url "https://github.com"
+        patternLayout {
+            artifact "/[orgPath]/[artifact]/releases/download/[revision]/[artifact]-[revision](-[classifier])(.[ext])"
+        }
+        metadataSources {
+            artifact()
+        }
+        content {
+            includeModule("sass", "dart-sass")
+        }
+    }
+}
+
+configurations {
+    dartSass
+}
+
+dependencies {
+    api(project(":sass-embedded-host")) {
+        exclude module: "sass-embedded-bundled"
+    }
+
+    implementation 'org.slf4j:slf4j-android:1.7.36'
+
+    dartSass "sass:dart-sass:$dartSassVersion:android-x64@tar.gz"
+    dartSass "sass:dart-sass:$dartSassVersion:android-ia32@tar.gz"
+    dartSass "sass:dart-sass:$dartSassVersion:android-arm@tar.gz"
+    dartSass "sass:dart-sass:$dartSassVersion:android-arm64@tar.gz"
+}
+
+def abiMap = [
+        "arm64": "arm64-v8a",
+        "arm"  : "armeabi-v7a",
+        "x64"  : "x86_64",
+        "ia32" : "x86"
+]
+
+def extractSassDists = tasks.register("extractSassDists") {
+    def outputDir = layout.buildDirectory.dir("sass-dists")
+    outputs.dir(outputDir)
+    inputs.files(configurations.dartSass)
+
+    doLast {
+        delete outputDir
+
+        copy {
+            into outputDir.get()
+
+            configurations.dartSass.each { tarFile ->
+
+                def arch = tarFile.getName().replaceAll('dart-sass-(.*?)-android-(.*?)\\.tar\\.gz', '$2')
+
+                from(tarTree(tarFile)) {
+                    into abiMap.get(arch)
+                }
+            }
+        }
+    }
+}
+
+tasks.register("prepareSassJniLibs", Sync) {
+    from extractSassDists
+    into layout.buildDirectory.dir("generated/sass-jni-libs")
+
+    include "**/src/dart"
+    includeEmptyDirs = false
+
+    filesMatching("*/dart-sass/src/dart") {
+        path = path.replace "dart-sass/src/dart", "libdart.so"
+    }
+}
+
+tasks.register("prepareSassResources", Sync) {
+    into layout.buildDirectory.dir("generated/sass-resources")
+    from(extractSassDists) {
+        into "lib"
+
+        include "**/sass.snapshot"
+        include "**/LICENSE"
+    }
+}
+
+preBuild.dependsOn("prepareSassJniLibs")
+preBuild.dependsOn("prepareSassResources")
+
+android.sourceSets.main.jniLibs.srcDir(tasks.named("prepareSassJniLibs"))
+android.sourceSets.main.resources.srcDir(tasks.named("prepareSassResources"))
+
+//Publishing
+
+android.publishing {
+    singleVariant('release') {
+        withSourcesJar()
+        withJavadocJar()
+    }
+}
+
+publishing {
+    publications {
+        release(MavenPublication) {
+            afterEvaluate {
+                from components.release
+            }
+        }
+    }
+}

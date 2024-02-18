@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="compile">Compile</string>
+	<string name="source">Source</string>
+	<string name="target">Target</string>
+</resources>

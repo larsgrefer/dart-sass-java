@@ -1,3 +1,11 @@
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        google()
+        mavenCentral()
+    }
+}
+
 plugins {
     id 'io.freefair.settings.plugin-versions' version '8.4'
     id 'org.gradle.toolchains.foojay-resolver-convention' version '0.8.0'
@@ -36,5 +44,8 @@ include "sass-embedded-bundled"
 include "sass-embedded-spring5"
 include "sass-embedded-spring6"
 
+include "sass-embedded-android"
+
 include "test-projects:spring-boot-resources"
 include "test-projects:graalvm"
+include "test-projects:android-app"

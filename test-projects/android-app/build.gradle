@@ -1,0 +1,41 @@
+plugins {
+    id "com.android.application" version "8.2.2"
+}
+
+repositories {
+    google()
+}
+
+android {
+    compileSdk 34
+    namespace "de.larsgrefer.sass.embedded.android.test"
+
+    defaultConfig {
+        targetSdk 34
+        minSdk 26
+    }
+
+    packagingOptions.jniLibs.useLegacyPackaging true
+
+    buildTypes {
+        release {
+            minifyEnabled true
+
+            shrinkResources true
+
+            proguardFiles getDefaultProguardFile(
+                    'proguard-android-optimize.txt'),
+                    'proguard-rules.pro'
+        }
+    }
+
+
+}
+
+dependencies {
+    implementation 'com.google.android.material:material:1.11.0'
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'androidx.coordinatorlayout:coordinatorlayout:1.2.0'
+
+    implementation project(":sass-embedded-android")
+}

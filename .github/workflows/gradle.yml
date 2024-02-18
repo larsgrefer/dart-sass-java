@@ -44,6 +44,28 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      - run: ./gradlew jacocoTestReport
+      - name: Upload coverage report
+        uses: codecov/codecov-action@v4.0.1
+        with:
+          files: jacoco*.xml,*Jacoco*.xml
+
+  android-tests:
+    runs-on: macos-latest
+    env:
+      ORG_GRADLE_PROJECT_larsgreferBuildCachePassword: ${{ secrets.BUILD_CACHE_PASSWORD }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: 17
+          distribution: 'temurin'
+
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v3
+
       - name: Run connected tests
         uses: ReactiveCircus/android-emulator-runner@v2
         with:
@@ -51,9 +73,3 @@ jobs:
           target: google_apis
           arch: x86_64
           script: ./gradlew connectedCheck
-
-      - run: ./gradlew jacocoTestReport
-      - name: Upload coverage report
-        uses: codecov/codecov-action@v4.0.1
-        with:
-          files: jacoco*.xml,*Jacoco*.xml

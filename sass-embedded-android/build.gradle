@@ -1,6 +1,7 @@
 plugins {
     id "com.android.library" version "8.2.2"
     id "maven-publish"
+    id "signing"
 }
 
 description = "SASS Embedded Android"
@@ -134,9 +135,10 @@ android.publishing {
 
 publishing {
     publications {
-        release(MavenPublication) {
+        release(MavenPublication) { publication ->
             afterEvaluate {
-                from components.release
+                publication.from components.release
+                signing.sign publication
             }
         }
     }

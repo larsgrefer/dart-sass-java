@@ -20,7 +20,6 @@ repositories {
 }
 
 def protobufVersion = "3.25.3"
-def protocolVersion = "2.4.0"
 
 tasks.withType(com.google.protobuf.gradle.ProtobufExtract).configureEach {
     doFirst {
@@ -29,7 +28,7 @@ tasks.withType(com.google.protobuf.gradle.ProtobufExtract).configureEach {
 }
 
 dependencies {
-    protobuf "sass:embedded-protocol:$protocolVersion@zip"
+    protobuf "sass:embedded-protocol:$embeddedProtocolVersion@zip"
 
     api "com.google.protobuf:protobuf-java:$protobufVersion"
 }
@@ -43,6 +42,6 @@ protobuf {
 tasks.named("jar", Jar) {
     manifest {
         attributes 'Specification-Vendor': "Google LLC",
-                'Specification-Version': "$protocolVersion"
+                'Specification-Version': "$embeddedProtocolVersion"
     }
 }

@@ -19,6 +19,9 @@ android {
         consumerProguardFiles 'lib-proguard-rules.pro'
 
         buildConfigField("String", "DART_SASS_VERSION", "\"$dartSassVersion\"")
+
+        testApplicationId "de.larsgrefer.sass.embedded.android_test"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
     packagingOptions.jniLibs.useLegacyPackaging true
@@ -26,6 +29,7 @@ android {
 
 repositories {
     google()
+    mavenCentral()
     ivy {
         //https://github.com/sass/dart-sass/releases/download/1.63.3/dart-sass-1.63.3-linux-x64.tar.gz
         url "https://github.com"
@@ -56,6 +60,9 @@ dependencies {
     dartSass "sass:dart-sass:$dartSassVersion:android-ia32@tar.gz"
     dartSass "sass:dart-sass:$dartSassVersion:android-arm@tar.gz"
     dartSass "sass:dart-sass:$dartSassVersion:android-arm64@tar.gz"
+
+    androidTestImplementation "androidx.test:runner:1.5.2"
+    androidTestRuntimeOnly "org.jetbrains.kotlin:kotlin-stdlib:1.9.22"
 }
 
 def abiMap = [

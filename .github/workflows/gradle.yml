@@ -44,6 +44,14 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Run connected tests
+        uses: ReactiveCircus/android-emulator-runner@v2
+        with:
+          api-level: 34
+          target: google_apis
+          arch: x86_64
+          script: ./gradlew connectedCheck
+
       - run: ./gradlew jacocoTestReport
       - name: Upload coverage report
         uses: codecov/codecov-action@v4.0.1

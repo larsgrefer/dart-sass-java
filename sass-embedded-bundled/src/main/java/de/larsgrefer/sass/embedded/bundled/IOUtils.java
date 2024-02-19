@@ -11,6 +11,7 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -106,4 +107,13 @@ class IOUtils {
         }
     }
 
+    public static boolean isEmpty(Path path) throws IOException {
+        if (Files.isDirectory(path)) {
+            try (Stream<Path> entries = Files.list(path)) {
+                return !entries.findFirst().isPresent();
+            }
+        }
+
+        return false;
+    }
 }

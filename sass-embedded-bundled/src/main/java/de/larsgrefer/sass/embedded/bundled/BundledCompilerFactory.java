@@ -36,19 +36,17 @@ public class BundledCompilerFactory implements Callable<File> {
             throw new IllegalStateException("Resource not found: " + resourcePath);
         }
 
-        String version = BundledCompilerFactory.class.getPackage().getSpecificationVersion();
+        Path targetPath = getTargetPath();
 
-        Path tempDirectory = Files.createTempDirectory("dart-sass-" + version);
-
-        Runtime.getRuntime().addShutdownHook(new Thread(new DirCleaner(tempDirectory)));
-
-        try {
-            IOUtils.extract(dist, tempDirectory);
-        } catch (IOException e) {
-            throw new IOException(String.format("Failed to extract %s into %s", dist, tempDirectory), e);
+        if (IOUtils.isEmpty(targetPath)) {
+            try {
+                IOUtils.extract(dist, targetPath);
+            } catch (IOException e) {
+                throw new IOException(String.format("Failed to extract %s into %s", dist, targetPath), e);
+            }
         }
 
-        File execDir = tempDirectory.resolve("dart-sass").toFile();
+        File execDir = targetPath.resolve("dart-sass").toFile();
 
         File[] execFile = execDir.listFiles(pathname -> pathname.isFile() && pathname.getName().startsWith("sass"));
 
@@ -90,6 +88,30 @@ public class BundledCompilerFactory implements Callable<File> {
         }
 
         return String.format("/de/larsgrefer/sass/embedded/bundled/dart-sass-%s.%s", classifier, archiveExtension);
+    }
+
+    static Path getTargetPath() throws IOException {
+        Package aPackage = BundledCompilerFactory.class.getPackage();
+        String specificationVersion = aPackage.getSpecificationVersion();
+        String implementationVersion = aPackage.getImplementationVersion();
+
+        if (implementationVersion == null || specificationVersion == null) {
+            // No version information available, use random Path and cleanup afterward.
+            Path tempDirectory = Files.createTempDirectory("dart-sass");
+            Runtime.getRuntime().addShutdownHook(new Thread(new DirCleaner(tempDirectory)));
+            return tempDirectory;
+        }
+
+        File tmpDir = new File(System.getProperty("java.io.tmpdir"));
+
+        String target = String.format("%s/%s/dart-sass/%s", aPackage.getName(), implementationVersion, specificationVersion);
+
+        File targetDir = new File(tmpDir, target);
+        if (targetDir.isDirectory() || targetDir.mkdirs()) {
+            return targetDir.toPath();
+        } else {
+            throw new IOException(targetDir + " is not directory or can't be created");
+        }
     }
 
     /**

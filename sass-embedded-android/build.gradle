@@ -21,7 +21,6 @@ android {
 
         buildConfigField("String", "DART_SASS_VERSION", "\"$dartSassVersion\"")
 
-        testApplicationId "de.larsgrefer.sass.embedded.android_test"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 

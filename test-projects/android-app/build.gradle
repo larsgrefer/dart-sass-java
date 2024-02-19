@@ -8,7 +8,7 @@ repositories {
 
 android {
     compileSdk 34
-    namespace "de.larsgrefer.sass.embedded.android.test"
+    namespace "de.larsgrefer.sass.embedded.android.demo"
 
     defaultConfig {
         targetSdk 34

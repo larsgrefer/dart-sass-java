@@ -1,13 +1,10 @@
-package de.larsgrefer.sass.embedded.android.test;
+package de.larsgrefer.sass.embedded.android.demo;
 
-import android.app.AlertDialog;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -25,7 +22,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setTheme(com.google.android.material.R.style.Theme_Material3_DayNight);
         setContentView(R.layout.activity_main);
 
         Button compileButton = findViewById(R.id.compile);

@@ -1,9 +1,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
 	<application
-			android:label="dart-sass test">
+			android:label="dart-sass"
+			android:theme="@style/Theme.Material3.DayNight">
 		<activity
-				android:name="de.larsgrefer.sass.embedded.android.test.MainActivity"
+				android:name="de.larsgrefer.sass.embedded.android.demo.MainActivity"
 				android:exported="true">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN"/>

@@ -22,6 +22,14 @@ public class SassCompilerFactory {
      * @throws IOException
      */
     public static SassCompiler bundled() throws IOException {
-        return new SassCompiler(ConnectionFactory.bundled());
+        try {
+            return new SassCompiler(ConnectionFactory.bundled());
+        } catch (RuntimeException e) {
+            if ("Dalvik".equalsIgnoreCase(System.getProperty("java.vm.name"))) {
+                throw new IllegalStateException("Use AndroidSassCompilerFactory on Android", e);
+            } else {
+                throw e;
+            }
+        }
     }
 }

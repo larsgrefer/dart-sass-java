@@ -1,9 +1,8 @@
 package de.larsgrefer.sass.embedded.android;
 
 import android.content.Context;
-import android.content.res.AssetManager;
+import androidx.annotation.NonNull;
 import de.larsgrefer.sass.embedded.SassCompiler;
-import de.larsgrefer.sass.embedded.connection.ConnectionFactory;
 
 import java.io.IOException;
 
@@ -13,7 +12,8 @@ import java.io.IOException;
  */
 public class AndroidSassCompilerFactory {
 
-    public static SassCompiler bundled(Context context) throws IOException {
+    @NonNull
+    public static SassCompiler bundled(@NonNull Context context) throws IOException {
         SassCompiler sassCompiler = new SassCompiler(AndroidConnectionFactory.bundled(context));
         sassCompiler.setLoggingHandler(new AndroidLoggingHandler());
         return sassCompiler;

@@ -10,7 +10,13 @@ description = "SASS Embedded Protocol"
 publishing.publications.mavenJava.pom.description = "Java DTOs for the embedded-sass-protocol"
 
 repositories {
-
+    ivy {
+        //https://github.com/sass/sass/archive/refs/tags/embedded-protocol-1.2.0.zip
+        artifactPattern "https://github.com/[orgPath]/[orgPath]/archive/[artifact]-[revision].[ext]"
+        metadataSources {
+            artifact()
+        }
+    }
 }
 
 def protobufVersion = "3.25.3"

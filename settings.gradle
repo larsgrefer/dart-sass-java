@@ -37,33 +37,6 @@ buildCache {
     }
 }
 
-dependencyResolutionManagement {
-    repositories {
-        mavenCentral()
-        google()
-        ivy {
-            //https://github.com/sass/dart-sass/releases/download/1.63.3/dart-sass-1.63.3-linux-x64.tar.gz
-            url "https://github.com"
-            patternLayout {
-                artifact "/[orgPath]/[artifact]/releases/download/[revision]/[artifact]-[revision](-[classifier])(.[ext])"
-            }
-            metadataSources {
-                artifact()
-            }
-            content {
-                includeModule("sass", "dart-sass")
-            }
-        }
-        ivy {
-            //https://github.com/sass/sass/archive/refs/tags/embedded-protocol-1.2.0.zip
-            artifactPattern "https://github.com/[orgPath]/[orgPath]/archive/[artifact]-[revision].[ext]"
-            metadataSources {
-                artifact()
-            }
-        }
-    }
-}
-
 include "sass-embedded-protocol"
 include "sass-embedded-host"
 include "sass-embedded-bundled"

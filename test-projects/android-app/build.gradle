@@ -2,10 +2,6 @@ plugins {
     id "com.android.application" version "8.2.2"
 }
 
-repositories {
-    google()
-}
-
 android {
     compileSdk 34
     namespace "de.larsgrefer.sass.embedded.android.demo"

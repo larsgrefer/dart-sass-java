@@ -1,14 +1,11 @@
 plugins {
     id "java-library"
     id "io.freefair.maven-publish-java"
-    id "io.freefair.lombok"
 }
 
-description = "SASS Embedded Bundled Compilers"
+description = "SASS Embedded Bundled Compilers ia32"
 
-java.toolchain.languageVersion = JavaLanguageVersion.of(11)
-
-compileJava.options.release.set(8)
+java.toolchain.languageVersion = JavaLanguageVersion.of(8)
 
 configurations {
     sassEmbedded
@@ -31,22 +28,11 @@ repositories {
 }
 
 dependencies {
-    implementation "org.slf4j:slf4j-api:1.7.36"
+    sassEmbedded "sass:dart-sass:$dartSassVersion:linux-ia32@tar.gz"
 
-    implementation project(":sass-embedded-bundled-ia32")
+    sassEmbedded "sass:dart-sass:$dartSassVersion:linux-ia32-musl@tar.gz"
 
-    sassEmbedded "sass:dart-sass:$dartSassVersion:linux-x64@tar.gz"
-    sassEmbedded "sass:dart-sass:$dartSassVersion:linux-arm@tar.gz"
-    sassEmbedded "sass:dart-sass:$dartSassVersion:linux-arm64@tar.gz"
-
-    sassEmbedded "sass:dart-sass:$dartSassVersion:linux-x64-musl@tar.gz"
-    sassEmbedded "sass:dart-sass:$dartSassVersion:linux-arm-musl@tar.gz"
-    sassEmbedded "sass:dart-sass:$dartSassVersion:linux-arm64-musl@tar.gz"
-
-    sassEmbedded "sass:dart-sass:$dartSassVersion:macos-x64@tar.gz"
-    sassEmbedded "sass:dart-sass:$dartSassVersion:macos-arm64@tar.gz"
-
-    sassEmbedded "sass:dart-sass:$dartSassVersion:windows-x64@zip"
+    sassEmbedded "sass:dart-sass:$dartSassVersion:windows-ia32@zip"
 }
 
 tasks.named("processResources") {

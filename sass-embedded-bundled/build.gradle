@@ -38,6 +38,11 @@ dependencies {
     sassEmbedded "sass:dart-sass:$dartSassVersion:linux-arm@tar.gz"
     sassEmbedded "sass:dart-sass:$dartSassVersion:linux-arm64@tar.gz"
 
+    sassEmbedded "sass:dart-sass:$dartSassVersion:linux-ia32-musl@tar.gz"
+    sassEmbedded "sass:dart-sass:$dartSassVersion:linux-x64-musl@tar.gz"
+    sassEmbedded "sass:dart-sass:$dartSassVersion:linux-arm-musl@tar.gz"
+    sassEmbedded "sass:dart-sass:$dartSassVersion:linux-arm64-musl@tar.gz"
+
     sassEmbedded "sass:dart-sass:$dartSassVersion:macos-x64@tar.gz"
     sassEmbedded "sass:dart-sass:$dartSassVersion:macos-arm64@tar.gz"
 

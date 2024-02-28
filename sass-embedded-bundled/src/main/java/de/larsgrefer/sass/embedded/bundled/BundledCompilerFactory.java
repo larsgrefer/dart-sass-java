@@ -85,6 +85,10 @@ public class BundledCompilerFactory implements Callable<File> {
             } else {
                 classifier = "linux-ia32";
             }
+
+            if (isMuslLibC()) {
+                classifier += "musl";
+            }
         }
 
         return String.format("/de/larsgrefer/sass/embedded/bundled/dart-sass-%s.%s", classifier, archiveExtension);
@@ -136,6 +140,39 @@ public class BundledCompilerFactory implements Callable<File> {
             }
         } catch (Exception e) {
             log.info("Unable to check for rosetta", e);
+        }
+        return false;
+    }
+
+    static boolean isMuslLibC() {
+        try {
+            Process sysctl = Runtime.getRuntime().exec("ldd --version");
+            String stdOut;
+            try (InputStream in = sysctl.getInputStream()) {
+                byte[] buffer = new byte[255];
+                int read = in.read(buffer);
+                if (read > 0) {
+                    stdOut = new String(buffer, 0, read, StandardCharsets.UTF_8);
+                } else {
+                    stdOut = "";
+                }
+            }
+            String stdErr;
+            try (InputStream in = sysctl.getErrorStream()) {
+                byte[] buffer = new byte[255];
+                int read = in.read(buffer);
+                if (read > 0) {
+                    stdErr = new String(buffer, 0, read, StandardCharsets.UTF_8);
+                } else {
+                    stdErr = "";
+                }
+            }
+            int exitValue = sysctl.waitFor();
+            if (stdOut.toLowerCase().contains("musl") || stdErr.toLowerCase().contains("musl")) {
+                return true;
+            }
+        } catch (Exception e) {
+            log.info("Unable to check for musl", e);
         }
         return false;
     }

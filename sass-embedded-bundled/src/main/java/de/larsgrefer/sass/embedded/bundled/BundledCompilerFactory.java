@@ -87,7 +87,7 @@ public class BundledCompilerFactory implements Callable<File> {
             }
 
             if (isMuslLibC()) {
-                classifier += "musl";
+                classifier += "-musl";
             }
         }
 

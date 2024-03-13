@@ -29,6 +29,7 @@ dependencies {
     api "org.slf4j:slf4j-api:1.7.36"
 
     compileOnly 'org.jetbrains:annotations:24.1.0'
+    compileOnly 'androidx.annotation:annotation-jvm:1.7.1'
     compileOnly 'com.google.code.findbugs:jsr305:3.0.2'
     compileOnly 'javax.servlet:javax.servlet-api:4.0.1'
     compileOnly 'jakarta.servlet:jakarta.servlet-api:6.0.0'

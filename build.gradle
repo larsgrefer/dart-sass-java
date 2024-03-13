@@ -17,6 +17,7 @@ nexusPublishing {
 allprojects {
     repositories {
         mavenCentral()
+        google()
     }
 
     group = "de.larsgrefer.sass"

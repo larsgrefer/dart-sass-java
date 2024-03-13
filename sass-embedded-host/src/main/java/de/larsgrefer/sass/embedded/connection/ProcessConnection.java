@@ -1,5 +1,6 @@
 package de.larsgrefer.sass.embedded.connection;
 
+import androidx.annotation.RequiresApi;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 
@@ -16,6 +17,7 @@ public class ProcessConnection extends StreamConnection {
 
     private final Process process;
 
+    @RequiresApi(26)
     public ProcessConnection(ProcessBuilder processBuilder) throws IOException {
         this(processBuilder
                 .redirectInput(ProcessBuilder.Redirect.PIPE)

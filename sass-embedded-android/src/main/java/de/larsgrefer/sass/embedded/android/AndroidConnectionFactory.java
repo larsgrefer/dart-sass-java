@@ -49,7 +49,7 @@ public final class AndroidConnectionFactory {
         cmd.add("--embedded");
 
         ProcessBuilder processBuilder = new ProcessBuilder(cmd);
-        return new ProcessConnection(processBuilder);
+        return new ProcessConnection(processBuilder.start());
     }
 
     private static File getSassSnapshotFile(Context context) throws IOException {

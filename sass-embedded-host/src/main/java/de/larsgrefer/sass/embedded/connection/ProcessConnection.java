@@ -48,8 +48,10 @@ public class ProcessConnection extends StreamConnection {
     }
 
     private void assertAlive() throws IOException {
-        if (!process.isAlive()) {
-            throw new IOException("Process is dead. Exit code was: " + process.exitValue());
+        try {
+            int exitValue = process.exitValue();
+            throw new IOException("Process is dead. Exit code was: " + exitValue);
+        } catch(IllegalThreadStateException ignored) {
         }
     }
 }

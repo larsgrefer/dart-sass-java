@@ -26,12 +26,14 @@ public class ProcessConnection extends StreamConnection {
                 .start());
     }
 
-    @SneakyThrows
     @Override
     public void close() {
         process.destroy();
-        if (!process.waitFor(2, TimeUnit.SECONDS)) {
-            process.destroyForcibly();
+        try {
+            if (!process.waitFor(2, TimeUnit.SECONDS)) {
+                process.destroyForcibly();
+            }
+        } catch (Throwable ignored) {
         }
     }
 

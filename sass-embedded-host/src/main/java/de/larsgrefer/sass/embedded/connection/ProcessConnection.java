@@ -1,5 +1,6 @@
 package de.larsgrefer.sass.embedded.connection;
 
+import androidx.annotation.RequiresApi;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 
@@ -16,6 +17,7 @@ public class ProcessConnection extends StreamConnection {
 
     private final Process process;
 
+    @RequiresApi(26)
     public ProcessConnection(ProcessBuilder processBuilder) throws IOException {
         this(processBuilder
                 .redirectInput(ProcessBuilder.Redirect.PIPE)
@@ -24,12 +26,14 @@ public class ProcessConnection extends StreamConnection {
                 .start());
     }
 
-    @SneakyThrows
     @Override
     public void close() {
         process.destroy();
-        if (!process.waitFor(2, TimeUnit.SECONDS)) {
-            process.destroyForcibly();
+        try {
+            if (!process.waitFor(2, TimeUnit.SECONDS)) {
+                process.destroyForcibly();
+            }
+        } catch (Throwable ignored) {
         }
     }
 
@@ -46,8 +50,10 @@ public class ProcessConnection extends StreamConnection {
     }
 
     private void assertAlive() throws IOException {
-        if (!process.isAlive()) {
-            throw new IOException("Process is dead. Exit code was: " + process.exitValue());
+        try {
+            int exitValue = process.exitValue();
+            throw new IOException("Process is dead. Exit code was: " + exitValue);
+        } catch(IllegalThreadStateException ignored) {
         }
     }
 }

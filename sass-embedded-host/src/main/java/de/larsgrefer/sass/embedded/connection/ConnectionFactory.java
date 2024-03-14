@@ -1,5 +1,6 @@
 package de.larsgrefer.sass.embedded.connection;
 
+import androidx.annotation.RequiresApi;
 import com.google.protobuf.ByteString;
 import com.sass_lang.embedded_protocol.OutboundMessage;
 import lombok.SneakyThrows;
@@ -20,6 +21,7 @@ import java.util.regex.Pattern;
  */
 @Slf4j
 @UtilityClass
+@RequiresApi(1000)
 public class ConnectionFactory {
 
     public static ProcessConnection bundled() throws IOException {

@@ -15,7 +15,7 @@ android {
     }
 
     defaultConfig {
-        minSdk 26
+        minSdk 21
         targetSdk 34
         consumerProguardFiles 'lib-proguard-rules.pro'
 
@@ -63,7 +63,7 @@ dependencies {
     dartSass "sass:dart-sass:$dartSassVersion:android-arm64@tar.gz"
 
     androidTestImplementation "androidx.test:runner:1.5.2"
-    androidTestImplementation 'org.assertj:assertj-core:3.25.3'
+    androidTestImplementation 'org.assertj:assertj-core:2.9.1'
 
     androidTestRuntimeOnly "org.jetbrains.kotlin:kotlin-stdlib:1.7.10"
 }

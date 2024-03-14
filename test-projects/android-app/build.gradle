@@ -12,7 +12,7 @@ android {
 
     defaultConfig {
         targetSdk 34
-        minSdk 26
+        minSdk 21
     }
 
     packagingOptions.jniLibs.useLegacyPackaging true

@@ -1,6 +1,7 @@
 package de.larsgrefer.sass.embedded.android;
 
 import android.content.Context;
+import androidx.annotation.CheckResult;
 import androidx.annotation.NonNull;
 import de.larsgrefer.sass.embedded.SassCompiler;
 
@@ -13,6 +14,7 @@ import java.io.IOException;
 public class AndroidSassCompilerFactory {
 
     @NonNull
+    @CheckResult
     public static SassCompiler bundled(@NonNull Context context) throws IOException {
         SassCompiler sassCompiler = new SassCompiler(AndroidConnectionFactory.bundled(context));
         sassCompiler.setLoggingHandler(new AndroidLoggingHandler());

@@ -2,6 +2,7 @@ package de.larsgrefer.sass.embedded.android;
 
 import android.content.Context;
 import android.os.Build;
+import androidx.annotation.CheckResult;
 import androidx.annotation.NonNull;
 import de.larsgrefer.sass.embedded.connection.CompilerConnection;
 import de.larsgrefer.sass.embedded.connection.ConnectionFactory;
@@ -20,6 +21,7 @@ import java.util.List;
 public final class AndroidConnectionFactory {
 
     @NonNull
+    @CheckResult
     public static CompilerConnection bundled(@NonNull Context context) throws IOException {
 
         String nativeLibraryDir = context.getApplicationInfo().nativeLibraryDir;

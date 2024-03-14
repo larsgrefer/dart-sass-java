@@ -1,5 +1,6 @@
 package de.larsgrefer.sass.embedded;
 
+import androidx.annotation.RequiresApi;
 import de.larsgrefer.sass.embedded.connection.ConnectionFactory;
 import lombok.experimental.UtilityClass;
 
@@ -8,6 +9,7 @@ import java.io.IOException;
 /**
  * @author Lars Grefer
  */
+@RequiresApi(1000)
 @UtilityClass
 public class SassCompilerFactory {
 

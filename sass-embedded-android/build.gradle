@@ -65,7 +65,7 @@ dependencies {
     androidTestImplementation "androidx.test:runner:1.5.2"
     androidTestImplementation 'org.assertj:assertj-core:2.9.1'
 
-    androidTestRuntimeOnly "org.jetbrains.kotlin:kotlin-stdlib:1.7.10"
+    androidTestRuntimeOnly "org.jetbrains.kotlin:kotlin-stdlib:2.0.0"
 }
 
 def abiMap = [

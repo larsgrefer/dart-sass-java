@@ -1,5 +1,5 @@
 plugins {
-    id "com.android.library" version "8.2.0"
+    id "com.android.library" version "8.5.0"
     id "maven-publish"
     id "signing"
 }

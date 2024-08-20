@@ -7,22 +7,20 @@ pluginManagement {
 }
 
 plugins {
-    id 'io.freefair.settings.plugin-versions' version '8.6'
+    id 'io.freefair.settings.plugin-versions' version '8.10'
     id 'org.gradle.toolchains.foojay-resolver-convention' version '0.8.0'
-    id "com.gradle.enterprise" version "3.17.4"
+    id "com.gradle.develocity" version "3.18"
 }
 
 rootProject.name = 'dart-sass-java'
 
 boolean isCiServer = System.getenv().containsKey("CI")
 
-gradleEnterprise {
-    if (isCiServer) {
-        buildScan {
-            publishAlways()
-            termsOfServiceUrl = "https://gradle.com/terms-of-service"
-            termsOfServiceAgree = "yes"
-        }
+develocity {
+    buildScan {
+        publishing.onlyIf { isCiServer }
+        termsOfUseUrl = "https://gradle.com/help/legal-terms-of-use"
+        termsOfUseAgree = "yes"
     }
 }
 

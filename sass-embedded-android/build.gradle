@@ -61,6 +61,7 @@ dependencies {
     dartSass "sass:dart-sass:$dartSassVersion:android-ia32@tar.gz"
     dartSass "sass:dart-sass:$dartSassVersion:android-arm@tar.gz"
     dartSass "sass:dart-sass:$dartSassVersion:android-arm64@tar.gz"
+    dartSass "sass:dart-sass:$dartSassVersion:android-riscv64@tar.gz"
 
     androidTestImplementation "androidx.test:runner:1.5.2"
     androidTestImplementation 'org.assertj:assertj-core:2.9.1'
@@ -72,7 +73,8 @@ def abiMap = [
         "arm64": "arm64-v8a",
         "arm"  : "armeabi-v7a",
         "x64"  : "x86_64",
-        "ia32" : "x86"
+        "ia32" : "x86",
+        "riscv64" : "riscv64"
 ]
 
 def extractSassDists = tasks.register("extractSassDists") {

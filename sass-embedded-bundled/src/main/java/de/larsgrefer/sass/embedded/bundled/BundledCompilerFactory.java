@@ -80,6 +80,8 @@ public class BundledCompilerFactory implements Callable<File> {
                 classifier = "linux-arm64";
             } else if (osArch.contains("arm")) {
                 classifier = "linux-arm";
+            } else if (osArch.contains("risc")) {
+                classifier = "linux-riscv64";
             } else if (osArch.contains("64")) {
                 classifier = "linux-x64";
             } else {

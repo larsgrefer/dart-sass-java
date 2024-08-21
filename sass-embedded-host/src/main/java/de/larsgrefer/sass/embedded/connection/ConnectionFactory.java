@@ -2,7 +2,7 @@ package de.larsgrefer.sass.embedded.connection;
 
 import androidx.annotation.RequiresApi;
 import com.google.protobuf.ByteString;
-import com.sass_lang.embedded_protocol.OutboundMessage;
+import de.larsgrefer.sass.embedded.util.PropertyUtils;
 import lombok.SneakyThrows;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
@@ -12,7 +12,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Callable;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -24,29 +23,28 @@ import java.util.regex.Pattern;
 @RequiresApi(1000)
 public class ConnectionFactory {
 
+    private static BundledPackageProvider bundledPackageProvider = new BundledPackageProvider();
+    private static DownloadingPackageProvider downloadingPackageProvider = new DownloadingPackageProvider();
+
     public static ProcessConnection bundled() throws IOException {
+        return fromPackageProvider(bundledPackageProvider);
+    }
 
-        Callable<File> bundledExecCallable;
+    public static ProcessConnection downloaded() throws IOException {
+        return fromPackageProvider(downloadingPackageProvider);
+    }
 
+    public static ProcessConnection fromPackageProvider(DartSassPackageProvider dartSassPackageProvider) throws IOException {
+        File executable;
         try {
-            Class<?> bundledFactoryClass = Class.forName("de.larsgrefer.sass.embedded.bundled.BundledCompilerFactory");
-            bundledExecCallable = (Callable<File>) bundledFactoryClass.getConstructor().newInstance();
-        } catch (ClassNotFoundException e) {
-            throw new IllegalStateException("Embedded Compilers are not available", e);
-        } catch (ReflectiveOperationException e) {
-            throw new IOException(e);
-        }
-
-        File bundledExecutable;
-        try {
-            bundledExecutable = bundledExecCallable.call().getAbsoluteFile();
+            executable = dartSassPackageProvider.getDartSassExecutable();
         } catch (IOException | RuntimeException e) {
             throw e;
         } catch (Exception e) {
             throw new IOException(e);
         }
 
-        return ofExecutable(bundledExecutable);
+        return ofExecutable(executable);
     }
 
     /**
@@ -117,7 +115,7 @@ public class ConnectionFactory {
     }
 
     public static String getExpectedProtocolVersion() {
-        return OutboundMessage.VersionResponse.class.getPackage().getSpecificationVersion();
+        return PropertyUtils.getEmbeddedProtocolVersion();
     }
 
     private static final Pattern protocolVersionPattern = Pattern.compile("\"protocolVersion\": \"(.*?)\"");

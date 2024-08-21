@@ -2,6 +2,7 @@ package de.larsgrefer.sass.embedded;
 
 import androidx.annotation.RequiresApi;
 import de.larsgrefer.sass.embedded.connection.ConnectionFactory;
+import de.larsgrefer.sass.embedded.util.PlatformUtils;
 import lombok.experimental.UtilityClass;
 
 import java.io.IOException;
@@ -27,11 +28,15 @@ public class SassCompilerFactory {
         try {
             return new SassCompiler(ConnectionFactory.bundled());
         } catch (RuntimeException e) {
-            if ("Dalvik".equalsIgnoreCase(System.getProperty("java.vm.name"))) {
+            if (PlatformUtils.isAndroid()) {
                 throw new IllegalStateException("Use AndroidSassCompilerFactory on Android", e);
             } else {
                 throw e;
             }
         }
+    }
+
+    public static SassCompiler downloaded() throws IOException {
+        return new SassCompiler(ConnectionFactory.downloaded());
     }
 }

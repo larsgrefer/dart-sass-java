@@ -1,5 +1,6 @@
-package de.larsgrefer.sass.embedded.bundled;
+package de.larsgrefer.sass.embedded.util;
 
+import androidx.annotation.RequiresApi;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -9,7 +10,8 @@ import java.nio.file.attribute.BasicFileAttributes;
 
 @Slf4j
 @RequiredArgsConstructor
-class DirCleaner implements Runnable {
+@RequiresApi(10000)
+public class DirCleaner implements Runnable {
 
     private final Path path;
 

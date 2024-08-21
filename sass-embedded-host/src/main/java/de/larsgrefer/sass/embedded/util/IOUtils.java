@@ -1,5 +1,6 @@
-package de.larsgrefer.sass.embedded.bundled;
+package de.larsgrefer.sass.embedded.util;
 
+import androidx.annotation.RequiresApi;
 import lombok.SneakyThrows;
 import lombok.experimental.UtilityClass;
 
@@ -19,9 +20,10 @@ import java.util.zip.ZipInputStream;
  * @author Lars Grefer
  */
 @UtilityClass
-class IOUtils {
+@RequiresApi(10000)
+public class IOUtils {
 
-    static void extract(URL archiveUrl, Path destinationDir) throws IOException {
+    public static void extract(URL archiveUrl, Path destinationDir) throws IOException {
         String file = archiveUrl.getPath();
         if (file.endsWith(".zip")) {
             try (ZipInputStream in = new ZipInputStream(archiveUrl.openStream())) {

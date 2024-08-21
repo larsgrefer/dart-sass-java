@@ -44,3 +44,7 @@ dependencies {
 
     testRuntimeOnly 'org.webjars:bootstrap:5.3.3'
 }
+
+tasks.named("processResources", ProcessResources) {
+    expand(project.getProperties())
+}

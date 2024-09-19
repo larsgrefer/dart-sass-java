@@ -47,4 +47,7 @@ dependencies {
 
 tasks.named("processResources", ProcessResources) {
     expand(project.getProperties())
+    inputs.property("projectVersion", project.version)
+    inputs.property("embeddedProtocolVersion", embeddedProtocolVersion)
+    inputs.property("dartSassVersion", dartSassVersion)
 }

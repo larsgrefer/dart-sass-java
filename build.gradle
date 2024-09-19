@@ -3,7 +3,7 @@ plugins {
     id "io.freefair.lombok" apply false
     id "io.freefair.javadocs" apply false
     id "io.freefair.github.dependency-submission"
-    id "io.github.gradle-nexus.publish-plugin" version "1.3.0"
+    id "io.github.gradle-nexus.publish-plugin" version "2.0.0"
 }
 
 nexusPublishing {

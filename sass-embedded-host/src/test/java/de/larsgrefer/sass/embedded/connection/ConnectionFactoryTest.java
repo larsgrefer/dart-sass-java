@@ -14,7 +14,7 @@ class ConnectionFactoryTest {
     void getExpectedProtocolVersion() {
         String expectedProtocolVersion = ConnectionFactory.getExpectedProtocolVersion();
 
-        assertThat(expectedProtocolVersion).startsWith("2.");
+        assertThat(expectedProtocolVersion).startsWith("3.");
     }
 
     @Test

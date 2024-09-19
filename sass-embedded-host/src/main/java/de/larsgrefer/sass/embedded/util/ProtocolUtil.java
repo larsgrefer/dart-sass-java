@@ -62,15 +62,9 @@ public class ProtocolUtil {
                 .build();
     }
 
-    public static Value value(Value.RgbColor rgbColor) {
+    public static Value value(Value.Color rgbColor) {
         return Value.newBuilder()
-                .setRgbColor(rgbColor)
-                .build();
-    }
-
-    public static Value value(Value.HslColor hslColor) {
-        return Value.newBuilder()
-                .setHslColor(hslColor)
+                .setColor(rgbColor)
                 .build();
     }
 
@@ -107,12 +101,6 @@ public class ProtocolUtil {
     public static Value value(Value.ArgumentList argumentList) {
         return Value.newBuilder()
                 .setArgumentList(argumentList)
-                .build();
-    }
-
-    public static Value value(Value.HwbColor hwbColor) {
-        return Value.newBuilder()
-                .setHwbColor(hwbColor)
                 .build();
     }
 

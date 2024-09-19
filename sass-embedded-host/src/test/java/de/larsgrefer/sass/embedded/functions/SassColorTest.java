@@ -1,12 +1,11 @@
 package de.larsgrefer.sass.embedded.functions;
 
+import com.sass_lang.embedded_protocol.Value.Color;
 import org.assertj.core.data.Offset;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
-import com.sass_lang.embedded_protocol.Value.HwbColor;
-import com.sass_lang.embedded_protocol.Value.RgbColor;
 
 import static de.larsgrefer.sass.embedded.util.ColorUtil.*;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -20,15 +19,15 @@ class SassColorTest {
     void adjustHue() {
         // Hue 222deg becomes 282deg.
         //@debug adjust-hue(#6b717f, 60deg); // #796b7f
-        assertThat(SassColor.adjustHue(rgb(0x6b717f), 60)).isEqualTo(rgb(0x796b7f));
+        assertThat(toRgbColor(SassColor.adjustHue(rgb(0x6b717f), 60))).isEqualTo(rgb(0x796b7f));
 
         // Hue 164deg becomes 104deg.
         //@debug adjust-hue(#d2e1dd, -60deg); // #d6e1d2
-        assertThat(SassColor.adjustHue(rgb(0xd2e1dd), -60)).isEqualTo(rgb(0xd6e1d2));
+        assertThat(toRgbColor(SassColor.adjustHue(rgb(0xd2e1dd), -60))).isEqualTo(rgb(0xd6e1d2));
 
         // Hue 210deg becomes 255deg.
         //@debug adjust-hue(#036, 45); // #1a0066
-        assertThat(SassColor.adjustHue(rgb(0x003366), 45)).isEqualTo(rgb(0x1a0066));
+        assertThat(toRgbColor(SassColor.adjustHue(rgb(0x003366), 45))).isEqualTo(rgb(0x1a0066));
     }
 
     @Test
@@ -47,15 +46,15 @@ class SassColorTest {
     void complement() {
         // Hue 222deg becomes 42deg.
         //@debug color.complement(#6b717f); // #7f796b
-        assertThat(SassColor.complement(rgb(0x6b717f))).isEqualTo(rgb(0x7f796b));
+        assertThat(toRgbColor(SassColor.complement(rgb(0x6b717f)))).isEqualTo(rgb(0x7f796b));
 
         // Hue 164deg becomes 344deg.
         //@debug color.complement(#d2e1dd); // #e1d2d6
-        assertThat(SassColor.complement(rgb(0xd2e1dd))).isEqualTo(rgb(0xe1d2d6));
+        assertThat(toRgbColor(SassColor.complement(rgb(0xd2e1dd)))).isEqualTo(rgb(0xe1d2d6));
 
         // Hue 210deg becomes 30deg.
         //@debug color.complement(#036); // #663300
-        assertThat(SassColor.complement(rgb(0x003366))).isEqualTo(rgb(0x663300));
+        assertThat(toRgbColor(SassColor.complement(rgb(0x003366)))).isEqualTo(rgb(0x663300));
     }
 
     @Test
@@ -78,27 +77,27 @@ class SassColorTest {
     void desaturate() {
         // Saturation 100% becomes 80%.
         //@debug desaturate(#036, 20%); // #0a335c
-        assertThat(SassColor.desaturate(rgb(0x003366), 20)).isEqualTo(rgb(0x0a335c));
+        assertThat(toRgbColor(SassColor.desaturate(rgb(0x003366), 20))).isEqualTo(rgb(0x0a335c));
 
         // Saturation 35% becomes 15%.
         //@debug desaturate(#f2ece4, 20%); // #eeebe8
-        assertThat(SassColor.desaturate(rgb(0xf2ece4), 20)).isEqualTo(rgb(0xeeebe8));
+        assertThat(toRgbColor(SassColor.desaturate(rgb(0xf2ece4), 20))).isEqualTo(rgb(0xeeebe8));
 
         // Saturation 20% becomes 0%.
         //@debug desaturate(#d2e1dd, 30%); // #dadada
-        assertThat(SassColor.desaturate(rgb(0xd2e1dd), 20)).isEqualTo(rgb(0xdadada));
+        assertThat(toRgbColor(SassColor.desaturate(rgb(0xd2e1dd), 20))).isEqualTo(rgb(0xdadada));
     }
 
     @Test
     void greyscale() {
         //@debug color.grayscale(#6b717f); // #757575
-        assertThat(SassColor.grayscale(rgb(0x6b717f))).isEqualTo(rgb(0x757575));
+        assertThat(toRgbColor(SassColor.grayscale(rgb(0x6b717f)))).isEqualTo(rgb(0x757575));
 
         //@debug color.grayscale(#d2e1dd); // #dadada
-        assertThat(SassColor.grayscale(rgb(0xd2e1dd))).isEqualTo(rgb(0xdadada));
+        assertThat(toRgbColor(SassColor.grayscale(rgb(0xd2e1dd)))).isEqualTo(rgb(0xdadada));
 
         //@debug color.grayscale(#036); // #333333
-        assertThat(SassColor.grayscale(rgb(0x003366))).isEqualTo(rgb(0x333333));
+        assertThat(toRgbColor(SassColor.grayscale(rgb(0x003366)))).isEqualTo(rgb(0x333333));
     }
 
     @Test
@@ -129,8 +128,8 @@ class SassColorTest {
     @Disabled
     void hwb() {
         //@debug color.hwb(210, 0%, 60%); // #036
-        HwbColor actual = SassColor.hwb(210, 0, 60);
-        RgbColor expected = rgb(0x003366);
+        Color actual = SassColor.hwb(210, 0, 60);
+        Color expected = rgb(0x003366);
         assertThat(actual).isEqualTo(toHwbColor(expected));
         assertThat(toRgbColor(actual)).isEqualTo(expected);
 
@@ -175,15 +174,15 @@ class SassColorTest {
     void lighten() {
         // Lightness 46% becomes 66%.
         //@debug lighten(#6b717f, 20%); // #a1a5af
-        assertThat(SassColor.lighten(rgb(0x6b717f), 20)).isEqualTo(rgb(0xa1a5af));
+        assertThat(toRgbColor(SassColor.lighten(rgb(0x6b717f), 20))).isEqualTo(rgb(0xa1a5af));
 
         // Lightness 20% becomes 80%.
         //@debug lighten(#036, 60%); // #99ccff
-        assertThat(SassColor.lighten(rgb(0x003366), 60)).isEqualTo(rgb(0x99ccff));
+        assertThat(toRgbColor(SassColor.lighten(rgb(0x003366), 60))).isEqualTo(rgb(0x99ccff));
 
         // Lightness 85% becomes 100%.
         //@debug lighten(#e1d7d2, 30%); // white
-        assertThat(SassColor.lighten(rgb(0xe1d7d2), 30)).isEqualTo(white);
+        assertThat(toRgbColor(SassColor.lighten(rgb(0xe1d7d2), 30))).isEqualTo(white);
     }
 
     @Test

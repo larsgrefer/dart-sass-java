@@ -182,8 +182,7 @@ class ConversionServiceTest {
     void sassValueConversion() {
         assertThat(toSassValue(Value.String.getDefaultInstance()).getValueCase()).isEqualTo(ValueCase.STRING);
         assertThat(toSassValue(Value.Number.getDefaultInstance()).getValueCase()).isEqualTo(ValueCase.NUMBER);
-        assertThat(toSassValue(Value.RgbColor.getDefaultInstance()).getValueCase()).isEqualTo(ValueCase.RGB_COLOR);
-        assertThat(toSassValue(Value.HslColor.getDefaultInstance()).getValueCase()).isEqualTo(ValueCase.HSL_COLOR);
+        assertThat(toSassValue(Value.Color.getDefaultInstance()).getValueCase()).isEqualTo(ValueCase.COLOR);
         assertThat(toSassValue(Value.List.getDefaultInstance()).getValueCase()).isEqualTo(ValueCase.LIST);
         assertThat(toSassValue(Value.Map.getDefaultInstance()).getValueCase()).isEqualTo(ValueCase.MAP);
         assertThat(toSassValue(SingletonValue.NULL).getValueCase()).isEqualTo(ValueCase.SINGLETON);
@@ -194,8 +193,7 @@ class ConversionServiceTest {
         return Stream.of(
                         Value.String.getDefaultInstance(),
                         Value.Number.getDefaultInstance(),
-                        Value.RgbColor.getDefaultInstance(),
-                        Value.HslColor.getDefaultInstance(),
+                        Value.Color.getDefaultInstance(),
                         Value.List.getDefaultInstance(),
                         Value.Map.getDefaultInstance(),
                         SingletonValue.NULL

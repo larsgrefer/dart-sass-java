@@ -1,9 +1,8 @@
 package de.larsgrefer.sass.embedded.util;
 
 
-import com.sass_lang.embedded_protocol.Value.HslColorOrBuilder;
-import com.sass_lang.embedded_protocol.Value.HwbColorOrBuilder;
-import com.sass_lang.embedded_protocol.Value.RgbColorOrBuilder;
+import com.sass_lang.embedded_protocol.Value;
+import com.sass_lang.embedded_protocol.Value.ColorOrBuilder;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 
@@ -14,18 +13,30 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 class ColorValidator {
 
-    static void assertValid(@NonNull RgbColorOrBuilder rgbColor) {
-        int red = rgbColor.getRed();
+    static void assertValid(@NonNull ColorOrBuilder color) {
+        if ("rgb".equals(color.getSpace())) {
+            assertValidRgb(color);
+        } else if ("hsl".equals(color.getSpace())) {
+            assertValidHsl(color);
+        } else if ("hwb".equals(color.getSpace())) {
+            assertValidHwb(color);
+        } else {
+            throw new IllegalArgumentException("Unsupported color space: " + color.getSpace());
+        }
+    }
+
+    static void assertValidRgb(@NonNull ColorOrBuilder rgbColor) {
+        int red = (int) rgbColor.getChannel1();
         if (red < 0 || red > 255) {
             throw new IllegalArgumentException("Red must be between 0 and 255.");
         }
 
-        int green = rgbColor.getGreen();
+        int green = (int) rgbColor.getChannel2();
         if (green < 0 || green > 255) {
             throw new IllegalArgumentException("Green must be between 0 and 255.");
         }
 
-        int blue = rgbColor.getBlue();
+        int blue = (int) rgbColor.getChannel3();
         if (blue < 0 || blue > 255) {
             throw new IllegalArgumentException("Blue must be between 0 and 255.");
         }
@@ -36,13 +47,13 @@ class ColorValidator {
         }
     }
 
-    static void assertValid(@NonNull HslColorOrBuilder hslColor) {
-        double saturation = hslColor.getSaturation();
+    static void assertValidHsl(@NonNull ColorOrBuilder hslColor) {
+        double saturation = hslColor.getChannel2();
         if (saturation < 0 || saturation > 100) {
             throw new IllegalArgumentException("Saturation must be between 0 and 100.");
         }
 
-        double lightness = hslColor.getLightness();
+        double lightness = hslColor.getChannel3();
         if (lightness < 0 || lightness > 100) {
             throw new IllegalArgumentException("Lightness must be between 0 and 100.");
         }
@@ -53,13 +64,13 @@ class ColorValidator {
         }
     }
 
-    static void assertValid(@NonNull HwbColorOrBuilder hwbColor) {
-        double whiteness = hwbColor.getWhiteness();
+    static void assertValidHwb(@NonNull ColorOrBuilder hwbColor) {
+        double whiteness = hwbColor.getChannel2();
         if (whiteness < 0 || whiteness > 100) {
             throw new IllegalArgumentException("Whiteness must be between 0 and 100.");
         }
 
-        double blackness = hwbColor.getBlackness();
+        double blackness = hwbColor.getChannel3();
         if (blackness < 0 || blackness > 100) {
             throw new IllegalArgumentException("Whiteness must be between 0 and 100.");
         }

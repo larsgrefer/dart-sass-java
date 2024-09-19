@@ -99,9 +99,10 @@ class SassCompilerTest {
             @Override
             public @NotNull Value invoke(List<Value> arguments) {
                 return Value.newBuilder()
-                        .setRgbColor(Value.RgbColor.newBuilder()
-                                .setRed(255)
-                                .setBlue(25)
+                        .setColor(Value.Color.newBuilder()
+                                .setSpace("rgb")
+                                .setChannel1(255)
+                                .setChannel3(25)
                                 .setAlpha(1d)
                                 .build())
                         .build();

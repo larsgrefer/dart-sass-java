@@ -3,9 +3,7 @@ package de.larsgrefer.sass.embedded.functions;
 import com.sass_lang.embedded_protocol.SingletonValue;
 import com.sass_lang.embedded_protocol.Value;
 import com.sass_lang.embedded_protocol.Value.Calculation;
-import com.sass_lang.embedded_protocol.Value.HslColor;
-import com.sass_lang.embedded_protocol.Value.HwbColor;
-import com.sass_lang.embedded_protocol.Value.RgbColor;
+import com.sass_lang.embedded_protocol.Value.Color;
 import de.larsgrefer.sass.embedded.util.ColorUtil;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
@@ -88,12 +86,8 @@ class ConversionService {
             return value((Value.Number) object);
         }
 
-        if (object instanceof RgbColor) {
-            return value((RgbColor) object);
-        }
-
-        if (object instanceof HslColor) {
-            return value((HslColor) object);
+        if (object instanceof Color) {
+            return value((Color) object);
         }
 
         if (object instanceof Value.List) {
@@ -118,10 +112,6 @@ class ConversionService {
 
         if (object instanceof Value.ArgumentList) {
             return value((Value.ArgumentList) object);
-        }
-
-        if (object instanceof HwbColor) {
-            return value((HwbColor) object);
         }
 
         if (object instanceof Calculation) {
@@ -174,38 +164,12 @@ class ConversionService {
                 } else {
                     throw new IllegalArgumentException("Cant convert sass Number to " + targetType);
                 }
-            case RGB_COLOR:
-                RgbColor rgbColor = value.getRgbColor();
-                if (targetType.isAssignableFrom(RgbColor.class)) {
-                    return (T) rgbColor;
-                } else if (targetType.isAssignableFrom(HslColor.class)) {
-                    return (T) ColorUtil.toHslColor(rgbColor);
-                } else if (targetType.isAssignableFrom(HwbColor.class)) {
-                    return (T) ColorUtil.toHwbColor(rgbColor);
+            case COLOR:
+                Color color = value.getColor();
+                if (targetType.isAssignableFrom(Color.class)) {
+                    return (T) color;
                 } else {
                     throw new IllegalArgumentException("Cant convert sass RgbColor to " + targetType);
-                }
-            case HSL_COLOR:
-                HslColor hslColor = value.getHslColor();
-                if (targetType.isAssignableFrom(RgbColor.class)) {
-                    return (T) ColorUtil.toRgbColor(hslColor);
-                } else if (targetType.isAssignableFrom(HslColor.class)) {
-                    return (T) hslColor;
-                } else if (targetType.isAssignableFrom(HwbColor.class)) {
-                    return (T) ColorUtil.toHwbColor(hslColor);
-                } else {
-                    throw new IllegalArgumentException("Cant convert sass HslColor to " + targetType);
-                }
-            case HWB_COLOR:
-                HwbColor hwbColor = value.getHwbColor();
-                if (targetType.isAssignableFrom(RgbColor.class)) {
-                    return (T) ColorUtil.toRgbColor(hwbColor);
-                } else if (targetType.isAssignableFrom(HslColor.class)) {
-                    return (T) ColorUtil.toHslColor(hwbColor);
-                } else if (targetType.isAssignableFrom(HwbColor.class)) {
-                    return (T) hwbColor;
-                } else {
-                    throw new IllegalArgumentException("Cant convert sass HwbColor to " + targetType);
                 }
             case LIST:
                 Value.List sassList = value.getList();

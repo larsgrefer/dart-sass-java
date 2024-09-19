@@ -27,33 +27,14 @@ public class SassColor {
      *
      * @see <a href="https://sass-lang.com/documentation/modules/color#adjust-hue">adjust-hue</a>
      */
-    public static RgbColor adjustHue(RgbColorOrBuilder color, double hue) {
-        HslColor hslColor = ColorUtil.toHslColor(color);
-        return toRgbColor(adjustHue(hslColor, hue));
-    }
+    public static Color adjustHue(Color color, double hue) {
 
-    /**
-     * Increases or decreases color‘s hue.
-     * <p>
-     * The hue must be a number between -360deg and 360deg (inclusive) to add to $color’s hue.
-     *
-     * @see <a href="https://sass-lang.com/documentation/modules/color#adjust-hue">adjust-hue</a>
-     */
-    public static HslColor adjustHue(HslColor color, double hue) {
-        double newHue = color.getHue() + hue;
-        return color.toBuilder().setHue(normalizeHue(newHue)).build();
-    }
+        if ("hsl".equals(color.getSpace()) || "hwb".equals(color.getSpace())) {
+            double newHue = color.getChannel1() + hue;
+            return color.toBuilder().setChannel1(normalizeHue(newHue)).build();
+        }
 
-    /**
-     * Increases or decreases color‘s hue.
-     * <p>
-     * The hue must be a number between -360deg and 360deg (inclusive) to add to $color’s hue.
-     *
-     * @see <a href="https://sass-lang.com/documentation/modules/color#adjust-hue">adjust-hue</a>
-     */
-    public static HwbColor adjustHue(HwbColor color, double hue) {
-        double newHue = color.getHue() + hue;
-        return color.toBuilder().setHue(normalizeHue(newHue)).build();
+        return adjustHue(toHslColor(color), hue);
     }
 
     /**
@@ -61,25 +42,7 @@ public class SassColor {
      *
      * @see <a href="https://sass-lang.com/documentation/modules/color#alpha">alpha</a>
      */
-    public static double alpha(RgbColorOrBuilder color) {
-        return color.getAlpha();
-    }
-
-    /**
-     * Returns the alpha channel of $color as a number between 0 and 1.
-     *
-     * @see <a href="https://sass-lang.com/documentation/modules/color#alpha">alpha</a>
-     */
-    public static double alpha(HslColorOrBuilder color) {
-        return color.getAlpha();
-    }
-
-    /**
-     * Returns the alpha channel of $color as a number between 0 and 1.
-     *
-     * @see <a href="https://sass-lang.com/documentation/modules/color#alpha">alpha</a>
-     */
-    public static double alpha(HwbColorOrBuilder color) {
+    public static double alpha(ColorOrBuilder color) {
         return color.getAlpha();
     }
 
@@ -88,26 +51,8 @@ public class SassColor {
      *
      * @see <a href="https://sass-lang.com/documentation/modules/color#blackness">blackness</a>
      */
-    public static double blackness(RgbColorOrBuilder color) {
-        return blackness(toHwbColor(color));
-    }
-
-    /**
-     * Returns the HWB blackness of $color as a number between 0% and 100%.
-     *
-     * @see <a href="https://sass-lang.com/documentation/modules/color#blackness">blackness</a>
-     */
-    public static double blackness(HslColorOrBuilder color) {
-        return blackness(toHwbColor(color));
-    }
-
-    /**
-     * Returns the HWB blackness of $color as a number between 0% and 100%.
-     *
-     * @see <a href="https://sass-lang.com/documentation/modules/color#blackness">blackness</a>
-     */
-    public static double blackness(HwbColorOrBuilder color) {
-        return color.getBlackness();
+    public static double blackness(Color color) {
+        return toHwbColor(color).getChannel3();
     }
 
     /**
@@ -115,26 +60,8 @@ public class SassColor {
      *
      * @see <a href="https://sass-lang.com/documentation/modules/color#blue">blue</a>
      */
-    public static int blue(RgbColorOrBuilder color) {
-        return color.getBlue();
-    }
-
-    /**
-     * Returns the blue channel of $color as a number between 0 and 255.
-     *
-     * @see <a href="https://sass-lang.com/documentation/modules/color#blue">blue</a>
-     */
-    public static int blue(HslColorOrBuilder color) {
-        return blue(toRgbColor(color));
-    }
-
-    /**
-     * Returns the blue channel of $color as a number between 0 and 255.
-     *
-     * @see <a href="https://sass-lang.com/documentation/modules/color#blue">blue</a>
-     */
-    public static int blue(HwbColorOrBuilder color) {
-        return blue(toRgbColor(color));
+    public static int blue(Color color) {
+        return (int) toRgbColor(color).getChannel3();
     }
 
     /**
@@ -144,29 +71,7 @@ public class SassColor {
      *
      * @see <a href="https://sass-lang.com/documentation/modules/color#complement">complement</a>
      */
-    public static RgbColor complement(RgbColorOrBuilder color) {
-        return adjustHue(color, 180);
-    }
-
-    /**
-     * Returns the RGB complement of $color.
-     * <p>
-     * This is identical to color.adjust($color, $hue: 180deg).
-     *
-     * @see <a href="https://sass-lang.com/documentation/modules/color#complement">complement</a>
-     */
-    public static HslColor complement(HslColor color) {
-        return adjustHue(color, 180);
-    }
-
-    /**
-     * Returns the RGB complement of $color.
-     * <p>
-     * This is identical to color.adjust($color, $hue: 180deg).
-     *
-     * @see <a href="https://sass-lang.com/documentation/modules/color#complement">complement</a>
-     */
-    public static HwbColor complement(HwbColor color) {
+    public static Color complement(Color color) {
         return adjustHue(color, 180);
     }
 
@@ -178,61 +83,12 @@ public class SassColor {
      *
      * @see <a href="https://sass-lang.com/documentation/modules/color#darken">darken</a>
      */
-    public static RgbColor darken(RgbColorOrBuilder color, double amount) {
-        return toRgbColor(darken(toHslColor(color), amount));
-    }
+    public static Color darken(Color color, double amount) {
+        color = toHslColor(color);
 
-    /**
-     * Makes $color darker.
-     * <p>
-     * The $amount must be a number between 0% and 100% (inclusive).
-     * Decreases the HSL lightness of $color by that amount.
-     *
-     * @see <a href="https://sass-lang.com/documentation/modules/color#darken">darken</a>
-     */
-    public static HslColor darken(HslColor color, double amount) {
-        double newLightness = color.getLightness() - amount;
+        double newLightness = color.getChannel3() - amount;
         return color.toBuilder()
-                .setLightness(normalize100(newLightness))
-                .build();
-    }
-
-    /**
-     * Makes $color darker.
-     * <p>
-     * The $amount must be a number between 0% and 100% (inclusive).
-     * Decreases the HSL lightness of $color by that amount.
-     *
-     * @see <a href="https://sass-lang.com/documentation/modules/color#darken">darken</a>
-     */
-    public static HwbColor darken(HwbColorOrBuilder color, double amount) {
-        return toHwbColor(darken(toHslColor(color), amount));
-    }
-
-    /**
-     * Makes $color less saturated.
-     * <p>
-     * The $amount must be a number between 0% and 100% (inclusive).
-     * Decreases the HSL saturation of $color by that amount.
-     *
-     * @see <a href="https://sass-lang.com/documentation/modules/color#desaturate">desaturate</a>
-     */
-    public static RgbColor desaturate(RgbColorOrBuilder color, double amount) {
-        return toRgbColor(desaturate(toHslColor(color), amount));
-    }
-
-    /**
-     * Makes $color less saturated.
-     * <p>
-     * The $amount must be a number between 0% and 100% (inclusive).
-     * Decreases the HSL saturation of $color by that amount.
-     *
-     * @see <a href="https://sass-lang.com/documentation/modules/color#desaturate">desaturate</a>
-     */
-    public static HslColor desaturate(HslColor color, double amount) {
-        double newSaturation = color.getSaturation() - amount;
-        return color.toBuilder()
-                .setSaturation(normalize100(newSaturation))
+                .setChannel3(normalize100(newLightness))
                 .build();
     }
 
@@ -244,8 +100,13 @@ public class SassColor {
      *
      * @see <a href="https://sass-lang.com/documentation/modules/color#desaturate">desaturate</a>
      */
-    public static HwbColor desaturate(HwbColorOrBuilder color, double amount) {
-        return toHwbColor(desaturate(toHslColor(color), amount));
+    public static Color desaturate(Color color, double amount) {
+        color = toHslColor(color);
+
+        double newSaturation = color.getChannel2() - amount;
+        return color.toBuilder()
+                .setChannel2(normalize100(newSaturation))
+                .build();
     }
 
     /**
@@ -255,30 +116,9 @@ public class SassColor {
      *
      * @see <a href="https://sass-lang.com/documentation/modules/color#grayscale">grayscale</a>
      */
-    public static RgbColor grayscale(RgbColorOrBuilder color) {
-        return toRgbColor(grayscale(toHslColor(color)));
-    }
-
-    /**
-     * Returns a gray color with the same lightness as $color.
-     * <p>
-     * This is identical to color.change($color, $saturation: 0%).
-     *
-     * @see <a href="https://sass-lang.com/documentation/modules/color#grayscale">grayscale</a>
-     */
-    public static HslColor grayscale(HslColor color) {
-        return color.toBuilder().setSaturation(0d).build();
-    }
-
-    /**
-     * Returns a gray color with the same lightness as $color.
-     * <p>
-     * This is identical to color.change($color, $saturation: 0%).
-     *
-     * @see <a href="https://sass-lang.com/documentation/modules/color#grayscale">grayscale</a>
-     */
-    public static HwbColor grayscale(HwbColorOrBuilder color) {
-        return toHwbColor(grayscale(toHslColor(color)));
+    public static Color grayscale(Color color) {
+        color = toHslColor(color);
+        return color.toBuilder().setChannel2(0d).build();
     }
 
     /**
@@ -286,26 +126,8 @@ public class SassColor {
      *
      * @see <a href="https://sass-lang.com/documentation/modules/color#green">green</a>
      */
-    public static int green(RgbColorOrBuilder color) {
-        return color.getGreen();
-    }
-
-    /**
-     * Returns the green channel of $color as a number between 0 and 255.
-     *
-     * @see <a href="https://sass-lang.com/documentation/modules/color#green">green</a>
-     */
-    public static int green(HslColorOrBuilder color) {
-        return green(toRgbColor(color));
-    }
-
-    /**
-     * Returns the green channel of $color as a number between 0 and 255.
-     *
-     * @see <a href="https://sass-lang.com/documentation/modules/color#green">green</a>
-     */
-    public static int green(HwbColorOrBuilder color) {
-        return green(toRgbColor(color));
+    public static int green(Color color) {
+        return (int) toRgbColor(color).getChannel2();
     }
 
     /**
@@ -313,26 +135,11 @@ public class SassColor {
      *
      * @see <a href="https://sass-lang.com/documentation/modules/color#hue">hue</a>
      */
-    public double hue(RgbColorOrBuilder color) {
-        return hue(toHslColor(color));
-    }
-
-    /**
-     * Returns the hue of $color as a number between 0deg and 360deg.
-     *
-     * @see <a href="https://sass-lang.com/documentation/modules/color#hue">hue</a>
-     */
-    public double hue(HslColorOrBuilder color) {
-        return color.getHue();
-    }
-
-    /**
-     * Returns the hue of $color as a number between 0deg and 360deg.
-     *
-     * @see <a href="https://sass-lang.com/documentation/modules/color#hue">hue</a>
-     */
-    public double hue(HwbColorOrBuilder color) {
-        return color.getHue();
+    public double hue(Color color) {
+        if (color.getSpace().equals("hsl") || color.getSpace().equals("hwb")) {
+            return color.getChannel1();
+        }
+        return toHslColor(color).getChannel1();
     }
 
     /**
@@ -340,7 +147,7 @@ public class SassColor {
      *
      * @see <a href="https://sass-lang.com/documentation/modules/color#hwb">hwb</a>
      */
-    public HwbColor hwb(double hue, double whiteness, double blackness) {
+    public Color hwb(double hue, double whiteness, double blackness) {
         return hwb(hue, whiteness, blackness, 1d);
     }
 
@@ -349,11 +156,12 @@ public class SassColor {
      *
      * @see <a href="https://sass-lang.com/documentation/modules/color#hwb">hwb</a>
      */
-    public HwbColor hwb(double hue, double whiteness, double blackness, double alpha) {
-        return HwbColor.newBuilder()
-                .setHue(hue)
-                .setWhiteness(whiteness)
-                .setBlackness(blackness)
+    public Color hwb(double hue, double whiteness, double blackness, double alpha) {
+        return Color.newBuilder()
+                .setSpace("hwb")
+                .setChannel1(hue)
+                .setChannel2(whiteness)
+                .setChannel3(blackness)
                 .setAlpha(alpha)
                 .build();
     }
@@ -363,13 +171,20 @@ public class SassColor {
      *
      * @see <a href="https://sass-lang.com/documentation/modules/color#ie-hex-str">ie-hex-str</a>
      */
-    public String ieHexStr(RgbColor rgbColor) {
+    public String ieHexStr(Color color) {
+
+        Color rgbColor = toRgbColor(color);
+
         int a = (int) Math.round(rgbColor.getAlpha() * 255d);
 
+        int red = (int) rgbColor.getChannel1();
+        int green = (int) rgbColor.getChannel2();
+        int blue = (int) rgbColor.getChannel3();
+
         int value = ((a & 0xFF) << 24) |
-                ((rgbColor.getRed() & 0xFF) << 16) |
-                ((rgbColor.getGreen() & 0xFF) << 8) |
-                ((rgbColor.getBlue() & 0xFF) << 0);
+                ((red & 0xFF) << 16) |
+                ((green & 0xFF) << 8) |
+                ((blue & 0xFF) << 0);
 
         return String.newBuilder()
                 .setText("#" + Integer.toHexString(value).toUpperCase(Locale.ROOT))
@@ -378,47 +193,11 @@ public class SassColor {
     }
 
     /**
-     * Returns an unquoted string that represents $color in the #AARRGGBB format expected by Internet Explorer’s -ms-filter property.
-     *
-     * @see <a href="https://sass-lang.com/documentation/modules/color#ie-hex-str">ie-hex-str</a>
-     */
-    public String ieHexStr(HslColor color) {
-        return ieHexStr(toRgbColor(color));
-    }
-
-    /**
-     * Returns an unquoted string that represents $color in the #AARRGGBB format expected by Internet Explorer’s -ms-filter property.
-     *
-     * @see <a href="https://sass-lang.com/documentation/modules/color#ie-hex-str">ie-hex-str</a>
-     */
-    public String ieHexStr(HwbColor color) {
-        return ieHexStr(toRgbColor(color));
-    }
-
-    /**
      * Returns the inverse or negative of $color.
      *
      * @see <a href="https://sass-lang.com/documentation/modules/color#invert">invert</a>
      */
-    public RgbColor invert(RgbColor color) {
-        return invert(color, 1);
-    }
-
-    /**
-     * Returns the inverse or negative of $color.
-     *
-     * @see <a href="https://sass-lang.com/documentation/modules/color#invert">invert</a>
-     */
-    public HslColor invert(HslColor color) {
-        return invert(color, 1);
-    }
-
-    /**
-     * Returns the inverse or negative of $color.
-     *
-     * @see <a href="https://sass-lang.com/documentation/modules/color#invert">invert</a>
-     */
-    public HwbColor invert(HwbColor color) {
+    public Color invert(Color color) {
         return invert(color, 1);
     }
 
@@ -431,107 +210,46 @@ public class SassColor {
      *
      * @see <a href="https://sass-lang.com/documentation/modules/color#invert">invert</a>
      */
-    public RgbColor invert(RgbColor color, double weight) {
+    public Color invert(Color color, double weight) {
         if (weight < 0 || weight > 1) {
             throw new IllegalArgumentException("weight must be between 0 and 1");
         }
 
-        RgbColor inverse = color.toBuilder()
-                .setRed(255 - color.getRed())
-                .setGreen(255 - color.getGreen())
-                .setBlue(255 - color.getBlue())
+        color = toRgbColor(color);
+
+        Color inverse = color.toBuilder()
+                .setChannel1(255 - color.getChannel1())
+                .setChannel2(255 - color.getChannel2())
+                .setChannel3(255 - color.getChannel3())
                 .build();
 
         return mix(inverse, color, weight);
     }
 
     /**
-     * Returns the inverse or negative of $color.
-     * <p>
-     * The $weight must be a number between 0% and 100% (inclusive).
-     * A higher weight means the result will be closer to the negative, and a lower weight means it will be closer to $color.
-     * Weight 50% will always produce #808080.
-     *
-     * @see <a href="https://sass-lang.com/documentation/modules/color#invert">invert</a>
-     */
-    public HslColor invert(HslColor color, double weight) {
-        return toHslColor(invert(toRgbColor(color), weight));
-    }
-
-    /**
-     * Returns the inverse or negative of $color.
-     * <p>
-     * The $weight must be a number between 0% and 100% (inclusive).
-     * A higher weight means the result will be closer to the negative, and a lower weight means it will be closer to $color.
-     * Weight 50% will always produce #808080.
-     *
-     * @see <a href="https://sass-lang.com/documentation/modules/color#invert">invert</a>
-     */
-    public HwbColor invert(HwbColor color, double weight) {
-        return toHwbColor(invert(toRgbColor(color), weight));
-    }
-
-    /**
      * Makes $color lighter.
      * <p>
      * The $amount must be a number between 0% and 100% (inclusive). Increases the HSL lightness of $color by that amount.
      *
      * @see <a href="https://sass-lang.com/documentation/modules/color#lighten">lighten</a>
      */
-    public RgbColor lighten(RgbColor color, double amount) {
-        return toRgbColor(lighten(toHslColor(color), amount));
-    }
-
-    /**
-     * Makes $color lighter.
-     * <p>
-     * The $amount must be a number between 0% and 100% (inclusive). Increases the HSL lightness of $color by that amount.
-     *
-     * @see <a href="https://sass-lang.com/documentation/modules/color#lighten">lighten</a>
-     */
-    public HslColor lighten(HslColor color, double amount) {
+    public Color lighten(Color color, double amount) {
         if (amount < 0 || amount > 100) throw new IllegalArgumentException("amount");
+
+        color = toHslColor(color);
+
         return color.toBuilder()
-                .setLightness(normalize100(color.getLightness() + amount))
+                .setChannel3(normalize100(color.getChannel3() + amount))
                 .build();
     }
 
     /**
-     * Makes $color lighter.
-     * <p>
-     * The $amount must be a number between 0% and 100% (inclusive). Increases the HSL lightness of $color by that amount.
-     *
-     * @see <a href="https://sass-lang.com/documentation/modules/color#lighten">lighten</a>
-     */
-    public HwbColor lighten(HwbColor color, double amount) {
-        return toHwbColor(lighten(toHslColor(color), amount));
-    }
-
-    /**
      * Returns the HSL lightness of $color as a number between 0% and 100%.
      *
      * @see <a href="https://sass-lang.com/documentation/modules/color#lightness">lightness</a>
      */
-    public double lightness(RgbColor color) {
-        return lightness(toHslColor(color));
-    }
-
-    /**
-     * Returns the HSL lightness of $color as a number between 0% and 100%.
-     *
-     * @see <a href="https://sass-lang.com/documentation/modules/color#lightness">lightness</a>
-     */
-    public double lightness(HslColor color) {
-        return color.getLightness();
-    }
-
-    /**
-     * Returns the HSL lightness of $color as a number between 0% and 100%.
-     *
-     * @see <a href="https://sass-lang.com/documentation/modules/color#lightness">lightness</a>
-     */
-    public double lightness(HwbColor color) {
-        return lightness(toHslColor(color));
+    public double lightness(Color color) {
+        return toHslColor(color).getChannel3();
     }
 
     /**
@@ -539,25 +257,7 @@ public class SassColor {
      *
      * @see <a href="https://sass-lang.com/documentation/modules/color#mix">mix</a>
      */
-    public RgbColor mix(RgbColor color1, RgbColor color2) {
-        return mix(color1, color2, 0.5);
-    }
-
-    /**
-     * Returns a color that’s a mixture of $color1 and $color2.
-     *
-     * @see <a href="https://sass-lang.com/documentation/modules/color#mix">mix</a>
-     */
-    public HslColor mix(HslColor color1, HslColor color2) {
-        return mix(color1, color2, 0.5);
-    }
-
-    /**
-     * Returns a color that’s a mixture of $color1 and $color2.
-     *
-     * @see <a href="https://sass-lang.com/documentation/modules/color#mix">mix</a>
-     */
-    public HwbColor mix(HwbColor color1, HwbColor color2) {
+    public Color mix(Color color1, Color color2) {
         return mix(color1, color2, 0.5);
     }
 
@@ -570,7 +270,7 @@ public class SassColor {
      *
      * @see <a href="https://sass-lang.com/documentation/modules/color#mix">mix</a>
      */
-    public RgbColor mix(RgbColor color1, RgbColor color2, double weight) {
+    public Color mix(Color color1, Color color2, double weight) {
         if (weight <= 0) {
             return color2;
         } else if (weight > 1) {
@@ -587,91 +287,28 @@ public class SassColor {
         double weight1 = (combinedWeight1 + 1) / 2;
         double weight2 = 1 - weight1;
 
-        int r = (int) Math.round(color1.getRed() * weight1 + color2.getRed() * weight2);
-        int g = (int) Math.round(color1.getGreen() * weight1 + color2.getGreen() * weight2);
-        int b = (int) Math.round(color1.getBlue() * weight1 + color2.getBlue() * weight2);
+        int r = (int) Math.round(red(color1) * weight1 + red(color2) * weight2);
+        int g = (int) Math.round(green(color1) * weight1 + green(color2) * weight2);
+        int b = (int) Math.round(blue(color1) * weight1 + blue(color2) * weight2);
         double a = color1.getAlpha() * weight + color2.getAlpha() * (1 - weight);
 
-        return RgbColor.newBuilder()
-                .setRed(r)
-                .setGreen(g)
-                .setBlue(b)
+        return Color.newBuilder()
+                .setSpace("rgb")
+                .setChannel1(r)
+                .setChannel2(g)
+                .setChannel3(b)
                 .setAlpha(a)
                 .build();
     }
 
     /**
-     * Returns a color that’s a mixture of $color1 and $color2.
-     * <p>
-     * Both the $weight and the relative opacity of each color determines how much of each color is in the result.
-     * The $weight must be a number between 0% and 100% (inclusive).
-     * A larger weight indicates that more of $color1 should be used, and a smaller weight indicates that more of $color2 should be used.
-     *
-     * @see <a href="https://sass-lang.com/documentation/modules/color#mix">mix</a>
-     */
-    public HslColor mix(HslColor color1, HslColor color2, double weight) {
-        RgbColor mix = mix(
-                toRgbColor(color1),
-                toRgbColor(color2),
-                weight
-        );
-        return toHslColor(mix);
-    }
-
-    /**
-     * Returns a color that’s a mixture of $color1 and $color2.
-     * <p>
-     * Both the $weight and the relative opacity of each color determines how much of each color is in the result.
-     * The $weight must be a number between 0% and 100% (inclusive).
-     * A larger weight indicates that more of $color1 should be used, and a smaller weight indicates that more of $color2 should be used.
-     *
-     * @see <a href="https://sass-lang.com/documentation/modules/color#mix">mix</a>
-     */
-    public HwbColor mix(HwbColor color1, HwbColor color2, double weight) {
-        RgbColor mix = mix(
-                toRgbColor(color1),
-                toRgbColor(color2),
-                weight
-        );
-        return toHwbColor(mix);
-    }
-
-    /**
      * Makes $color more opaque.
      * <p>
      * The $amount must be a number between 0 and 1 (inclusive). Increases the alpha channel of $color by that amount.
      *
      * @see <a href="https://sass-lang.com/documentation/modules/color#opacify">opacify</a>
      */
-    public RgbColor opacify(RgbColor color, double amount) {
-        if (amount < 0 || amount > 1) throw new IllegalArgumentException("amount");
-        return color.toBuilder()
-                .setAlpha(normalize1(color.getAlpha() + amount))
-                .build();
-    }
-
-    /**
-     * Makes $color more opaque.
-     * <p>
-     * The $amount must be a number between 0 and 1 (inclusive). Increases the alpha channel of $color by that amount.
-     *
-     * @see <a href="https://sass-lang.com/documentation/modules/color#opacify">opacify</a>
-     */
-    public HslColor opacify(HslColor color, double amount) {
-        if (amount < 0 || amount > 1) throw new IllegalArgumentException("amount");
-        return color.toBuilder()
-                .setAlpha(normalize1(color.getAlpha() + amount))
-                .build();
-    }
-
-    /**
-     * Makes $color more opaque.
-     * <p>
-     * The $amount must be a number between 0 and 1 (inclusive). Increases the alpha channel of $color by that amount.
-     *
-     * @see <a href="https://sass-lang.com/documentation/modules/color#opacify">opacify</a>
-     */
-    public HwbColor opacify(HwbColor color, double amount) {
+    public Color opacify(Color color, double amount) {
         if (amount < 0 || amount > 1) throw new IllegalArgumentException("amount");
         return color.toBuilder()
                 .setAlpha(normalize1(color.getAlpha() + amount))
@@ -683,26 +320,8 @@ public class SassColor {
      *
      * @see <a href="https://sass-lang.com/documentation/modules/color#red">red</a>
      */
-    public int red(RgbColor color) {
-        return color.getRed();
-    }
-
-    /**
-     * Returns the red channel of $color as a number between 0 and 255.
-     *
-     * @see <a href="https://sass-lang.com/documentation/modules/color#red">red</a>
-     */
-    public int red(HslColor color) {
-        return red(toRgbColor(color));
-    }
-
-    /**
-     * Returns the red channel of $color as a number between 0 and 255.
-     *
-     * @see <a href="https://sass-lang.com/documentation/modules/color#red">red</a>
-     */
-    public int red(HwbColor color) {
-        return red(toRgbColor(color));
+    public int red(Color color) {
+        return (int) toRgbColor(color).getChannel1();
     }
 
     /**
@@ -712,60 +331,23 @@ public class SassColor {
      *
      * @see <a href="https://sass-lang.com/documentation/modules/color#saturate">saturate</a>
      */
-    public RgbColor saturate(RgbColor color, double amount) {
-        return toRgbColor(saturate(toHslColor(color), amount));
-    }
+    public Color saturate(Color color, double amount) {
 
-    /**
-     * Makes $color more saturated.
-     * <p>
-     * The $amount must be a number between 0% and 100% (inclusive). Increases the HSL saturation of $color by that amount.
-     *
-     * @see <a href="https://sass-lang.com/documentation/modules/color#saturate">saturate</a>
-     */
-    public HslColor saturate(HslColor color, double amount) {
+        color = toHslColor(color);
+
         if (amount < 0 || amount > 100) throw new IllegalArgumentException("amount");
         return color.toBuilder()
-                .setSaturation(normalize100(color.getSaturation() + amount))
+                .setChannel2(normalize100(color.getChannel2() + amount))
                 .build();
     }
 
     /**
-     * Makes $color more saturated.
-     * <p>
-     * The $amount must be a number between 0% and 100% (inclusive). Increases the HSL saturation of $color by that amount.
-     *
-     * @see <a href="https://sass-lang.com/documentation/modules/color#saturate">saturate</a>
-     */
-    public HwbColor saturate(HwbColor color, double amount) {
-        return toHwbColor(saturate(toHslColor(color), amount));
-    }
-
-    /**
      * Returns the HSL saturation of $color as a number between 0% and 100%.
      *
      * @see <a href="https://sass-lang.com/documentation/modules/color#saturation">saturation</a>
      */
-    public double saturation(RgbColor color) {
-        return saturation(toHslColor(color));
-    }
-
-    /**
-     * Returns the HSL saturation of $color as a number between 0% and 100%.
-     *
-     * @see <a href="https://sass-lang.com/documentation/modules/color#saturation">saturation</a>
-     */
-    public double saturation(HslColor color) {
-        return color.getSaturation();
-    }
-
-    /**
-     * Returns the HSL saturation of $color as a number between 0% and 100%.
-     *
-     * @see <a href="https://sass-lang.com/documentation/modules/color#saturation">saturation</a>
-     */
-    public double saturation(HwbColor color) {
-        return saturation(toHslColor(color));
+    public double saturation(Color color) {
+        return toHslColor(color).getChannel2();
     }
 
     /**
@@ -775,7 +357,7 @@ public class SassColor {
      *
      * @see <a href="https://sass-lang.com/documentation/modules/color#transparentize">transparentize</a>
      */
-    public RgbColor transparentize(RgbColor color, double amount) {
+    public Color transparentize(Color color, double amount) {
         if (amount < 0 || amount > 1) throw new IllegalArgumentException("amount");
         return color.toBuilder()
                 .setAlpha(normalize1(color.getAlpha() - amount))
@@ -783,59 +365,12 @@ public class SassColor {
     }
 
     /**
-     * Makes $color more transparent.
-     * <p>
-     * The $amount must be a number between 0 and 1 (inclusive). Decreases the alpha channel of $color by that amount.
-     *
-     * @see <a href="https://sass-lang.com/documentation/modules/color#transparentize">transparentize</a>
-     */
-    public HslColor transparentize(HslColor color, double amount) {
-        if (amount < 0 || amount > 1) throw new IllegalArgumentException("amount");
-        return color.toBuilder()
-                .setAlpha(normalize1(color.getAlpha() - amount))
-                .build();
-    }
-
-    /**
-     * Makes $color more transparent.
-     * <p>
-     * The $amount must be a number between 0 and 1 (inclusive). Decreases the alpha channel of $color by that amount.
-     *
-     * @see <a href="https://sass-lang.com/documentation/modules/color#transparentize">transparentize</a>
-     */
-    public HwbColor transparentize(HwbColor color, double amount) {
-        if (amount < 0 || amount > 1) throw new IllegalArgumentException("amount");
-        return color.toBuilder()
-                .setAlpha(normalize1(color.getAlpha() - amount))
-                .build();
-    }
-
-
-    /**
      * Returns the HWB whiteness of $color as a number between 0% and 100%.
      *
      * @see <a href="https://sass-lang.com/documentation/modules/color#whiteness">whiteness</a>
      */
-    public double whiteness(RgbColor color) {
-        return whiteness(toHwbColor(color));
-    }
-
-    /**
-     * Returns the HWB whiteness of $color as a number between 0% and 100%.
-     *
-     * @see <a href="https://sass-lang.com/documentation/modules/color#whiteness">whiteness</a>
-     */
-    public double whiteness(HslColor color) {
-        return whiteness(toHwbColor(color));
-    }
-
-    /**
-     * Returns the HWB whiteness of $color as a number between 0% and 100%.
-     *
-     * @see <a href="https://sass-lang.com/documentation/modules/color#whiteness">whiteness</a>
-     */
-    public double whiteness(HwbColor color) {
-        return color.getWhiteness();
+    public double whiteness(Color color) {
+        return toHwbColor(color).getChannel2();
     }
 
     static double normalizeHue(double hue) {

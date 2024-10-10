@@ -56,7 +56,7 @@ public class ConnectionFactory {
      */
     public static ProcessConnection ofExecutable(File executable) throws IOException {
         if (executable == null || !executable.isFile()) {
-            throw new IllegalArgumentException("executable is not a file");
+            throw new IllegalArgumentException(executable + " is not a file");
         }
 
         List<String> cmd = new ArrayList<>();

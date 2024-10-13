@@ -14,11 +14,16 @@ class ColorUtilTest {
     private static final Color rgbRed = Color.newBuilder()
             .setSpace("rgb")
             .setChannel1(255)
+            .setChannel2(0)
+            .setChannel3(0)
             .setAlpha(1d)
             .build();
 
     private static final Color rgbBlack = Color.newBuilder()
             .setSpace("rgb")
+            .setChannel1(0)
+            .setChannel2(0)
+            .setChannel3(0)
             .setAlpha(1d)
             .build();
 

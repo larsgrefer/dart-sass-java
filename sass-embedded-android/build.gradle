@@ -55,7 +55,7 @@ dependencies {
     }
 
     implementation 'org.slf4j:slf4j-android:1.7.36'
-    implementation 'androidx.annotation:annotation:1.8.2'
+    implementation 'androidx.annotation:annotation:1.9.0'
 
     dartSass "sass:dart-sass:$dartSassVersion:android-x64@tar.gz"
     dartSass "sass:dart-sass:$dartSassVersion:android-ia32@tar.gz"

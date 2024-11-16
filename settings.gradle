@@ -5,15 +5,15 @@ pluginManagement {
         mavenCentral()
     }
     plugins {
-        id "com.android.library" version "8.5.2"
-        id "com.android.application" version "8.5.2"
+        id "com.android.library" version "8.7.2"
+        id "com.android.application" version "8.7.2"
     }
 }
 
 plugins {
     id 'io.freefair.settings.plugin-versions' version '8.10.2'
     id 'org.gradle.toolchains.foojay-resolver-convention' version '0.8.0'
-    id "com.gradle.develocity" version "3.18.1"
+    id "com.gradle.develocity" version "3.18.2"
 }
 
 rootProject.name = 'dart-sass-java'

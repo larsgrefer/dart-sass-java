@@ -55,7 +55,11 @@ public class ConnectionFactory {
      * @throws IOException if the subprocess can not be started.
      */
     public static ProcessConnection ofExecutable(File executable) throws IOException {
-        if (executable == null || !executable.isFile()) {
+        if (executable == null) {
+            throw new IllegalArgumentException("executable must not be null");
+        }
+
+        if (!executable.isFile()) {
             throw new IllegalArgumentException(executable + " is not a file");
         }
 

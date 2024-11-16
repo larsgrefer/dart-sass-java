@@ -15,7 +15,13 @@ public class BundledPackageProvider extends DartSassPackageProvider {
 
         String resourcePath = String.format("/de/larsgrefer/sass/embedded/bundled/dart-sass-%s", dartSassPackageSuffix);
 
-        return this.getClass().getResource(resourcePath);
+        URL bundledResource = this.getClass().getResource(resourcePath);
+
+        if (bundledResource == null) {
+            throw new IllegalStateException("Could not find resource: " + resourcePath);
+        }
+
+        return bundledResource;
     }
 
 

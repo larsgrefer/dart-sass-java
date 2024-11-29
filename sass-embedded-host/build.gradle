@@ -29,11 +29,11 @@ dependencies {
     api "org.slf4j:slf4j-api:1.7.36"
 
     compileOnly 'org.jetbrains:annotations:26.0.1'
-    compileOnly 'androidx.annotation:annotation-jvm:1.8.2'
+    compileOnly 'androidx.annotation:annotation-jvm:1.9.1'
     compileOnly 'com.google.code.findbugs:jsr305:3.0.2'
     compileOnly 'javax.servlet:javax.servlet-api:4.0.1'
     compileOnly 'jakarta.servlet:jakarta.servlet-api:6.0.0'
-    compileOnly 'org.apache.logging.log4j:log4j-api:2.24.1'
+    compileOnly 'org.apache.logging.log4j:log4j-api:2.24.2'
     webjarsSupportImplementation "org.webjars:webjars-locator-core:0.59"
     compileOnly "org.jboss:jboss-vfs:3.3.2.Final"
 

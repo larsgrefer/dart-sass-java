@@ -37,12 +37,10 @@ public abstract class DartSassPackageProvider {
 
         Path targetPath = getTargetPath();
 
-        if (IOUtils.isEmpty(targetPath)) {
-            try {
-                IOUtils.extract(dist, targetPath);
-            } catch (IOException e) {
-                throw new IOException(String.format("Failed to extract %s into %s", dist, targetPath), e);
-            }
+        try {
+            IOUtils.extract(dist, targetPath);
+        } catch (IOException e) {
+            throw new IOException(String.format("Failed to extract %s into %s", dist, targetPath), e);
         }
 
         File execDir = targetPath.resolve("dart-sass").toFile();

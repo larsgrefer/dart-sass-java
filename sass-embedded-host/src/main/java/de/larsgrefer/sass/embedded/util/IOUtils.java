@@ -109,13 +109,4 @@ public class IOUtils {
         }
     }
 
-    public static boolean isEmpty(Path path) throws IOException {
-        if (Files.isDirectory(path)) {
-            try (Stream<Path> entries = Files.list(path)) {
-                return !entries.findFirst().isPresent();
-            }
-        }
-
-        return false;
-    }
 }

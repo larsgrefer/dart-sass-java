@@ -7,21 +7,21 @@ repositories {
 }
 
 android {
-    compileSdk 34
-    namespace "de.larsgrefer.sass.embedded.android.demo"
+    compileSdk = 34
+    namespace = "de.larsgrefer.sass.embedded.android.demo"
 
     defaultConfig {
-        targetSdk 34
-        minSdk 21
+        targetSdk = 34
+        minSdk = 21
     }
 
-    packagingOptions.jniLibs.useLegacyPackaging true
+    packagingOptions.jniLibs.useLegacyPackaging = true
 
     buildTypes {
         release {
             minifyEnabled true
 
-            shrinkResources true
+            shrinkResources = true
 
             proguardFiles getDefaultProguardFile(
                     'proguard-android-optimize.txt'),

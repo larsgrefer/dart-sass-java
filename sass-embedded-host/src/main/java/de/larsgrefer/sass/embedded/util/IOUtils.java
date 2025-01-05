@@ -11,8 +11,8 @@ import java.io.OutputStream;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -50,7 +50,7 @@ public class IOUtils {
             } else {
                 ensureDirectory(entryFile.getParentFile());
 
-                Files.copy(zipInputStream, entryPath);
+                Files.copy(zipInputStream, entryPath, StandardCopyOption.REPLACE_EXISTING);
             }
             zipInputStream.closeEntry();
 

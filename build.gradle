@@ -56,11 +56,11 @@ allprojects {
         tasks.withType(Test).configureEach {
             useJUnitPlatform()
             testLogging {
-                exceptionFormat "full"
-                showExceptions true
-                showCauses true
-                showStackTraces true
-                showStandardStreams System.getenv("CI") == "true"
+                exceptionFormat = "full"
+                showExceptions = true
+                showCauses = true
+                showStackTraces = true
+                showStandardStreams = System.getenv("CI") == "true"
             }
         }
 

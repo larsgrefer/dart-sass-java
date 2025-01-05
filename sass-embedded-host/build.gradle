@@ -2,6 +2,7 @@ plugins {
     id "java-library"
     id "io.freefair.maven-publish-java"
     id "io.freefair.lombok"
+    id "io.freefair.maven-optional"
     id "jacoco"
 }
 
@@ -10,18 +11,6 @@ description = "SASS Embedded Host"
 java.toolchain.languageVersion = JavaLanguageVersion.of(11)
 
 compileJava.options.release.set(8)
-
-java {
-    registerFeature('webjarsSupport') {
-        usingSourceSet(sourceSets.main)
-    }
-    registerFeature('springSupport') {
-        usingSourceSet(sourceSets.main)
-    }
-    registerFeature('springWebmvcSupport') {
-        usingSourceSet(sourceSets.main)
-    }
-}
 
 dependencies {
     api project(":sass-embedded-protocol")
@@ -34,11 +23,11 @@ dependencies {
     compileOnly 'javax.servlet:javax.servlet-api:4.0.1'
     compileOnly 'jakarta.servlet:jakarta.servlet-api:6.0.0'
     compileOnly 'org.apache.logging.log4j:log4j-api:2.24.3'
-    webjarsSupportImplementation "org.webjars:webjars-locator-core:0.59"
+    optional "org.webjars:webjars-locator-core:0.59"
     compileOnly "org.jboss:jboss-vfs:3.3.2.Final"
 
-    springSupportApi "org.springframework:spring-core:$spring5Verison"
-    springWebmvcSupportApi "org.springframework:spring-webmvc:$spring5Verison"
+    optional "org.springframework:spring-core:$spring5Verison"
+    optional "org.springframework:spring-webmvc:$spring5Verison"
 
     testCompileOnly 'org.jetbrains:annotations:26.0.1'
 

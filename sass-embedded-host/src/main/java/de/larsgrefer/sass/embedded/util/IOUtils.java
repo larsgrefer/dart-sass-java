@@ -50,7 +50,9 @@ public class IOUtils {
             } else {
                 ensureDirectory(entryFile.getParentFile());
 
-                Files.copy(zipInputStream, entryPath, StandardCopyOption.REPLACE_EXISTING);
+                if (Files.notExists(entryPath) || !entryFile.exists()) {
+                    Files.copy(zipInputStream, entryPath, StandardCopyOption.REPLACE_EXISTING);
+                }
             }
             zipInputStream.closeEntry();
 

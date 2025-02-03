@@ -13,6 +13,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -22,6 +23,20 @@ import java.util.zip.ZipInputStream;
 @UtilityClass
 @RequiresApi(10000)
 public class IOUtils {
+
+    public static boolean isEmpty(Path path) throws IOException {
+        if (Files.notExists(path)) {
+            return true;
+        }
+
+        if (Files.isDirectory(path)) {
+            try (Stream<Path> walk = Files.walk(path)) {
+                return walk.noneMatch(Files::isRegularFile);
+            }
+        }
+
+        return false;
+    }
 
     public static void extract(URL archiveUrl, Path destinationDir) throws IOException {
         String file = archiveUrl.getPath();

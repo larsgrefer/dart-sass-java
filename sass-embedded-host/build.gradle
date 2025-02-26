@@ -15,7 +15,7 @@ compileJava.options.release.set(8)
 dependencies {
     api project(":sass-embedded-protocol")
     api project(":sass-embedded-bundled")
-    api "org.slf4j:slf4j-api:1.7.36"
+    api "org.slf4j:slf4j-api:2.0.17"
 
     compileOnly 'org.jetbrains:annotations:26.0.2'
     compileOnly 'androidx.annotation:annotation-jvm:1.9.1'

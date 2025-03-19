@@ -51,7 +51,7 @@ allprojects {
             testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
             testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
-            testImplementation 'ch.qos.logback:logback-classic:1.5.17'
+            testImplementation 'ch.qos.logback:logback-classic:1.5.18'
         }
 
         tasks.withType(Test).configureEach {

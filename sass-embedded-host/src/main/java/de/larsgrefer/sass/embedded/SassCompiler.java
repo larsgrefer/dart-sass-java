@@ -125,6 +125,26 @@ public class SassCompiler implements Closeable {
     @Setter
     private boolean silent = false;
 
+    /**
+     * This option tells Sass to treat a particular type of deprecation warning as an error.
+     * @see #addFatalDeprecation(String)
+     */
+    private final List<String> fatalDeprecations = new ArrayList<>();
+
+    /**
+     * This option tells Sass to opt in to a future type of deprecation warning early, emitting warnings even though
+     * the deprecation is not yet active.
+     * @see #addFutureDeprecation(String)
+     */
+    private final List<String> futureDeprecations = new ArrayList<>();
+
+    /**
+     * This option tells Sass to silence a particular type of deprecation warning if you wish to temporarily ignore
+     * the deprecation.
+     * @see #addSilenceDeprecation(String)
+     */
+    private final List<String> silenceDeprecations = new ArrayList<>();
+
     private final CompilerConnection connection;
 
     private final Random compileRequestIds = new Random();
@@ -147,6 +167,43 @@ public class SassCompiler implements Closeable {
 
     public OutboundMessage.VersionResponse getVersion() throws IOException {
         return exec(inboundMessage(VersionRequest.getDefaultInstance())).getVersionResponse();
+    }
+
+    /**
+     * Adds a deprecation type to the list of fatal deprecations. Sass will treat a warning for this type of deprecation
+     * as an error.
+     * <p>
+     * For a list of deprecation types, see the
+     * <a href="https://sass-lang.com/documentation/cli/dart-sass/#fatal-deprecation">Sass documentation</a>.
+     * @param deprecationId a deprecation ID
+     */
+    public void addFatalDeprecation(@NonNull String deprecationId) {
+        fatalDeprecations.add(deprecationId);
+    }
+
+    /**
+     * Adds a deprecation type to the list of future deprecations. Sass will opt in to this type of deprecation
+     * warning early, emitting warnings even though the deprecation is not yet active. This can be combined with
+     * {@link #addFatalDeprecation(String)} to emit errors instead of warnings for a future deprecation.
+     * <p>
+     * For a list of deprecation types, see the
+     * <a href="https://sass-lang.com/documentation/cli/dart-sass/#fatal-deprecation">Sass documentation</a>.
+     * @param deprecationId a deprecation ID
+     */
+    public void addFutureDeprecation(@NonNull String deprecationId) {
+        futureDeprecations.add(deprecationId);
+    }
+
+    /**
+     * Adds a deprecation type to the list of silenced deprecations. Sass will silence warnings for this type of
+     * deprecation.
+     * <p>
+     * For a list of deprecation types, see the
+     * <a href="https://sass-lang.com/documentation/cli/dart-sass/#fatal-deprecation">Sass documentation</a>.
+     * @param deprecationId a deprecation ID
+     */
+    public void addSilenceDeprecation(@NonNull String deprecationId) {
+        silenceDeprecations.add(deprecationId);
     }
 
     public void registerFunction(@NonNull HostFunction sassFunction) {
@@ -199,6 +256,9 @@ public class SassCompiler implements Closeable {
         builder.setSourceMapIncludeSources(sourceMapIncludeSources);
         builder.setCharset(emitCharset);
         builder.setSilent(silent);
+        builder.addAllFatalDeprecation(fatalDeprecations);
+        builder.addAllFutureDeprecation(futureDeprecations);
+        builder.addAllSilenceDeprecation(silenceDeprecations);
 
         return builder;
     }

@@ -1,9 +1,6 @@
 package de.larsgrefer.sass.embedded;
 
-import com.sass_lang.embedded_protocol.InboundMessage;
-import com.sass_lang.embedded_protocol.OutboundMessage;
-import com.sass_lang.embedded_protocol.OutputStyle;
-import com.sass_lang.embedded_protocol.Value;
+import com.sass_lang.embedded_protocol.*;
 import de.larsgrefer.sass.embedded.functions.HostFunction;
 import org.intellij.lang.annotations.Language;
 import org.jetbrains.annotations.NotNull;
@@ -14,11 +11,13 @@ import org.junit.jupiter.api.Test;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import static de.larsgrefer.sass.embedded.BootstrapUtil.getBoostrapVersion;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class SassCompilerTest {
@@ -154,4 +153,38 @@ class SassCompilerTest {
         System.out.println(compileSuccess1.getSourceMap());
     }
 
+    @Test
+    void silenceDeprecations() {
+        @Language("SCSS") String scss = ".foo { color: adjust-color(#000000, $red: 255); }";
+        
+        InboundMessage.CompileRequest.StringInput string = InboundMessage.CompileRequest.StringInput.newBuilder()
+                .setSource(scss)
+                .build();
+
+        List<OutboundMessage.LogEventOrBuilder> logEvents = new ArrayList<>();
+        sassCompiler.setLoggingHandler(logEvents::add);
+        
+        assertDoesNotThrow(() -> sassCompiler.compileString(string, OutputStyle.EXPANDED));
+        assertThat(logEvents).anyMatch(event -> event.getType() == LogEventType.DEPRECATION_WARNING);
+        
+        logEvents.clear();
+        sassCompiler.addSilenceDeprecation("global-builtin");
+        assertDoesNotThrow(() -> sassCompiler.compileString(string, OutputStyle.EXPANDED));
+        assertThat(logEvents).noneMatch(event -> event.getType() == LogEventType.DEPRECATION_WARNING);
+    }
+
+    @Test
+    void fatalDeprecations() {
+        @Language("SCSS") String scss = ".foo { color: adjust-color(#000000, $red: 255); }";
+        
+        InboundMessage.CompileRequest.StringInput string = InboundMessage.CompileRequest.StringInput.newBuilder()
+                .setSource(scss)
+                .build();
+        
+        sassCompiler.addFatalDeprecation("global-builtin");
+        SassCompilationFailedException ex = assertThrows(SassCompilationFailedException.class, () -> {
+            sassCompiler.compileString(string, OutputStyle.EXPANDED);
+        });
+        assertThat(ex.getMessage()).contains("deprecat");
+    }
 }

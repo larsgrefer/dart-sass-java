@@ -7,7 +7,7 @@ plugins {
 java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(21)
-        vendor = JvmVendorSpec.GRAAL_VM
+        nativeImageCapable = true
     }
 }
 
@@ -25,7 +25,7 @@ graalvmNative {
         main {
             javaLauncher = javaToolchains.launcherFor {
                 languageVersion = JavaLanguageVersion.of(21)
-                vendor = JvmVendorSpec.GRAAL_VM
+                nativeImageCapable = true
             }
         }
     }

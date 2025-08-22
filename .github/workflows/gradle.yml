@@ -16,13 +16,15 @@ on:
 jobs:
   build:
     runs-on: ${{ matrix.os }}
+    continue-on-error: ${{ matrix.experimental }}
     env:
       ORG_GRADLE_PROJECT_larsgreferBuildCachePassword: ${{ secrets.BUILD_CACHE_PASSWORD }}
     strategy:
       fail-fast: false
       matrix:
         java: [ 17, 21 ]
-        os: [ubuntu-latest, macos-latest ]
+        os: [ ubuntu-latest, macos-latest ]
+        experimental: [ false ]
         include:
           - java: 17
             os: windows-latest

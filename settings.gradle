@@ -42,7 +42,6 @@ buildCache {
 include "sass-embedded-protocol"
 include "sass-embedded-host"
 include "sass-embedded-bundled"
-include "sass-embedded-bundled-ia32"
 
 include "sass-embedded-spring5"
 include "sass-embedded-spring6"

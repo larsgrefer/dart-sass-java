@@ -33,8 +33,6 @@ repositories {
 dependencies {
     implementation "org.slf4j:slf4j-api:1.7.36"
 
-    implementation project(":sass-embedded-bundled-ia32")
-
     sassEmbedded "sass:dart-sass:$dartSassVersion:linux-x64@tar.gz"
     sassEmbedded "sass:dart-sass:$dartSassVersion:linux-arm@tar.gz"
     sassEmbedded "sass:dart-sass:$dartSassVersion:linux-arm64@tar.gz"

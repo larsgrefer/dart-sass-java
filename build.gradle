@@ -2,15 +2,8 @@ plugins {
     id "io.freefair.git-version"
     id "io.freefair.lombok" apply false
     id "io.freefair.javadocs" apply false
-    id "io.github.gradle-nexus.publish-plugin" version "2.0.0"
-}
-
-nexusPublishing {
-    repositories {
-        sonatype {
-            stagingProfileId = '7c1c53f8a02656'
-        }
-    }
+    id "base"
+    id 'org.jreleaser' version '1.20.0'
 }
 
 allprojects {
@@ -130,7 +123,38 @@ allprojects {
                     }
                 }
             }
+
+            repositories {
+                maven {
+                    name = "mavenCentralStaging"
+                    url = rootProject.layout.buildDirectory.dir('staging-deploy')
+                }
+            }
         }
 
+    }
+}
+
+jreleaser {
+    project {
+        license = 'MIT'
+        inceptionYear = '2021'
+    }
+    signing {
+        active = 'NEVER'
+    }
+    deploy {
+        maven {
+            mavenCentral {
+                sonatype {
+                    active = 'RELEASE'
+                    namespace = "de.larsgrefer"
+                    url = 'https://central.sonatype.com/api/v1/publisher'
+                    sign = false //Already done by Gradle
+                    checksums = false //Already done by Gradle
+                    stagingRepository('build/staging-deploy')
+                }
+            }
+        }
     }
 }

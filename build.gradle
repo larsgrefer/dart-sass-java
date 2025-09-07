@@ -153,6 +153,7 @@ jreleaser {
                     sign = false //Already done by Gradle
                     checksums = false //Already done by Gradle
                     stagingRepository('build/staging-deploy')
+                    verifyPom = false // https://github.com/jreleaser/jreleaser.github.io/issues/85
                 }
             }
         }

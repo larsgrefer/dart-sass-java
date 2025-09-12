@@ -1,5 +1,6 @@
 package de.larsgrefer.sass.embedded.functions;
 
+import androidx.annotation.RequiresApi;
 import com.sass_lang.embedded_protocol.Value;
 
 import javax.annotation.Nonnull;
@@ -10,6 +11,7 @@ import java.util.function.Function;
 /**
  * @author Lars Grefer
  */
+@RequiresApi(24)
 class FunctionHostFunction<T> extends HostFunction {
 
     private static final List<Argument> args = Collections.singletonList(

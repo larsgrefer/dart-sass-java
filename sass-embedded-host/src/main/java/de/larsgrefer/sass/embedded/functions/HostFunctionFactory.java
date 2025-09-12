@@ -1,5 +1,6 @@
 package de.larsgrefer.sass.embedded.functions;
 
+import androidx.annotation.RequiresApi;
 import lombok.experimental.UtilityClass;
 
 import javax.annotation.Nonnull;
@@ -17,14 +18,17 @@ import java.util.function.Function;
 @UtilityClass
 public class HostFunctionFactory {
 
+    @RequiresApi(26)
     public <T> List<HostFunction> allSassFunctions(@Nonnull T object) {
         return allSassFunctions((Class<T>) object.getClass(), object);
     }
 
+    @RequiresApi(26)
     public List<HostFunction> allSassFunctions(@Nonnull Class<?> clazz) {
         return allSassFunctions(clazz, null);
     }
 
+    @RequiresApi(26)
     public <T> List<HostFunction> allSassFunctions(@Nonnull Class<T> clazz, @Nullable T object) {
         List<HostFunction> result = new ArrayList<>();
 
@@ -39,10 +43,12 @@ public class HostFunctionFactory {
         return result;
     }
 
+    @RequiresApi(26)
     public HostFunction ofMethod(Method method) {
         return ofMethod(method, null);
     }
 
+    @RequiresApi(26)
     public HostFunction ofMethod(@Nonnull Method method, @Nullable Object targetObject) {
         return new ReflectiveHostFunction(method, targetObject);
     }
@@ -51,10 +57,12 @@ public class HostFunctionFactory {
         return new CallableHostFunction(name, lambda);
     }
 
+    @RequiresApi(24)
     public <T> HostFunction ofLambda(String name, Class<T> argType, Function<T, ?> lambda) {
         return new FunctionHostFunction<>(name, argType, lambda);
     }
 
+    @RequiresApi(24)
     public <T, U> HostFunction ofLambda(String name, Class<T> arg0Type, Class<U> arg1Type, BiFunction<T, U, ?> lambda) {
         return new BiFunctionHostFunction<>(name, arg0Type, arg1Type, lambda);
     }

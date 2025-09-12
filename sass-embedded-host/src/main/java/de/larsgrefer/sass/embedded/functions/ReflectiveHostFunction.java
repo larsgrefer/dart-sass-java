@@ -1,5 +1,6 @@
 package de.larsgrefer.sass.embedded.functions;
 
+import androidx.annotation.RequiresApi;
 import com.sass_lang.embedded_protocol.Value;
 
 import javax.annotation.Nonnull;
@@ -15,6 +16,7 @@ import java.util.stream.Collectors;
 /**
  * @author Lars Grefer
  */
+@RequiresApi(26)
 class ReflectiveHostFunction extends HostFunction {
 
     private final Method method;

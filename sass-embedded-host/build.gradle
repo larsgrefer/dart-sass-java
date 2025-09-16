@@ -31,7 +31,7 @@ dependencies {
 
     testCompileOnly 'org.jetbrains:annotations:26.0.2-1'
 
-    testRuntimeOnly 'org.webjars:bootstrap:5.3.6'
+    testRuntimeOnly 'org.webjars:bootstrap:5.3.8'
 }
 
 tasks.named("processResources", ProcessResources) {

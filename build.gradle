@@ -38,7 +38,7 @@ allprojects {
         dependencies {
             testImplementation 'org.assertj:assertj-core:3.27.4'
 
-            testImplementation platform("org.junit:junit-bom:5.13.4")
+            testImplementation platform("org.junit:junit-bom:5.14.1")
             testImplementation 'org.junit.jupiter:junit-jupiter-api'
             testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
             testRuntimeOnly 'org.junit.platform:junit-platform-launcher'

@@ -1,12 +1,17 @@
+import org.springframework.boot.gradle.plugin.SpringBootPlugin
+
 plugins {
-    id 'org.springframework.boot' version '3.5.7'
-    id 'io.spring.dependency-management' version '1.1.7'
+    id 'org.springframework.boot' version '4.0.2'
     id 'java'
 }
 
 dependencies {
+    implementation platform(SpringBootPlugin.BOM_COORDINATES)
+
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation project(":sass-embedded-host")
     implementation project(":sass-embedded-spring6")
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.boot:spring-boot-starter-restclient-test'
+    testImplementation 'org.springframework.boot:spring-boot-resttestclient'
 }

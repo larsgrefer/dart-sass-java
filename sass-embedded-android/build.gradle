@@ -123,8 +123,8 @@ tasks.register("prepareSassResources", Sync) {
 preBuild.dependsOn("prepareSassJniLibs")
 preBuild.dependsOn("prepareSassResources")
 
-android.sourceSets.main.jniLibs.srcDir(tasks.named("prepareSassJniLibs"))
-android.sourceSets.main.resources.srcDir(tasks.named("prepareSassResources"))
+android.sourceSets.main.jniLibs.srcDir(tasks.named("prepareSassJniLibs", Sync).get())
+android.sourceSets.main.resources.srcDir(tasks.named("prepareSassResources", Sync).get())
 
 //Publishing
 

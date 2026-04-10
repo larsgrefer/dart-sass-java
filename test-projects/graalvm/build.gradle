@@ -8,7 +8,6 @@ java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(21)
         nativeImageCapable = true
-        vendor = JvmVendorSpec.BELLSOFT
     }
 }
 

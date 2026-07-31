@@ -52,7 +52,7 @@ jobs:
         uses: gradle/actions/setup-gradle@v5
 
       - run: java -XshowSettings:properties -version
-      - run: env | grep "GIT"
+      - run: ./gradlew -q javaToolchains
       - name: Build with Gradle
         run: ./gradlew build
 

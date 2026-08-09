@@ -46,19 +46,33 @@ public abstract class DartSassPackageProvider {
         }
 
         File execDir = targetPath.resolve("dart-sass").toFile();
+        File result = findExecutable(execDir);
 
-        File[] execFile = execDir.listFiles(pathname -> pathname.isFile() && pathname.getName().startsWith("sass"));
+        if (result == null && !IOUtils.isEmpty(targetPath)) {
+            log.info("No unique dart-sass executable found in {}, extracting {} again", execDir, dist);
+            try {
+                IOUtils.extract(dist, targetPath);
+            } catch (IOException e) {
+                throw new IOException(String.format("Failed to extract %s into %s", dist, targetPath), e);
+            }
+            result = findExecutable(execDir);
+        }
 
-        File result;
-
-        if (execFile == null || execFile.length != 1) {
+        if (result == null) {
             throw new IllegalStateException("No (unique) executable file found in " + execDir);
-        } else {
-            result = execFile[0];
         }
 
         result.setExecutable(true, true);
         return result;
+    }
+
+    private File findExecutable(File execDir) {
+        File[] execFile = execDir.listFiles(pathname -> pathname.isFile() && pathname.getName().startsWith("sass"));
+        if (execFile == null || execFile.length != 1) {
+            return null;
+        }
+
+        return execFile[0];
     }
 
     Path getTargetPath() throws IOException {

@@ -30,13 +30,6 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      - uses: graalvm/setup-graalvm@v1
-        with:
-          java-version: '25'
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          distribution: liberica
-          cache: gradle
-
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v6.2.0
 

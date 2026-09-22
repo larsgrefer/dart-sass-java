@@ -24,8 +24,8 @@ graalvmNative {
     binaries {
         main {
             javaLauncher = javaToolchains.launcherFor {
-                languageVersion = JavaLanguageVersion.of(21)
-                nativeImageCapable = true
+                languageVersion = JavaLanguageVersion.of(25)
+                vendor = JvmVendorSpec.BELLSOFT
             }
         }
     }

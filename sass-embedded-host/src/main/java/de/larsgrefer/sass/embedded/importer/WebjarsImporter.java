@@ -1,10 +1,10 @@
 package de.larsgrefer.sass.embedded.importer;
 
 import lombok.extern.slf4j.Slf4j;
+import org.jspecify.annotations.Nullable;
 import org.webjars.NotFoundException;
 import org.webjars.WebJarAssetLocator;
 
-import javax.annotation.Nullable;
 import java.io.IOException;
 import java.net.URL;
 import java.util.regex.Matcher;
@@ -43,8 +43,9 @@ public class WebjarsImporter extends ClasspathImporter {
 
         String fullPath = null;
 
-        Matcher matcher = fullPathPattern.matcher(url);
+        // META-INF/resources/webjars/<webjar>/<subpath>
 
+        Matcher matcher = fullPathPattern.matcher(url);
         if (matcher.find()) {
             String webjar = matcher.group(1);
             String subPath = matcher.group(2);
@@ -56,7 +57,27 @@ public class WebjarsImporter extends ClasspathImporter {
                 log.trace(e.getLocalizedMessage(), e);
             }
         }
-        else {
+
+        // <webjar>/<subpath>
+
+        if (fullPath == null) {
+            int endOffset = url.indexOf('/', 1);
+            if (endOffset != -1) {
+                int startOffset = (url.startsWith("/") ? 1 : 0);
+                String webjar = url.substring(startOffset, endOffset);
+                String subPath = url.substring(endOffset + 1);
+                try {
+                    fullPath = webJarAssetLocator.getFullPath(webjar, subPath);
+                } catch (NotFoundException e) {
+                    log.debug("Path {} not found in webjar {}", subPath, webjar);
+                    log.trace(e.getLocalizedMessage(), e);
+                }
+            }
+        }
+
+        // <subpath>
+
+        if (fullPath == null) {
             try {
                 fullPath = webJarAssetLocator.getFullPath(url);
             } catch (NotFoundException e) {
@@ -71,4 +92,5 @@ public class WebjarsImporter extends ClasspathImporter {
 
         return super.canonicalizeUrl(fullPath);
     }
+
 }

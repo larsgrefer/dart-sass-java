@@ -6,7 +6,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
-import javax.annotation.Nullable;
 import java.io.File;
 import java.io.OutputStream;
 import java.io.IOException;
@@ -87,7 +86,6 @@ class DartSassPackageProviderTest {
             return targetPath;
         }
 
-        @Nullable
         @Override
         protected URL getPackageUrl() {
             return packageUrl;

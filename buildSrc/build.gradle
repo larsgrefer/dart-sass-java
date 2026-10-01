@@ -1,0 +1,21 @@
+plugins {
+    id "java-gradle-plugin"
+    id "io.freefair.lombok" version "9.8.0"
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.yaml:snakeyaml:2.7'
+    implementation "com.palantir.javapoet:javapoet:0.20.0"
+}
+
+gradlePlugin {
+    plugins {
+        register('sass.deprecations') {
+            implementationClass = 'de.larsgrefer.sass.gradle.SassDeprecationsPlugin'
+        }
+    }
+}

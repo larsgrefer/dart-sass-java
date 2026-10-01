@@ -1,8 +1,10 @@
 plugins {
     id "com.google.protobuf" version "0.9.5"
     id "io.freefair.maven-publish-java"
+    id "io.freefair.lombok"
     id "idea"
     id "java-library"
+    id "sass.deprecations"
 }
 
 description = "SASS Embedded Protocol"
@@ -13,6 +15,13 @@ repositories {
     ivy {
         //https://github.com/sass/sass/archive/refs/tags/embedded-protocol-1.2.0.zip
         artifactPattern "https://github.com/[orgPath]/[orgPath]/archive/[artifact]-[revision].[ext]"
+        metadataSources {
+            artifact()
+        }
+    }
+    ivy {
+        // https://raw.githubusercontent.com/sass/sass/refs/heads/main/spec/deprecations.yaml
+        artifactPattern "https://raw.githubusercontent.com/[orgPath]/[orgPath]/refs/tags/embedded-protocol-[revision]/spec/[artifact].[ext]"
         metadataSources {
             artifact()
         }
@@ -31,6 +40,8 @@ dependencies {
     protobuf "sass:embedded-protocol:$embeddedProtocolVersion@zip"
 
     api "com.google.protobuf:protobuf-java:$protobufVersion"
+
+    deprecationsYml "sass:deprecations:$embeddedProtocolVersion@yaml"
 }
 
 protobuf {

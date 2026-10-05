@@ -8,8 +8,9 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.yaml:snakeyaml:2.7'
+    implementation 'tools.jackson.dataformat:jackson-dataformat-yaml:3.2.3'
     implementation "com.palantir.javapoet:javapoet:0.20.0"
+    implementation "io.freefair.okhttp:io.freefair.okhttp.gradle.plugin:9.8.0"
 }
 
 gradlePlugin {

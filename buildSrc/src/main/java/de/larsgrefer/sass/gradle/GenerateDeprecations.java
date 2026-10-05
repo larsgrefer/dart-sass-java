@@ -1,19 +1,18 @@
 package de.larsgrefer.sass.gradle;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.palantir.javapoet.*;
 import lombok.Data;
 import org.gradle.api.DefaultTask;
-import org.gradle.api.file.ConfigurableFileCollection;
 import org.gradle.api.file.DirectoryProperty;
+import org.gradle.api.file.RegularFileProperty;
 import org.gradle.api.tasks.*;
-import org.yaml.snakeyaml.Yaml;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.dataformat.yaml.YAMLMapper;
 
 import javax.lang.model.element.Modifier;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
 
@@ -21,8 +20,8 @@ import java.util.Map;
 public abstract class GenerateDeprecations extends DefaultTask {
 
     @PathSensitive(PathSensitivity.NONE)
-    @InputFiles
-    public abstract ConfigurableFileCollection getInputFiles();
+    @InputFile
+    public abstract RegularFileProperty getDeprecationsYamlFile();
 
     @OutputDirectory
     public abstract DirectoryProperty getGeneratedSourcesDir();
@@ -59,19 +58,19 @@ public abstract class GenerateDeprecations extends DefaultTask {
         Map<String, DeprecationDto> deprecations = loadDeprecations();
 
         deprecations.forEach((id, deprecationDto) -> {
-            getLogger().warn("Loaded deprecation: {} -> {}", id, deprecationDto);
+            getLogger().info("Loaded deprecation: {} -> {}", id, deprecationDto);
 
             String enumName = id.toUpperCase().replace("-", "_");
             enumBuilder.addEnumConstant(enumName, TypeSpec
                     .anonymousClassBuilder("$S,\n$S,\n$L.$L,\n$S,\n$S", id,
                             deprecationDto.getDescription(),
-                            dartSassDeprecationStatus, deprecationDto.getDartSassStatus().toUpperCase(Locale.ROOT),
-                            deprecationDto.getDartSassDeprecated(),
-                            deprecationDto.getDartSassObsolete())
+                            dartSassDeprecationStatus, deprecationDto.getDartSass().getStatus().toUpperCase(Locale.ROOT),
+                            deprecationDto.getDartSass().getDeprecated(),
+                            deprecationDto.getDartSass().getObsolete())
                     .addJavadoc("$L", deprecationDto.getDescription())
                     .addJavadoc("\n\n")
                     .addJavadoc("@see <a href=\"https://sass-lang.com/d/$L\">$L</a>\n", id, id)
-                    .addJavadoc("@since dart-sass $L", deprecationDto.dartSassDeprecated)
+                    .addJavadoc("@since dart-sass $L", deprecationDto.getDartSass().getDeprecated())
                     .build());
 
         });
@@ -104,43 +103,31 @@ public abstract class GenerateDeprecations extends DefaultTask {
     }
 
     private File getDeprecationsFile() {
-        return getInputFiles().filter(file -> file.getName().endsWith(".yml") || file.getName().endsWith(".yaml")).getSingleFile();
+        return getDeprecationsYamlFile().getAsFile().get();
     }
 
     @SuppressWarnings("NewApi")
-    private Map<String, DeprecationDto> loadDeprecations() throws IOException {
-        Map<String, DeprecationDto> result = new LinkedHashMap<>();
+    private Map<String, DeprecationDto> loadDeprecations() {
 
-        try (InputStream inputStream = Files.newInputStream(getDeprecationsFile().toPath())) {
-            Map<String, ?> map = new Yaml().loadAs(inputStream, Map.class);
+        YAMLMapper yamlMapper = new YAMLMapper();
 
-            map.forEach((id, v) -> {
-                DeprecationDto deprecationDto = new DeprecationDto();
-                deprecationDto.setId(id);
-
-                Map<String, ?> data = (Map<String, ?>) v;
-                deprecationDto.setDescription(data.get("description").toString());
-
-                Map<String, String> dartSass = (Map<String, String>) data.get("dart-sass");
-                deprecationDto.setDartSassStatus(dartSass.get("status"));
-                deprecationDto.setDartSassDeprecated(dartSass.get("deprecated"));
-                deprecationDto.setDartSassObsolete(dartSass.get("obsolete"));
-
-                result.put(id, deprecationDto);
-            });
-
-        }
-
-        return result;
+        return yamlMapper.readValue(getDeprecationsFile(), new TypeReference<Map<String, DeprecationDto>>() {
+        });
     }
 
     @Data
     public static class DeprecationDto {
-        private String id;
+
         private String description;
 
-        private String dartSassStatus;
-        private String dartSassDeprecated;
-        private String dartSassObsolete;
+        @JsonProperty("dart-sass")
+        private DartSassDto dartSass;
+    }
+
+    @Data
+    public static class DartSassDto {
+        private String status;
+        private String deprecated;
+        private String obsolete;
     }
 }

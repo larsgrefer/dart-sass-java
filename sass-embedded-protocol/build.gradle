@@ -40,8 +40,6 @@ dependencies {
     protobuf "sass:embedded-protocol:$embeddedProtocolVersion@zip"
 
     api "com.google.protobuf:protobuf-java:$protobufVersion"
-
-    deprecationsYml "sass:deprecations:$embeddedProtocolVersion@yaml"
 }
 
 protobuf {

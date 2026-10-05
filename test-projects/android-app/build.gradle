@@ -7,11 +7,11 @@ repositories {
 }
 
 android {
-    compileSdk = 34
+    compileSdk = 36
     namespace = "de.larsgrefer.sass.embedded.android.demo"
 
     defaultConfig {
-        targetSdk = 34
+        targetSdk = 36
         minSdk = 21
     }
 

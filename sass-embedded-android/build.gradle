@@ -7,7 +7,7 @@ plugins {
 description = "SASS Embedded Android"
 
 android {
-    compileSdk = 34
+    compileSdk = 36
     namespace = "de.larsgrefer.sass.embedded.android"
 
     buildFeatures {
@@ -16,7 +16,7 @@ android {
 
     defaultConfig {
         minSdk = 21
-        targetSdk = 34
+        targetSdk = 36
         consumerProguardFiles 'lib-proguard-rules.pro'
 
         buildConfigField("String", "DART_SASS_VERSION", "\"$dartSassVersion\"")

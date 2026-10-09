@@ -28,6 +28,7 @@ import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static de.larsgrefer.sass.embedded.util.ProtocolUtil.inboundMessage;
 
@@ -477,8 +478,12 @@ public class SassCompiler implements Closeable {
 
         CustomImporter customImporter = customImporters.get(canonicalizeRequest.getImporterId());
 
+        AtomicBoolean containingUrlUnused = new AtomicBoolean(true);
         try {
-            String canonicalize = customImporter.canonicalize(canonicalizeRequest.getUrl(), canonicalizeRequest.getFromImport());
+            String canonicalize = customImporter.canonicalize(canonicalizeRequest.getUrl(), canonicalizeRequest.getFromImport(), () -> {
+                containingUrlUnused.set(false);
+                return canonicalizeRequest.getContainingUrl();
+            });
             if (canonicalize != null) {
                 log.debug("{} canonicalized to {}", canonicalizeRequest.getUrl(), canonicalize);
                 canonicalizeResponse.setUrl(canonicalize);
@@ -487,6 +492,7 @@ public class SassCompiler implements Closeable {
             log.debug("Failed to handle CanonicalizeRequest {}", canonicalizeRequest, e);
             canonicalizeResponse.setError(getErrorMessage(e));
         }
+        canonicalizeResponse.setContainingUrlUnused(containingUrlUnused.get());
 
         connection.sendMessage(compilationId, inboundMessage(canonicalizeResponse.build()));
     }

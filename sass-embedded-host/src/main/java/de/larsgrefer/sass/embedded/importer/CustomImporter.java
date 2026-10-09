@@ -8,6 +8,7 @@ import org.jspecify.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.Set;
+import java.util.function.Supplier;
 
 /**
  * A custom importer as specified by the embedded sass protocol.
@@ -24,6 +25,18 @@ public abstract class CustomImporter extends Importer {
      */
     @Nullable
     public abstract String canonicalize(String url, boolean fromImport) throws Exception;
+
+    /**
+     * @param url           The URL of the import to be canonicalized. This may be either absolute or relative.
+     * @param fromImport    Whether this request comes from an `@import` rule.
+     * @param containingUrl The canonical URL of the [current source file] that contained the load to be canonicalized.
+     * @return The canonicalized URL (including a scheme)
+     * @see CanonicalizeRequest
+     */
+    @Nullable
+    public String canonicalize(String url, boolean fromImport, @NonNull Supplier<@Nullable String> containingUrl) throws Exception {
+        return canonicalize(url, fromImport);
+    }
 
     /**
      * @param url The url to import

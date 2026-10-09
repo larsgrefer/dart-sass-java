@@ -32,7 +32,7 @@ allprojects {
 
         tasks.withType(Javadoc).configureEach {
             options.addBooleanOption("Xdoclint:-missing", true)
-            failOnError = false
+            failOnError = true
         }
 
         dependencies {

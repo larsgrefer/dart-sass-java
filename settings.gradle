@@ -28,17 +28,6 @@ develocity {
     }
 }
 
-buildCache {
-    remote(HttpBuildCache) {
-        url = 'https://build-cache.grefer-hosting.de/cache/'
-        push = isCiServer
-        credentials {
-            username = "larsgrefer"
-            password = providers.gradleProperty('larsgreferBuildCachePassword').getOrElse(null)
-        }
-    }
-}
-
 include "sass-embedded-protocol"
 include "sass-embedded-host"
 include "sass-embedded-bundled"

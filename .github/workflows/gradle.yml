@@ -17,8 +17,6 @@ jobs:
   build:
     runs-on: ${{ matrix.os }}
     continue-on-error: ${{ matrix.experimental }}
-    env:
-      ORG_GRADLE_PROJECT_larsgreferBuildCachePassword: ${{ secrets.BUILD_CACHE_PASSWORD }}
     strategy:
       fail-fast: false
       matrix:
@@ -36,8 +34,11 @@ jobs:
           java-version: 21
           distribution: 'temurin'
 
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v6.4.0
+      - uses: gradle/actions/setup-gradle@v6
+        with:
+          build-scan-publish: true
+          build-scan-terms-of-use-url: "https://gradle.com/terms-of-service"
+          build-scan-terms-of-use-agree: "yes"
 
       - run: java -XshowSettings:properties -version
       - run: ./gradlew -q javaToolchains

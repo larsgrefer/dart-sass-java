@@ -7,8 +7,6 @@ on:
 jobs:
   publish:
     runs-on: ubuntu-latest
-    env:
-      ORG_GRADLE_PROJECT_larsgreferBuildCachePassword: ${{ secrets.BUILD_CACHE_PASSWORD }}
     steps:
       - uses: actions/checkout@v7
       - name: Set up JDK 21
@@ -17,8 +15,11 @@ jobs:
           java-version: 21
           distribution: 'temurin'
 
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v6.4.0
+      - uses: gradle/actions/setup-gradle@v6
+        with:
+          build-scan-publish: true
+          build-scan-terms-of-use-url: "https://gradle.com/terms-of-service"
+          build-scan-terms-of-use-agree: "yes"
 
       - run: env | grep "GIT"
 

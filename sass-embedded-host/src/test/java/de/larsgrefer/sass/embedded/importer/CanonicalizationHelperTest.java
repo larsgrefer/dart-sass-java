@@ -21,6 +21,18 @@ class CanonicalizationHelperTest {
     }
 
     @Test
+    void resolvePossibleIndexPaths_noExt() {
+        List<String> strings = CanonicalizationHelper.resolvePossibleIndexPaths("foo/bar/baz");
+
+        assertThat(strings).containsExactly(
+                "foo/bar/baz/_index.sass",
+                "foo/bar/baz/index.sass",
+                "foo/bar/baz/_index.scss",
+                "foo/bar/baz/index.scss"
+        );
+    }
+
+    @Test
     void resolvePossiblePaths_ext() {
         List<String> strings = CanonicalizationHelper.resolvePossiblePaths("foo/bar/baz.scss");
 

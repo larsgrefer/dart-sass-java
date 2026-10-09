@@ -231,9 +231,10 @@ public class SassCompiler implements Closeable {
             builder.addImporters(importer);
         }
 
-        for (Importer value : customImporters.values()) {
+        for (CustomImporter value : customImporters.values()) {
             CompileRequest.Importer importer = CompileRequest.Importer.newBuilder()
                     .setImporterId(value.getId())
+                    .addAllNonCanonicalScheme(value.getNonCanonicalSchemes())
                     .build();
             builder.addImporters(importer);
         }

@@ -8,7 +8,7 @@ import java.io.File;
  * A file importer as specified by the embedded sass protocol.
  *
  * @author Lars Grefer
- * @see sass.embedded_protocol.EmbeddedSass.InboundMessage.CompileRequest.Importer
+ * @see com.sass_lang.embedded_protocol.InboundMessage.CompileRequest.Importer
  */
 public abstract class FileImporter extends Importer {
 
